@@ -1,0 +1,3 @@
+[submodule "bash_d"]
+	path = usr/src/bash_d
+	url = https://github.com/dehesselle/bash_d

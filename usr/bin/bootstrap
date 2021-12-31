@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+### description ################################################################
+
+# TODO: description
+
+### shellcheck #################################################################
+
+# Nothing here.
+
+### includes ###################################################################
+
+#---------------------------------------------------- source configuration files
+
+# shellcheck disable=SC1090 # can't point to a single source here
+for config in $(\
+    "$(dirname "${BASH_SOURCE[0]}")"/run-parts list \
+    "$(dirname "${BASH_SOURCE[0]}")"/../../etc/bootstrap.d/'*.sh' \
+); do
+  source "$config"
+done
+
+#------------------------------------------- source additional software packages
+
+for package in "$(dirname "${BASH_SOURCE[0]}")"/../src/packages/*.sh; do
+  # shellcheck disable=SC1090 # can't point to a single source here
+  source "$package"
+done
+
+### variables ##################################################################
+
+SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
+
+### functions ##################################################################
+
+# Nothing here.
+
+### main #######################################################################
+
+error_trace_enable
+
+#-------------------------------------------------------- print main directories
+
+echo_i "WRK_DIR = $WRK_DIR"
+echo_i "VER_DIR = $VER_DIR"
+
+#--------------------------------------------------- initialize directory layout
+
+# sync repository into target structure, remove everything git-related
+rsync -a --delete "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
+find "$VER_DIR" -type f -name ".gitignore" -delete
+rm -rf "$VER_DIR"/.git
+rm "$VER_DIR"/.gitmodules
+
+directories_init
+
+#---------------------------------------------------------------- install ccache
+
+ccache_install
+ccache_configure
+
+#------------------------------------------ log relevant versions to release.log
+
+sys_create_log
+
+#------------------------------------------------- install and configure JHBuild
+
+jhbuild_install
+jhbuild_configure
+
+#------------------------------------------------------- run bootstrap procedure
+
+jhbuild bootstrap-gtk-osx

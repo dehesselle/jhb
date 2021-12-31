@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+### description ################################################################
+
+# A partial replacement for Debian's "run-parts" tool. Execute files in a
+# directory in their lexical order with the specialty of being able to
+# use symlinks to create an order without executing the files twice.
+
+### shellcheck #################################################################
+
+# Nothing here.
+
+### dependencies ###############################################################
+
+# Nothing here.
+
+### variables ##################################################################
+
+# Nothing here.
+
+### functions ##################################################################
+
+function main
+{
+  local mode=$1
+  local dir=$2
+
+  local file_pattern
+
+  if [ -d "$dir" ]; then
+    # reconstruct to make it proper (e.g. remove superfluous slashes)
+    dir=$(dirname "$dir")/$(basename "$dir")
+  else
+    # split into directory and file
+    file_pattern=$(basename "$dir")
+    dir=$(dirname "$dir")
+  fi
+
+  file_pattern=${file_pattern:-*}   # default pattern is "*"
+
+  local linked_files
+  linked_files=$(find "$dir" -type l -exec readlink {} +)
+
+  for file in "$dir"/$file_pattern; do
+    # Only echo files that have no symlinks (in that same directory) pointing
+    # at them.
+    if [ "$linked_files" = "${linked_files/$(basename "$file")/}" ]; then
+      case "$mode" in
+        list)
+          echo "$file"
+          ;;
+        run)
+          $file
+          ;;
+      esac
+    fi
+  done
+}
+
+### main #######################################################################
+
+set -e
+
+shopt -s nullglob   # in case no files are found
+
+case "$1" in
+  list)
+    main "list" "$2"
+    ;;
+  *)
+    main "run" "$1"
+    ;;
+esac
