@@ -60,7 +60,7 @@ function sys_create_log
   mkdir -p "$VAR_DIR"/log
 
   for var in SYS_MACOS_VER SYS_SDK_VER SYS_XCODE_VER VERSION WRK_DIR; do
-    echo "$var = $(eval echo \$$var)" >> "$VAR_DIR"/log/release.log
+    echo "$var = $(eval echo \$$var)" >> "$VAR_DIR"/log/jhb.log
   done
 }
 

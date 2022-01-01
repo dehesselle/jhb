@@ -135,7 +135,7 @@ function jhbuild_configure
     echo "# -*- mode: python -*-"
 
     # set moduleset directory
-    echo "modulesets_dir = '$SRC_DIR/moduleset'"
+    echo "modulesets_dir = '$SRC_DIR/modulesets/current'"
 
     # basic directory layout
     echo "buildroot = '$BLD_DIR'"
