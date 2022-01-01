@@ -86,6 +86,7 @@ jobs:
           cd $WRK_DIR
           if shasum -s -c $GITHUB_WORKSPACE/sdkchecksum/MacOSX10.11.4.sdk.sha256; then
             echo "ok - SDK verified"
+            rm -rf $GITHUB_WORKSPACE/sdkchecksum
             exit 0
           else
             echo "error - SDK verification failed"
