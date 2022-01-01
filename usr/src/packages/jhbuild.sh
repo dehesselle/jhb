@@ -132,14 +132,17 @@ function jhbuild_install
 function jhbuild_configure
 {
   local suffix=$1
+  local moduleset=$2
 
   suffix=${suffix:-jhb}
+  moduleset=${moduleset:-bootstrap.modules}
 
   {
     echo "# -*- mode: python -*-"
 
-    # set moduleset directory
+    # moduleset
     echo "modulesets_dir = '$SRC_DIR/modulesets/current'"
+    echo "moduleset = '$moduleset'"
     echo "use_local_modulesets = True"
 
     # basic directory layout
