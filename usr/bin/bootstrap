@@ -48,6 +48,13 @@ error_trace_enable
 echo_i "WRK_DIR = $WRK_DIR"
 echo_i "VER_DIR = $VER_DIR"
 
+#--------------------------------------------------------- perform system checks
+
+sys_check_versions
+sys_check_wrkdir
+sys_check_sdkroot
+sys_check_usr_local
+
 #--------------------------------------------------- initialize directory layout
 
 # sync repository into target structure, remove everything git-related
