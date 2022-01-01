@@ -19,7 +19,7 @@
 #----------------------------------------------------------------------- JHBuild
 
 export JHBUILDRC=$ETC_DIR/jhbuildrc
-export JHBUILDRC_CUSTOM=$JHBUILDRC-jhb
+export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
 
 JHBUILD_REQUIREMENTS="\
   certifi==2021.10.8\
@@ -131,6 +131,10 @@ function jhbuild_install
 
 function jhbuild_configure
 {
+  local suffix=$1
+
+  suffix=${suffix:-jhb}
+
   {
     echo "# -*- mode: python -*-"
 
@@ -170,7 +174,9 @@ function jhbuild_configure
       echo "progress_bar = True"
     fi
 
-  } > "$JHBUILDRC_CUSTOM"
+  } > "$JHBUILDRC-$suffix"
+
+  ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
 }
 
 ### main #######################################################################
