@@ -140,6 +140,7 @@ function jhbuild_configure
 
     # set moduleset directory
     echo "modulesets_dir = '$SRC_DIR/modulesets/current'"
+    echo "use_local_modulesets = True"
 
     # basic directory layout
     echo "buildroot = '$BLD_DIR'"
