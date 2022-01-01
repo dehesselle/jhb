@@ -19,7 +19,7 @@
 #----------------------------------------------------------------------- JHBuild
 
 export JHBUILDRC=$ETC_DIR/jhbuildrc
-export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
+export JHBUILDRC_CUSTOM=$JHBUILDRC-jhb
 
 JHBUILD_REQUIREMENTS="\
   certifi==2021.10.8\
@@ -171,7 +171,6 @@ function jhbuild_configure
     fi
 
   } > "$JHBUILDRC_CUSTOM"
-
 }
 
 ### main #######################################################################
