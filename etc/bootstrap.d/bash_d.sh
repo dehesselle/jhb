@@ -13,7 +13,7 @@
 
 ### variables ##################################################################
 
-INCLUDE_DIR=$(dirname "${BASH_SOURCE[0]}")/../../usr/src/bash_d
+# Nothing here.
 
 ### functions ##################################################################
 
@@ -21,9 +21,9 @@ INCLUDE_DIR=$(dirname "${BASH_SOURCE[0]}")/../../usr/src/bash_d
 
 ### main #######################################################################
 
-# shellcheck source=../../usr/src/bash_d/1_include.sh
-source "$INCLUDE_DIR"/1_include.sh
-include_file echo
-include_file error
-include_file lib
-include_file sed
+# shellcheck source=../../usr/src/bash_d/bash_d.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/bash_d/bash_d.sh
+bash_d_include echo
+bash_d_include error
+bash_d_include lib
+bash_d_include sed
