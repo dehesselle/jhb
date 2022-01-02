@@ -64,9 +64,7 @@ function jhbuild_install_python
   sed -i "" "s/prefix=.*/prefix=$(sed_escape_str "$JHBUILD_PYTHON_DIR")/" \
     "$LIB_DIR"/pkgconfig/python-$JHBUILD_PYTHON_VER-embed.pc
 
-  # Link binaries to our BIN_DIR.
-  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER
-  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER_MAJOR
+  jhbuild_install_python_symlinks
 
   # Shadow the system's python binary as well.
   ln -sf python$JHBUILD_PYTHON_VER_MAJOR "$USR_DIR"/bin/python
@@ -75,6 +73,13 @@ function jhbuild_install_python
   echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages"\
     > "$OPT_DIR"/Python.framework/Versions/Current/lib/\
 python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
+}
+
+function jhbuild_install_python_symlinks
+{
+  # Link binaries to BIN_DIR.
+  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER
+  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER_MAJOR
 }
 
 function jhbuild_install
@@ -181,6 +186,9 @@ function jhbuild_configure
   } > "$JHBUILDRC-$suffix"
 
   ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
+
+  # Update the paths to Python.
+  jhbuild_install_python_symlinks
 }
 
 ### main #######################################################################
