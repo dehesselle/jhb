@@ -64,7 +64,7 @@ function jhbuild_install_python
   sed -i "" "s/prefix=.*/prefix=$(sed_escape_str "$JHBUILD_PYTHON_DIR")/" \
     "$LIB_DIR"/pkgconfig/python-$JHBUILD_PYTHON_VER-embed.pc
 
-  jhbuild_install_python_symlinks
+  jhbuild_set_python_interpreter
 
   # Shadow the system's python binary as well.
   ln -sf python$JHBUILD_PYTHON_VER_MAJOR "$USR_DIR"/bin/python
@@ -75,16 +75,25 @@ function jhbuild_install_python
 python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 }
 
-function jhbuild_install_python_symlinks
+function jhbuild_set_python_interpreter
 {
   # Link binaries to BIN_DIR.
   ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER
   ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER_MAJOR
+
+  for file in $(find "$USR_DIR"/bin/ -type f -maxdepth 1); do
+    local file_type
+    file_type=$(file "$file")
+    if [[ $file_type = *"Python script"* ]]; then
+      sed -i "" \
+        "1 s/.*/#!$(sed_escape_str "$USR_DIR/bin/python$JHBUILD_PYTHON_VER")/" \
+        "$file"
+    fi
+  done
 }
 
 function jhbuild_install
 {
-  export PATH=$USR_DIR/bin:$PATH
   # We use our own custom Python.
   jhbuild_install_python
 
@@ -123,14 +132,10 @@ function jhbuild_install
   ( # Install JHBuild.
     cd "$SRC_DIR"/jhbuild-$JHBUILD_VER || exit 1
     ./autogen.sh \
-      --prefix="$VER_DIR" \
-      --with-python="$JHBUILD_PYTHON_BIN_DIR"/python$JHBUILD_PYTHON_VER
+      --prefix="$USR_DIR" \
+      --with-python="$JHBUILD_PYTHON_BIN"
     make
     make install
-
-    sed -i "" \
-      "1 s/.*/#!$(sed_escape_str "$USR_DIR/bin/python$JHBUILD_PYTHON_VER")/" \
-      "$BIN_DIR"/jhbuild
   )
 }
 
@@ -188,7 +193,7 @@ function jhbuild_configure
   ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
 
   # Update the paths to Python.
-  jhbuild_install_python_symlinks
+  jhbuild_set_python_interpreter
 }
 
 ### main #######################################################################
