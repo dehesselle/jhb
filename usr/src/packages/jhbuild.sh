@@ -66,9 +66,6 @@ function jhbuild_install_python
 
   jhbuild_set_python_interpreter
 
-  # Shadow the system's python binary as well.
-  ln -sf python$JHBUILD_PYTHON_VER_MAJOR "$USR_DIR"/bin/python
-
   # add to PYTHONPATH
   echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages"\
     > "$OPT_DIR"/Python.framework/Versions/Current/lib/\
@@ -77,9 +74,9 @@ python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 
 function jhbuild_set_python_interpreter
 {
-  # Link binaries to BIN_DIR.
-  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER
-  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin/python$JHBUILD_PYTHON_VER_MAJOR
+  # Link binaries to USR_DIR/bin.
+  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
+  ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
 
   for file in $(find "$USR_DIR"/bin/ -type f -maxdepth 1); do
     local file_type
