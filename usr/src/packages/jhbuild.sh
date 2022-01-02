@@ -142,7 +142,7 @@ function jhbuild_configure
   local moduleset=$2
 
   suffix=${suffix:-jhb}
-  moduleset=${moduleset:-bootstrap.modules}
+  moduleset=${moduleset:-jhb.modules}
 
   {
     echo "# -*- mode: python -*-"

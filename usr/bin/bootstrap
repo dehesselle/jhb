@@ -87,3 +87,7 @@ jhbuild_configure
 #------------------------------------------------------- run bootstrap procedure
 
 jhbuild bootstrap-gtk-osx
+
+#--------------------------------------------------------- install GNU sed
+
+jhbuild build sed
