@@ -166,9 +166,9 @@ function jhbuild_configure
     echo "setup_release()"
 
     # enable ccache
-    echo "os.environ[\"CC\"] = \"$BIN_DIR/gcc\""
-    echo "os.environ[\"OBJC\"] = \"$BIN_DIR/gcc\""
-    echo "os.environ[\"CXX\"] = \"$BIN_DIR/g++\""
+    echo "os.environ[\"CC\"] = \"$USR_DIR/bin/gcc\""
+    echo "os.environ[\"OBJC\"] = \"$USR_DIR/bin/gcc\""
+    echo "os.environ[\"CXX\"] = \"$USR_DIR/bin/g++\""
 
     # certificates for https
     echo "os.environ[\"SSL_CERT_FILE\"] = \

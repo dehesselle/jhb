@@ -44,10 +44,10 @@ EOF
 
 function ccache_install
 {
-  curl -L $CCACHE_URL | tar -C "$BIN_DIR" --exclude="ccache.sha256" -xJ
+  curl -L $CCACHE_URL | tar -C "$USR_DIR"/bin --exclude="ccache.sha256" -xJ
 
   for compiler in clang clang++ gcc g++; do
-    ln -sf ccache "$BIN_DIR"/$compiler
+    ln -sf ccache "$USR_DIR"/bin/$compiler
   done
 }
 
