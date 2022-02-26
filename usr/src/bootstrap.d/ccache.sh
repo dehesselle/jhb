@@ -4,22 +4,19 @@
 
 ### description ################################################################
 
-# This file contains everything related to setup ccache.
+# This file contains the functions to setup ccache.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Nothing here.
 
 ### variables ##################################################################
 
-if [ -z "$CCACHE_DIR" ]; then
-  CCACHE_DIR=$WRK_DIR/ccache
-fi
-export CCACHE_DIR
+export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
