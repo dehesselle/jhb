@@ -37,7 +37,7 @@ jobs:
         env:
           SYS_IGNORE_USR_LOCAL: true
         run: |
-          source etc/bootstrap.d/version.sh
+          source etc/bootstrap.conf.d/version.sh
           echo "::set-output name=version::$VERSION"
 
       - name: get version tag
@@ -157,7 +157,7 @@ jobs:
       - name: create archive
         id: jhb
         run: |
-          source etc/bootstrap.d/version.sh
+          source etc/bootstrap.conf.d/version.sh
           tar -C $WRK_DIR -cp jhb-$VERSION | XZ_OPT=-T0 $WRK_DIR/jhb-$VERSION/bin/xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz
           shasum -a 256 $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
           cat $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
