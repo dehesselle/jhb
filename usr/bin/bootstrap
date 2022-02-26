@@ -6,7 +6,7 @@
 
 ### description ################################################################
 
-# TODO: description
+# This script bootstraps JHBuild so it's ready to be build any module.
 
 ### shellcheck #################################################################
 
@@ -88,6 +88,6 @@ jhbuild_configure
 
 jhbuild bootstrap-gtk-osx
 
-#--------------------------------------------------------- install GNU sed
+#--------------------------------------------------------------- install GNU sed
 
 jhbuild build sed
