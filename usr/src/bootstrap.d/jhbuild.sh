@@ -4,27 +4,25 @@
 
 ### description ################################################################
 
-# This file contains everything related to setup JHBuild.
+# This file contains functions to download, install and configure JHBuild.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Nothing here.
 
 ### variables ##################################################################
-
-#----------------------------------------------------------------------- JHBuild
 
 export JHBUILDRC=$ETC_DIR/jhbuildrc
 export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
 
 JHBUILD_REQUIREMENTS="\
   certifi==2021.10.8\
-  meson==0.57.1\
-  ninja==1.10.0.post2
+  meson==0.59.2\
+  ninja==1.10.2.2\
 "
 
 # JHBuild build system 3.38.0+ (a896cbf404461cab979fa3cd1c83ddf158efe83b)
@@ -35,12 +33,14 @@ JHBUILD_VER=a896cbf
 JHBUILD_URL=https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2
 
-# This Python runtime powers JHBuild on system that do not provide Python 3.
+# A dedicated Python runtime (only) for JHBuild. It is installed and kept
+# separately from the rest of the system. It won't interfere with a Python
+# that might get installed as part of building modules with JHBuild.
 JHBUILD_PYTHON_VER_MAJOR=3
 JHBUILD_PYTHON_VER_MINOR=8
 JHBUILD_PYTHON_VER=$JHBUILD_PYTHON_VER_MAJOR.$JHBUILD_PYTHON_VER_MINOR
 JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
-generic/python_macos/5/python_${JHBUILD_PYTHON_VER/./}_$(uname -p).tar.xz"
+generic/python_macos/8/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
 JHBUILD_PYTHON_DIR=$OPT_DIR/Python.framework/Versions/$JHBUILD_PYTHON_VER
 JHBUILD_PYTHON_BIN_DIR=$JHBUILD_PYTHON_DIR/bin
 
@@ -56,19 +56,15 @@ function jhbuild_install_python
 
   # Create a pkg-config configuration to match our installation location.
   # Note: sed changes the prefix and exec_prefix lines!
-  mkdir -p "$LIB_DIR"/pkgconfig
-  cp "$JHBUILD_PYTHON_DIR"/lib/pkgconfig/python-$JHBUILD_PYTHON_VER*.pc \
-    "$LIB_DIR"/pkgconfig
-  sed -i "" "s/prefix=.*/prefix=$(sed_escape_str "$JHBUILD_PYTHON_DIR")/" \
-    "$LIB_DIR"/pkgconfig/python-$JHBUILD_PYTHON_VER.pc
-  sed -i "" "s/prefix=.*/prefix=$(sed_escape_str "$JHBUILD_PYTHON_DIR")/" \
-    "$LIB_DIR"/pkgconfig/python-$JHBUILD_PYTHON_VER-embed.pc
+  find "$JHBUILD_PYTHON_DIR"/lib/pkgconfig/*.pc \
+    -type f \
+    -exec sed -i "" "s|prefix=.*|prefix=$JHBUILD_PYTHON_DIR|" {} \;
 
   jhbuild_set_python_interpreter
 
   # add to PYTHONPATH
   echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages"\
-    > "$OPT_DIR"/Python.framework/Versions/Current/lib/\
+    > "$OPT_DIR"/Python.framework/Versions/$JHBUILD_PYTHON_VER/lib/\
 python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 }
 
@@ -117,13 +113,16 @@ function jhbuild_install
     cat "$TMP_DIR"/pem-??? > "$pem_bundle"
   }
 
-  pem_remove_expired \
-    "$USR_DIR"/lib/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem
+  local cacert="$USR_DIR"/lib/python$JHBUILD_PYTHON_VER/site-packages/certifi/\
+cacert.pem
 
-  # Download JHBuild.
+  pem_remove_expired "$cacert"
+
+  # Download JHBuild. Setting CURL_CA_BUNDLE is required on older macOS, e.g.
+  # High Sierra.
   local archive
   archive=$PKG_DIR/$(basename $JHBUILD_URL)
-  curl -o "$archive" -L "$JHBUILD_URL"
+  CURL_CA_BUNDLE=$cacert curl -o "$archive" -L "$JHBUILD_URL"
   tar -C "$SRC_DIR" -xf "$archive"
 
   ( # Install JHBuild.
@@ -165,10 +164,16 @@ function jhbuild_configure
     # set release build
     echo "setup_release()"
 
-    # enable ccache
-    echo "os.environ[\"CC\"] = \"$USR_DIR/bin/gcc\""
-    echo "os.environ[\"OBJC\"] = \"$USR_DIR/bin/gcc\""
-    echo "os.environ[\"CXX\"] = \"$USR_DIR/bin/g++\""
+    # Use compiler binaries from our own USR_DIR/bin if present, the intention
+    # being that these are symlinks pointing to ccache if that has been
+    # installed (see ccache.sh for details).
+    if [ -x "$USR_DIR/bin/gcc" ]; then
+      echo "os.environ[\"CC\"] = \"$USR_DIR/bin/gcc\""
+      echo "os.environ[\"OBJC\"] = \"$USR_DIR/bin/gcc\""
+    fi
+    if [ -x "$USR_DIR/bin/g++" ]; then
+      echo "os.environ[\"CXX\"] = \"$USR_DIR/bin/g++\""
+    fi
 
     # certificates for https
     echo "os.environ[\"SSL_CERT_FILE\"] = \
