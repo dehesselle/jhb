@@ -133,7 +133,11 @@ jobs:
         id: jhb
         run: |
           source etc/bootstrap.conf.d/version.sh
+          find $WRK_DIR/jhb-$VERSION/usr/src -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name bootstrap.d ! -name jhbuild* -exec rm {} \;
           rm -rf $WRK_DIR/jhb-$VERSION/var/build/*
+          rm -rf $WRK_DIR/jhb-$VERSION/var/cache/pip/*
+          rm -rf $WRK_DIR/jhb-$VERSION/var/cache/pycache/*
+          rm -rf $WRK_DIR/jhb-$VERSION/tmp/*
           tar -C $WRK_DIR -cp jhb-$VERSION | XZ_OPT=-T0 $WRK_DIR/jhb-$VERSION/bin/xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz
           cd $GITHUB_WORKSPACE
           shasum -a 256 jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
