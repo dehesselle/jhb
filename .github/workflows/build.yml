@@ -7,6 +7,16 @@ on:
   push:   # do not run when pushing tags
     branches:
       - '*'
+  workflow_call:
+    inputs:
+      SDK_DOWNLOAD_URL_REQUIRED:
+        description: "If set to true, break the build on missing SDK_DOWNLOAD_URL."
+        default: false
+        required: false
+        type: boolean
+    secrets:
+      SDK_DOWNLOAD_URL:
+        required: false
 
 #
 # TODO: description
@@ -56,6 +66,19 @@ jobs:
       # In order to use your custom SDK_DOWNLOAD_URL, create a repository secret
       # of said name and proivide a link to a .tar.xz file.
       # At the moment, only 10.11.4 SDK is supported (hardcoded below).
+      #
+
+      # Using SDK is mandatory if building for a release.
+      - name: fail on missing secret SDK_DOWNLOAD_URL
+        if: |
+          env.SDK_DOWNLOAD_URL == null &&
+          inputs.SDK_DOWNLOAD_URL_REQUIRED
+        env:
+          SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
+        uses: actions/github-script@v3
+        with:
+          script: core.setFailed("SDK_DOWNLOAD_URL secret not found")
+
       - name: install macOS SDK
         if: env.SDK_DOWNLOAD_URL != null
         env:
