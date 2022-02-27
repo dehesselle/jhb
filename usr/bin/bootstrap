@@ -90,6 +90,8 @@ jhbuild_configure
 
 jhbuild bootstrap-gtk-osx
 
-#--------------------------------------------------------------- install GNU sed
+#--------------------------------------------------------- install GNU utilities
 
-jhbuild build sed
+# GNU versions of various utilites make life signifanctly easier on macOS.
+
+jhbuild build coreutils sed
