@@ -134,7 +134,8 @@ jobs:
         run: |
           source etc/bootstrap.conf.d/version.sh
           tar -C $WRK_DIR -cp jhb-$VERSION | XZ_OPT=-T0 $WRK_DIR/jhb-$VERSION/bin/xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz
-          shasum -a 256 $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
+          cd $GITHUB_WORKSPACE
+          shasum -a 256 jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
           cat $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
           echo "::set-output name=version::$VERSION"
 
