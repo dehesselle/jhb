@@ -62,13 +62,15 @@ sys_check_versions
 
 #--------------------------------------------------- initialize directory layout
 
-# sync repository into target structure, remove everything git-related
-rsync -a --delete "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
-find "$VER_DIR" -type f -name ".gitignore" -delete
-rm -rf "$VER_DIR"/.git
-rm "$VER_DIR"/.gitmodules
-
-directories_init
+if [ "$SELF_DIR" = "$USR_DIR"/bin ]; then
+  : # we are already running inside target directory layout
+else
+  # sync repository into target structure, remove everything git-related
+  rsync -a --delete "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
+  find "$VER_DIR" -type f -name ".gitignore" -delete
+  rm -rf "$VER_DIR"/.git
+  rm "$VER_DIR"/.gitmodules
+fi
 
 #---------------------------------------------------------------- install ccache
 

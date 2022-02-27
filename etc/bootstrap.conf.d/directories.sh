@@ -20,7 +20,7 @@ INC_DIR=$VER_DIR/include
 LIB_DIR=$VER_DIR/lib
 VAR_DIR=$VER_DIR/var
 BLD_DIR=$VAR_DIR/build
-PKG_DIR=$VAR_DIR/cache/pkgs
+PKG_DIR=$VAR_DIR/cache/pkg
 USR_DIR=$VER_DIR/usr
 SRC_DIR=$USR_DIR/src
 TMP_DIR=$VER_DIR/tmp
@@ -28,10 +28,7 @@ OPT_DIR=$VER_DIR/opt
 
 ### functions ##################################################################
 
-function directories_init
-{
-  mkdir -p "$PKG_DIR"
-}
+# Nothing here.
 
 ### main #######################################################################
 
