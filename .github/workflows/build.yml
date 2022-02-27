@@ -133,6 +133,7 @@ jobs:
         id: jhb
         run: |
           source etc/bootstrap.conf.d/version.sh
+          rm -rf $WRK_DIR/jhb-$VERSION/var/build/*
           tar -C $WRK_DIR -cp jhb-$VERSION | XZ_OPT=-T0 $WRK_DIR/jhb-$VERSION/bin/xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz
           cd $GITHUB_WORKSPACE
           shasum -a 256 jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
