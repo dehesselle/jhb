@@ -70,19 +70,18 @@ python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 
 function jhbuild_set_python_interpreter
 {
-  # Link binaries to USR_DIR/bin.
+  # Symlink binaries to USR_DIR/bin.
   ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
   ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
 
-  for file in $(find "$USR_DIR"/bin/ -type f -maxdepth 1); do
+  # Set interpreter to the one in USR_DIR/bin.
+  while IFS= read -r -d '' file; do
     local file_type
     file_type=$(file "$file")
     if [[ $file_type = *"Python script"* ]]; then
-      sed -i "" \
-        "1 s/.*/#!$(sed_escape_str "$USR_DIR/bin/python$JHBUILD_PYTHON_VER")/" \
-        "$file"
+      sed -i "" "1 s|.*|#!$USR_DIR/bin/python$JHBUILD_PYTHON_VER|" "$file"
     fi
-  done
+  done < <(find "$USR_DIR"/bin/ -type f -maxdepth 1 -print0)
 }
 
 function jhbuild_install
