@@ -147,7 +147,7 @@ function jhbuild_configure
   if [ "$suffix" != "jhb" ]; then
     local moduleset_dir
     moduleset_dir=$(dirname "$(greadlink -f "$moduleset")")
-    rsync -a --delete "$moduleset_dir"/ "$SRC_DIR/modulesets/$suffix/"
+    rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$suffix/"
   fi
 
   # create custom jhbuildrc configuration
@@ -155,7 +155,7 @@ function jhbuild_configure
     echo "# -*- mode: python -*-"
 
     # moduleset
-    echo "modulesets_dir = '$SRC_DIR/modulesets/$suffix'"
+    echo "modulesets_dir = '$ETC_DIR/modulesets/$suffix'"
     echo "moduleset = '$(basename "$moduleset")'"
     echo "use_local_modulesets = True"
 

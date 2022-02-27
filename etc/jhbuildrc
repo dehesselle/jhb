@@ -86,7 +86,7 @@ class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
                                           moduleset + '.modules'))):
             config.moduleset = moduleset
         else:
-            config.moduleset = 'https://raw.githubusercontent.com/dehesselle/jhb/master/usr/src/modulesets/jhb/bootstrap.modules'
+            config.moduleset = 'https://raw.githubusercontent.com/dehesselle/jhb/master/etc/modulesets/jhb/bootstrap.modules'
 
         args = ['meta-bootstrap']
 
