@@ -9,29 +9,34 @@
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
+# shellcheck disable=SC2034 # no exports desired
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Nothing here.
 
 ### variables ##################################################################
 
 SYS_MACOS_VER=$(sw_vers -productVersion)
-SYS_MACOS_VER_RECOMMENDED=10.15.7
 
 SYS_SDK_VER=$(/usr/libexec/PlistBuddy -c "Print \
 :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" "$SDKROOT"/SDKSettings.plist)
-SYS_SDK_VER_RECOMMENDED=10.11
 
-SYS_XCODE_VER=$( (xcodebuild -version 2>/dev/null || echo "Xcode n/a") | grep Xcode | awk '{ print $2 }')
-SYS_XCODE_VER_RECOMMENDED=12.4
+if [ "$(uname -m)" = "arm64" ]; then
+  # Big Sur
+  SYS_MACOS_VER_RECOMMENDED=11.6
+  SYS_SDK_VER_RECOMMENDED=11.3
+else
+  # El Capitan
+  SYS_MACOS_VER_RECOMMENDED=10.11.6
+  SYS_SDK_VER_RECOMMENDED=10.11
+fi
 
 if [ "$SYS_IGNORE_USR_LOCAL" != "true" ]; then
   SYS_IGNORE_USR_LOCAL=false
 fi
 
 ### functions ##################################################################
-
 
 function sys_check_versions
 {
@@ -40,11 +45,6 @@ function sys_check_versions
   if [ "$SYS_SDK_VER" != "$SYS_SDK_VER_RECOMMENDED" ]; then
     echo_w "recommended   SDK: $(printf '%8s' $SYS_SDK_VER_RECOMMENDED)"
     echo_w "       your   SDK: $(printf '%8s' "$SYS_SDK_VER")"
-  fi
-
-  if [ "$SYS_XCODE_VER" != "$SYS_XCODE_VER_RECOMMENDED" ]; then
-    echo_w "recommended Xcode: $(printf '%8s' $SYS_XCODE_VER_RECOMMENDED)"
-    echo_w "       your Xcode: $(printf '%8s' "$SYS_XCODE_VER")"
   fi
 
   if [ "$SYS_MACOS_VER" != "$SYS_MACOS_VER_RECOMMENDED" ]; then
