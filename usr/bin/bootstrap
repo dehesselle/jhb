@@ -24,11 +24,18 @@ for config in $(\
   source "$config"
 done
 
-#----------------------------------------------------- source additional modules
+#------------------------------------------- source common functions from bash_d
 
-for module in "$(dirname "${BASH_SOURCE[0]}")"/../src/bootstrap.d/*.sh; do
+# shellcheck source=../../usr/src/bash_d/bash_d.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/bash_d/bash_d.sh
+bash_d_include echo
+bash_d_include error
+
+#--------------------------------------------------- source additional functions
+
+for file in "$(dirname "${BASH_SOURCE[0]}")"/../src/bootstrap.d/*.sh; do
   # shellcheck disable=SC1090 # can't point to a single source here
-  source "$module"
+  source "$file"
 done
 
 ### variables ##################################################################

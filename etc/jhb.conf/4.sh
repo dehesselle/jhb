@@ -1,1 +1,1 @@
-directories.sh
+ci.sh

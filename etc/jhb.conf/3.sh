@@ -1,1 +1,1 @@
-wrk_dir.sh
+directories.sh

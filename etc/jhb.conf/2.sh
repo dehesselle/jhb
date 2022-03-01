@@ -1,1 +1,1 @@
-bash_d.sh
+wrk_dir.sh
