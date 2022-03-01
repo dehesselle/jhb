@@ -132,7 +132,7 @@ jobs:
       - name: create archive
         id: jhb
         run: |
-          source etc/bootstrap.conf.d/version.sh
+          source etc/jhb.conf/version.sh
           find $WRK_DIR/jhb-$VERSION/usr/src -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name bootstrap.d ! -name jhbuild* -exec rm {} \;
           rm -rf $WRK_DIR/jhb-$VERSION/var/build/*
           rm -rf $WRK_DIR/jhb-$VERSION/var/cache/pip/*

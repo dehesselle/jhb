@@ -6,8 +6,8 @@
 
 ### description ################################################################
 
-# This script is a wrapper for the jhbuild binary to include our configuration
-# from etc/bootstrap.conf.d.
+# This script is a wrapper around the jhbuild binary to run it in our
+# configured environment (etc/jhb.conf).
 
 ### shellcheck #################################################################
 
@@ -20,7 +20,7 @@
 # shellcheck disable=SC1090 # can't point to a single source here
 for config in $(\
     "$(dirname "${BASH_SOURCE[0]}")"/run-parts list \
-        "$(dirname "${BASH_SOURCE[0]}")"/../../etc/bootstrap.conf.d/'*.sh' \
+        "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf/'*.sh' \
     ); do
   source "$config"
 done

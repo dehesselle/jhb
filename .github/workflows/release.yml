@@ -37,7 +37,7 @@ jobs:
         env:
           SYS_IGNORE_USR_LOCAL: true
         run: |
-          source etc/bootstrap.conf.d/version.sh
+          source etc/jhb.conf/version.sh
           echo "::set-output name=version::$VERSION"
 
       - name: get version tag
