@@ -13,6 +13,7 @@
 
 ### variables ##################################################################
 
+# shellcheck disable=SC2153 # this is no misspelling
 export TMP=$TMP_DIR
 export TEMP=$TMP_DIR
 export TMPDIR=$TMP_DIR   # TMPDIR is the common macOS default
