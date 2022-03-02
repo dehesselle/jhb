@@ -41,10 +41,10 @@ function main
   local linked_files
   linked_files=$(find "$dir" -type l -exec readlink {} +)
 
-  for file in "$dir"/$file_pattern; do
-    # Only echo files that have no symlinks (in that same directory) pointing
+  for file in "$dir"/$file_pattern; do   # requires 'shopt -s nullglob'
+    # Only process files that have no symlinks (in that same directory) pointing
     # at them.
-    if [ "$linked_files" = "${linked_files/$(basename "$file")/}" ]; then
+    if [[ "$linked_files" != *$(basename "$file")* ]]; then
       case "$mode" in
         list)
           echo "$file"
