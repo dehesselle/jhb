@@ -16,13 +16,7 @@
 
 #---------------------------------------------------------- source configuration
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for config in $(\
-    "$(dirname "${BASH_SOURCE[0]}")"/run-parts list \
-        "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf/'*.sh' \
-    ); do
-  source "$config"
-done
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 #------------------------------------------- source common functions from bash_d
 
