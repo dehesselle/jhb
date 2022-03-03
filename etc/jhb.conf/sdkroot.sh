@@ -4,9 +4,10 @@
 
 ### description ################################################################
 
-# If SDKROOT is set, use that. If it is not set, try to select the 10.11 SDK
-# (which is our minimum system requirement/target) and fallback to whatever
-# SDK is available as the default one.
+# If SDKROOT is set, use that. If it is not set, use whatever SDK is available
+# available. This might still end up being invalid if neither Xcode nor CLT
+# have been installed and it will be sys_check_sdkroot's job to complain and
+# bail.
 
 ### shellcheck #################################################################
 
@@ -16,9 +17,10 @@
 ### variables ##################################################################
 
 if [ -z "$SDKROOT" ]; then
-  SDKROOT=/opt/sdks/MacOSX10.11.sdk
-  if [ ! -d "$SDKROOT" ]; then
+  if xcodebuild --help 2>/dev/null; then
     SDKROOT=$(xcodebuild -version -sdk macosx Path)
+  else
+    SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
   fi
 fi
 export SDKROOT
