@@ -24,6 +24,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 # shellcheck source=../../usr/src/bash_d/bash_d.sh
 source "$SRC_DIR"/bash_d/bash_d.sh
 bash_d_include echo
+bash_d_include error
 
 #--------------------------------------------------- source additional functions
 
@@ -40,6 +41,10 @@ PYTHON=$BIN_DIR/python3   # required for libxml2
 # Nothing here.
 
 ### main #######################################################################
+
+if $CI; then   # break in CI, otherwise we get interactive prompt by JHBuild
+  error_trace_enable
+fi
 
 case "$1" in
   install_moduleset)
