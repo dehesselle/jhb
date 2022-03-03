@@ -7,13 +7,12 @@ on:
   push:   # only run for tags
     tags:
       - 'v*'
-jobs:
 
-# This workflow...
-#
-#   ... deserves some documentation here :D
-#
-#
+# This workflow is meant to create releases. It checks some basic requirements
+# and then calls the 'build' workflow to do the work. Afterwards a release
+# is drafted with the produced artifact.
+
+jobs:
 
 ################################################################################
 

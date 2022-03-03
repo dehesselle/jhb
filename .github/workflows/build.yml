@@ -18,9 +18,8 @@ on:
       SDK_DOWNLOAD_URL:
         required: false
 
-#
-# TODO: description
-#
+# This workflow is about running 'usr/bin/bootstrap' and creating an archive of
+# built software. All other steps are basically preparations.
 
 jobs:
 
