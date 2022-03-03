@@ -13,11 +13,22 @@
 
 # Nothing here.
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 #---------------------------------------------------------- source configuration
 
 source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# shellcheck source=../../usr/src/bash_d/bash_d.sh
+source "$SRC_DIR"/bash_d/bash_d.sh
+bash_d_include echo
+
+#--------------------------------------------------- source additional functions
+
+# shellcheck source=../../usr/src/jhb/jhbuild.sh
+source "$SRC_DIR"/jhb/jhbuild.sh
 
 ### variables ##################################################################
 
@@ -30,4 +41,11 @@ PYTHON=$BIN_DIR/python3   # required for libxml2
 
 ### main #######################################################################
 
-"$USR_DIR"/bin/jhbuild "$@"
+case "$1" in
+  install_moduleset)
+    jhbuild_configure "$2"   # e.g. 'jhbuild/myapp.modules'
+    ;;
+  *)
+    "$USR_DIR"/bin/jhbuild "$@"
+    ;;
+esac
