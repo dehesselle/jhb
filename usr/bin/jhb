@@ -33,8 +33,7 @@ source "$SRC_DIR"/jhb/jhbuild.sh
 
 ### variables ##################################################################
 
-# shellcheck disable=SC2034 # export not desired
-PYTHON=$BIN_DIR/python3   # required for libxml2
+export PYTHON=$BIN_DIR/python3   # required for libxml2
 
 ### functions ##################################################################
 
