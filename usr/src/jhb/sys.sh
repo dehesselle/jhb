@@ -63,8 +63,7 @@ function sys_create_log
 
 function sys_check_wrkdir
 {
-  # shellcheck disable=SC2046 # result is integer
-  if  [ $(mkdir -p "$WRK_DIR" 2>/dev/null; echo $?) -eq 0 ] &&
+  if  mkdir -p "$WRK_DIR" 2>/dev/null &&
       [ -w "$WRK_DIR" ] ; then
     : # WRK_DIR has been created or was already there and is writable
   else
