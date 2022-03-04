@@ -22,16 +22,6 @@ SYS_MACOS_VER=$(sw_vers -productVersion)
 SYS_SDK_VER=$(/usr/libexec/PlistBuddy -c "Print \
 :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" "$SDKROOT"/SDKSettings.plist)
 
-if [ "$(uname -m)" = "arm64" ]; then
-  # Big Sur
-  SYS_MACOS_VER_RECOMMENDED=11.6
-  SYS_SDK_VER_RECOMMENDED=11.3
-else
-  # El Capitan
-  SYS_MACOS_VER_RECOMMENDED=10.11.6
-  SYS_SDK_VER_RECOMMENDED=10.11
-fi
-
 if [ "$SYS_IGNORE_USR_LOCAL" != "true" ]; then
   SYS_IGNORE_USR_LOCAL=false
 fi
@@ -42,13 +32,20 @@ function sys_check_versions
 {
   # Check version recommendations.
 
-  if [ "$SYS_SDK_VER" != "$SYS_SDK_VER_RECOMMENDED" ]; then
-    echo_w "recommended   SDK: $(printf '%8s' $SYS_SDK_VER_RECOMMENDED)"
+  local arch
+  arch=$(uname -m | tr '[:lower:]' '[:upper:]')
+  local recommended_macos_ver
+  recommended_macos_ver=$(eval echo \$RECOMMENDED_MACOS_VER_"$arch")
+  local recommended_sdk_ver
+  recommended_sdk_ver=$(eval echo \$RECOMMENDED_SDK_VER_"$arch")
+
+  if [ "$SYS_SDK_VER" != "$recommended_sdk_ver" ]; then
+    echo_w "recommended   SDK: $(printf '%8s' "$recommended_sdk_ver")"
     echo_w "       your   SDK: $(printf '%8s' "$SYS_SDK_VER")"
   fi
 
-  if [ "$SYS_MACOS_VER" != "$SYS_MACOS_VER_RECOMMENDED" ]; then
-    echo_w "recommended macOS: $(printf '%8s' $SYS_MACOS_VER_RECOMMENDED)"
+  if [ "$SYS_MACOS_VER" != "$recommended_macos_ver" ]; then
+    echo_w "recommended macOS: $(printf '%8s' "$recommended_macos_ver")"
     echo_w "       your macOS: $(printf '%8s' "$SYS_MACOS_VER")"
   fi
 }
