@@ -4,7 +4,7 @@
 
 ### description ################################################################
 
-# System related things like checking versions of macOS and Xcode.
+# System information and checks.
 
 ### shellcheck #################################################################
 
@@ -56,7 +56,7 @@ function sys_create_log
 
   mkdir -p "$VAR_DIR"/log
 
-  for var in SYS_MACOS_VER SYS_SDK_VER SYS_XCODE_VER VERSION WRK_DIR; do
+  for var in SYS_MACOS_VER SYS_SDK_VER VERSION WRK_DIR; do
     echo "$var = $(eval echo \$$var)" >> "$VAR_DIR"/log/jhb.log
   done
 }
