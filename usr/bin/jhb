@@ -21,8 +21,8 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 #------------------------------------------- source common functions from bash_d
 
-# shellcheck source=../../usr/src/bash_d/bash_d.sh
-source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/bash_d/bash_d.sh
+# bash_d is already available (it's part of etc/jhb.conf)
+
 bash_d_include echo
 bash_d_include error
 
@@ -55,6 +55,9 @@ case "$1" in
     ;;
   install_jhb)
     curl -L "$JHB_URL" | tar -C "$WRK_DIR" -xJ
+    ;;
+  debug)
+    echo_d "doing nothing"
     ;;
   *)
     "$USR_DIR"/bin/jhbuild "$@"
