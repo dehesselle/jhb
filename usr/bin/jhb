@@ -35,6 +35,10 @@ source "$SRC_DIR"/jhb/jhbuild.sh
 
 export PYTHON=$BIN_DIR/python3   # required for libxml2
 
+# https://github.com/dehesselle/jhb
+JHB_URL=https://github.com/dehesselle/jhb/releases/download/\
+v$VERSION/jhb_v$VERSION.tar.xz
+
 ### functions ##################################################################
 
 # Nothing here.
@@ -48,6 +52,9 @@ fi
 case "$1" in
   install_moduleset)
     jhbuild_configure "$2"   # e.g. 'jhbuild/myapp.modules'
+    ;;
+  install_jhb)
+    curl -L "$JHB_URL" | tar -C "$WRK_DIR" -xJ
     ;;
   *)
     "$USR_DIR"/bin/jhbuild "$@"
