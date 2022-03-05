@@ -13,18 +13,18 @@
 
 ### variables ##################################################################
 
-VER_DIR=$WRK_DIR/jhb-$VERSION
-BIN_DIR=$VER_DIR/bin
-ETC_DIR=$VER_DIR/etc
-INC_DIR=$VER_DIR/include
-LIB_DIR=$VER_DIR/lib
-VAR_DIR=$VER_DIR/var
-BLD_DIR=$VAR_DIR/build
-PKG_DIR=$VAR_DIR/cache/pkg
-USR_DIR=$VER_DIR/usr
-SRC_DIR=$USR_DIR/src
-TMP_DIR=$VER_DIR/tmp
-OPT_DIR=$VER_DIR/opt
+VER_DIR=${VER_DIR:-$WRK_DIR/jhb-$VERSION}
+BIN_DIR=${BIN_DIR:-$VER_DIR/bin}
+ETC_DIR=${ETC_DIR:-$VER_DIR/etc}
+INC_DIR=${INC_DIR:-$VER_DIR/include}
+LIB_DIR=${LIB_DIR:-$VER_DIR/lib}
+VAR_DIR=${VAR_DIR:-$VER_DIR/var}
+BLD_DIR=${BLD_DIR:-$VAR_DIR/build}
+PKG_DIR=${PKG_DIR:-$VAR_DIR/cache/pkg}
+USR_DIR=${USR_DIR:-$VER_DIR/usr}
+SRC_DIR=${SRC_DIR:-$USR_DIR/src}
+TMP_DIR=${TMP_DIR:-$VER_DIR/tmp}
+OPT_DIR=${OPT_DIR:-$VER_DIR/opt}
 
 ### functions ##################################################################
 

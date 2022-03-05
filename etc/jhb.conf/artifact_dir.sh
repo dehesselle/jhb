@@ -13,12 +13,14 @@
 
 ### variables ##################################################################
 
-if   $CI_GITHUB; then
-  ARTIFACT_DIR=$GITHUB_WORKSPACE
-elif $CI_GITLAB; then
-  ARTIFACT_DIR=$CI_PROJECT_DIR
-else
-  ARTIFACT_DIR=$VER_DIR
+if [ -z "$ARTIFACT_DIR" ]; then
+  if   $CI_GITHUB; then
+    ARTIFACT_DIR=$GITHUB_WORKSPACE
+  elif $CI_GITLAB; then
+    ARTIFACT_DIR=$CI_PROJECT_DIR
+  else
+    ARTIFACT_DIR=$VER_DIR
+  fi
 fi
 
 ### functions ##################################################################
