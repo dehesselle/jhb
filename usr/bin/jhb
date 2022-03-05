@@ -22,14 +22,14 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 #------------------------------------------- source common functions from bash_d
 
 # shellcheck source=../../usr/src/bash_d/bash_d.sh
-source "$SRC_DIR"/bash_d/bash_d.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/bash_d/bash_d.sh
 bash_d_include echo
 bash_d_include error
 
 #--------------------------------------------------- source additional functions
 
 # shellcheck source=../../usr/src/jhb/jhbuild.sh
-source "$SRC_DIR"/jhb/jhbuild.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/jhbuild.sh
 
 ### variables ##################################################################
 
