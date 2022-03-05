@@ -30,6 +30,7 @@ bash_d_include error
 
 # shellcheck source=../../usr/src/jhb/jhbuild.sh
 source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/jhbuild.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/sys.sh
 
 ### variables ##################################################################
 
@@ -60,6 +61,7 @@ case "$1" in
     echo_d "doing nothing"
     ;;
   *)
+    sys_check_versions
     "$USR_DIR"/bin/jhbuild "$@"
     ;;
 esac
