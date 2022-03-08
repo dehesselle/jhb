@@ -4,10 +4,8 @@
 
 ### description ################################################################
 
-# If SDKROOT is set, use that. If it is not set, use whatever SDK is available
-# available. This might still end up being invalid if neither Xcode nor CLT
-# have been installed and it will be sys_check_sdkroot's job to complain and
-# bail.
+# Recommended versions that functions from sys.sh are going to check
+# the system against.
 
 ### shellcheck #################################################################
 
@@ -16,11 +14,11 @@
 
 ### variables ##################################################################
 
-RECOMMENDED_MACOS_VER_X86_64=10.11.6
-RECOMMENDED_MACOS_VER_ARM64=11.6
+RECOMMENDED_MACOS_VER_X86_64=${RECOMMENDED_MACOS_VER_X86_64:-10.11.6}
+RECOMMENDED_MACOS_VER_ARM64=${RECOMMENDED_MACOS_VER_ARM64:-11.6.4}
 
-RECOMMENDED_SDK_VER_X86_64=10.11
-RECOMMENDED_SDK_VER_ARM64=11.3
+RECOMMENDED_SDK_VER_X86_64=${RECOMMENDED_SDK_VER_X86_64:-10.11}
+RECOMMENDED_SDK_VER_ARM64=${RECOMMENDED_SDK_VER_ARM64:-11.3}
 
 ### functions ##################################################################
 
