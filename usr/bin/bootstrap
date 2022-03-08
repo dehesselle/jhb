@@ -36,6 +36,10 @@ done
 
 SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
+if [ "$CLEAR_TARGET" != "false" ]; then
+  CLEAR_TARGET=true  # use rsync with '--delete'
+fi
+
 ### functions ##################################################################
 
 # Nothing here.
@@ -64,8 +68,14 @@ fi
 if [ "$SELF_DIR" = "$USR_DIR"/bin ]; then
   : # we are already running inside target directory layout
 else
+  if $CLEAR_TARGET; then
+    CLEAR_TARGET=--delete
+  else
+    CLEAR_TARGET=""
+  fi
+
   # sync repository into target structure, remove everything git-related
-  rsync -a --delete "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
+  rsync -a $CLEAR_TARGET "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
   find "$VER_DIR" -type f -name ".gitignore" -delete
   rm -rf "$VER_DIR"/.git
   rm "$VER_DIR"/.gitmodules
