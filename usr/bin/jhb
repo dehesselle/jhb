@@ -61,7 +61,13 @@ case "$1" in
     echo_d "doing nothing"
     ;;
   *)
-    sys_check_versions
+    if  sys_check_wrkdir &&
+        sys_check_sdkroot &&
+        sys_check_usr_local; then
+      sys_check_versions
+    else
+      exit 1    # cannot continue
+    fi
     "$USR_DIR"/bin/jhbuild "$@"
     ;;
 esac
