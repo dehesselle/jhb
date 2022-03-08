@@ -25,11 +25,13 @@ JHBUILD_REQUIREMENTS="\
   ninja==1.10.2.2\
 "
 
-# JHBuild build system 3.38.0+ (a896cbf404461cab979fa3cd1c83ddf158efe83b)
-# from master branch because of specific patch
+# JHBuild build system >3.38.0 (current master as of 08.03.2022)
+# The last stable release (3.38.0) is missing a critical fix (commit
+# a896cbf404461cab979fa3cd1c83ddf158efe83b) so we have to stay on master branch
+# for the time being.
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://wiki.gnome.org/Projects/Jhbuild/Introduction
-JHBUILD_VER=a896cbf
+JHBUILD_VER=d1c5316
 JHBUILD_URL=https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2
 
