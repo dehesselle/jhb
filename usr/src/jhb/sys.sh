@@ -52,11 +52,11 @@ function sys_check_versions
 
 function sys_create_log
 {
-  # Create release.log file.
+  # Create jhb.log file.
 
   mkdir -p "$VAR_DIR"/log
 
-  for var in SYS_MACOS_VER SYS_SDK_VER VERSION WRK_DIR; do
+  for var in SYS_MACOS_VER SYS_SDK_VER VERSION VER_DIR WRK_DIR; do
     echo "$var = $(eval echo \$$var)" >> "$VAR_DIR"/log/jhb.log
   done
 }
