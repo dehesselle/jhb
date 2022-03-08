@@ -1,1 +1,1 @@
-wrk_dir.sh
+ci.sh
