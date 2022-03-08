@@ -51,15 +51,13 @@ echo_i "VER_DIR = $VER_DIR"
 
 #--------------------------------------------------------- perform system checks
 
-if sys_check_wrkdir &&
-   sys_check_sdkroot &&
-   sys_check_usr_local; then
-  :         # all is well
+if  sys_check_wrkdir &&
+    sys_check_sdkroot &&
+    sys_check_usr_local; then
+  sys_check_versions
 else
   exit 1    # cannot continue
 fi
-
-sys_check_versions
 
 #--------------------------------------------------- initialize directory layout
 
