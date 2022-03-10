@@ -51,14 +51,15 @@ if $CI; then   # break in CI, otherwise we get interactive prompt by JHBuild
 fi
 
 case "$1" in
-  install_moduleset)
-    jhbuild_configure "$2"   # e.g. 'jhbuild/myapp.modules'
+  debug)
+    echo_d "doing nothing"
     ;;
   install_jhb)
     curl -L "$JHB_URL" | tar -C "$WRK_DIR" -xJ
     ;;
-  debug)
-    echo_d "doing nothing"
+  configure)
+    jhbuild_configure "$2"   # e.g. 'jhbuild/myapp.modules'
+    ccache_configure
     ;;
   *)
     if  sys_check_wrkdir &&
