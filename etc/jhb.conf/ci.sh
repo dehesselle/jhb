@@ -26,6 +26,10 @@ else
   else
     CI_GITHUB=false
     CI_GITLAB=true
+
+    # Since GitLab uses colors in their CI there's no need to disable ours.
+    # shellcheck disable=SC2034 # this is a bash_d setting
+    ANSI_TERM_ONLY=false   # use ANSI control characters even if not in terminal
   fi
 fi
 
