@@ -12,14 +12,21 @@
 
 ### includes ###################################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for CONFIG in $(\
+# source config files other than jhb.conf.sh if present
+if [ -f "$(dirname "${BASH_SOURCE[0]}")"/jhb-custom.conf.sh ]; then
+  # shellcheck disable=SC1091 # file is optional
+  source "$(dirname "${BASH_SOURCE[0]}")"/jhb-custom.conf.sh
+fi
+
+# source items from jhb.conf directory
+for CONFIG_ITEM in $(\
     "$(dirname "${BASH_SOURCE[0]}")"/../usr/bin/run-parts list \
         "$(dirname "${BASH_SOURCE[0]}")"/jhb.conf/'*.sh' \
     ); do
-  source "$CONFIG"
+  # shellcheck disable=SC1090 # can't point to a single source here
+  source "$CONFIG_ITEM"
 done
-unset CONFIG
+unset CONFIG_ITEM
 
 ### variables ##################################################################
 
