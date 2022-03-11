@@ -28,7 +28,7 @@ bash_d_include error
 
 #--------------------------------------------------- source additional functions
 
-# shellcheck source=../../usr/src/jhb/jhbuild.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/ccache.sh
 source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/jhbuild.sh
 source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/sys.sh
 
