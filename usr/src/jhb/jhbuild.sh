@@ -83,7 +83,7 @@ function jhbuild_set_python_interpreter
     if [[ $file_type = *"Python script"* ]]; then
       sed -i "" "1 s|.*|#!$USR_DIR/bin/python$JHBUILD_PYTHON_VER|" "$file"
     fi
-  done < <(find "$USR_DIR"/bin/ -type f -maxdepth 1 -print0)
+  done < <(find "$USR_DIR"/bin/ -maxdepth 1 -type f -print0)
 }
 
 function jhbuild_install
