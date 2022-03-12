@@ -22,7 +22,7 @@ export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 # https://github.com/ccache/ccache
 # https://github.com/dehesselle/ccache_macos
 # TODO: arm64 support, see below
-CCACHE_VER=4.5.1r1
+CCACHE_VER=4.6r1
 CCACHE_URL=https://github.com/dehesselle/ccache_macos/releases/download/\
 v$CCACHE_VER/ccache_v$CCACHE_VER.tar.xz
 
