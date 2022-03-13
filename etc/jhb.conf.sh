@@ -12,7 +12,7 @@
 
 ### includes ###################################################################
 
-# source config files other than jhb.conf.sh if present
+# source a custom configuration file if present
 if [ -f "$(dirname "${BASH_SOURCE[0]}")"/jhb-custom.conf.sh ]; then
   # shellcheck disable=SC1091 # file is optional
   source "$(dirname "${BASH_SOURCE[0]}")"/jhb-custom.conf.sh
