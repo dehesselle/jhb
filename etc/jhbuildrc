@@ -590,8 +590,8 @@ else:
 if not _ran_recursively and _gtk_osx_prompt_prefix:
     os.environ["JHBUILD_PROMPT"] = "[" + _gtk_osx_prompt_prefix + "] "
 
-module_extra_env["pygtk"] = {'PYTHON':os.path.join(prefix, 'bin', 'python2')}
-module_extra_env["pygobject2"] = {'PYTHON':os.path.join(prefix, 'bin', 'python2')}
+os.environ["PYTHON"] = os.path.join(prefix, 'bin', 'python3')
+module_extra_env['pkg-config'] = {'PYTHON':sys.executable}
 module_extra_env["spidermonkey"] = {'AUTOCONF':'autoconf'}
 # Unset this so we don't mess with the check for not starting
 # recursively.

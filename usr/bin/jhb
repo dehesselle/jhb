@@ -34,8 +34,6 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/sys.sh
 
 ### variables ##################################################################
 
-export PYTHON=$BIN_DIR/python3   # required for libxml2
-
 # https://github.com/dehesselle/jhb
 JHB_URL=https://github.com/dehesselle/jhb/releases/download/\
 v$VERSION/jhb_v$VERSION.tar.xz
