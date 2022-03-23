@@ -20,11 +20,10 @@ export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
-# https://github.com/dehesselle/ccache_macos
-# TODO: arm64 support, see below
-CCACHE_VER=4.6r1
-CCACHE_URL=https://github.com/dehesselle/ccache_macos/releases/download/\
-v$CCACHE_VER/ccache_v$CCACHE_VER.tar.xz
+# https://gitlab.com/dehesselle/ccache_macos
+CCACHE_VER=4.6r2
+CCACHE_URL=https://gitlab.com/api/v4/projects/29039216/packages/generic/\
+ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz
 
 ### functions ##################################################################
 
@@ -42,13 +41,7 @@ EOF
 
 function ccache_install
 {
-  if [ "$(uname -m)" = "arm64" ]; then
-    # TODO: arm64 support, see above
-    echo_w "ccache for arm64 not implemented yet"
-    return 0
-  fi
-
-  curl -L $CCACHE_URL | tar -C "$USR_DIR"/bin --exclude="ccache.sha256" -xJ
+  curl -L "$CCACHE_URL" | tar -C "$USR_DIR"/bin --exclude="ccache.sha256" -xJ
 
   for compiler in clang clang++ gcc g++; do
     ln -sf ccache "$USR_DIR"/bin/$compiler
