@@ -132,7 +132,7 @@ jobs:
         id: jhb
         run: |
           source etc/jhb.conf.sh
-          find $SRC_DIR -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name jhb ! -name jhbuild* -exec rm {} \;
+          find $SRC_DIR -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name jhb ! -name jhbuild* -exec rm -rf {} \;
           rm -rf $VAR_DIR/build/*
           rm -rf $VAR_DIR/cache/pip/*
           rm -rf $VAR_DIR/cache/pycache/*
