@@ -33,7 +33,7 @@ jobs:
       #------------------------------------------------- prepare the environemnt
 
       - name: checkout jhb repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
 
@@ -46,7 +46,7 @@ jobs:
       # Create a new cache, building ontop the most recent old one.
       - name: setup cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-jhb-${{ steps.cache_id.outputs.time }}
@@ -92,7 +92,7 @@ jobs:
         if: env.SDK_DOWNLOAD_URL != null
         env:
           SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: dehesselle/sdkchecksum
           path: sdkchecksum
@@ -131,17 +131,17 @@ jobs:
       - name: create archive
         id: jhb
         run: |
-          source etc/jhb.conf/version.sh
-          find $WRK_DIR/jhb-$VERSION/usr/src -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name jhb ! -name jhbuild* -exec rm {} \;
-          rm -rf $WRK_DIR/jhb-$VERSION/var/build/*
-          rm -rf $WRK_DIR/jhb-$VERSION/var/cache/pip/*
-          rm -rf $WRK_DIR/jhb-$VERSION/var/cache/pycache/*
-          rm -rf $WRK_DIR/jhb-$VERSION/tmp/*
-          tar -C $WRK_DIR -cp jhb-$VERSION | XZ_OPT=-T0 $WRK_DIR/jhb-$VERSION/bin/xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz
+          source etc/jhb.conf.sh
+          find $SRC_DIR -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name jhb ! -name jhbuild* -exec rm {} \;
+          rm -rf $VAR_DIR/build/*
+          rm -rf $VAR_DIR/cache/pip/*
+          rm -rf $VAR_DIR/cache/pycache/*
+          rm -rf $TMP_DIR/*
+          tar -C $WRK_DIR -cp $(basename $VER_DIR) | XZ_OPT=-T0 $BIN_DIR/xz > $GITHUB_WORKSPACE/$JHB_ARCHIVE
           cd $GITHUB_WORKSPACE
-          shasum -a 256 jhb_v$VERSION.tar.xz > $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
-          cat $GITHUB_WORKSPACE/jhb_v$VERSION.tar.xz.sha256
-          echo "::set-output name=version::$VERSION"
+          shasum -a 256 $JHB_ARCHIVE > $GITHUB_WORKSPACE/$JHB_ARCHIVE.sha256
+          cat $GITHUB_WORKSPACE/$JHB_ARCHIVE.sha256
+          echo "::set-output name=JHB_ARCHIVE::$JHB_ARCHIVE"
 
       #-------------------------------------------------------- upload artifacts
 
@@ -150,13 +150,13 @@ jobs:
         run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
 
       - name: upload archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jhb_archive
-          path: jhb_v${{ steps.jhb.outputs.version }}.tar.xz
+          path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}
 
       - name: upload archive checksum
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: jhb_archive.sha256
-          path: jhb_v${{ steps.jhb.outputs.version }}.tar.xz.sha256
+          name: jhb_archive_sha256
+          path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}.sha256

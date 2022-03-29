@@ -21,7 +21,7 @@ jobs:
     steps:
 
       - name: checkout jhb repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
 
@@ -73,25 +73,25 @@ jobs:
     #--------------------------------------------------- prepare the environment
 
       - name: checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
 
       - name: download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jhb_archive
 
       - name: download artifact checksum
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: jhb_archive.sha256
+          name: jhb_archive_sha256
 
-      - name: get jhb version
+      - name: get jhb info
         id: jhb
         run: |
-          echo "::set-output name=tag::${GITHUB_REF##*/}"
-          echo "::set-output name=version::${GITHUB_REF##*v}"
+          source etc/jhb.conf.sh
+          echo "::set-output name=JHB_ARCHIVE::$JHB_ARCHIVE"
 
     #------------------------------------------------------------ create release
 
@@ -112,8 +112,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: jhb_${{ steps.jhb.outputs.tag }}.tar.xz
-          asset_name: jhb_${{ steps.jhb.outputs.tag }}.tar.xz
+          asset_path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}
+          asset_name: ${{ steps.jhb.outputs.JHB_ARCHIVE }}
           asset_content_type: application/octet-stream
 
       - name: upload toolset checksum to release
@@ -122,6 +122,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: jhb_${{ steps.jhb.outputs.tag }}.tar.xz.sha256
-          asset_name: jhb_${{ steps.jhb.outputs.tag }}.tar.xz.sha256
+          asset_path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}.sha256
+          asset_name: ${{ steps.jhb.outputs.JHB_ARCHIVE }}.sha256
           asset_content_type: text/plain

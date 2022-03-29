@@ -34,9 +34,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/sys.sh
 
 ### variables ##################################################################
 
-# https://github.com/dehesselle/jhb
-JHB_URL=https://github.com/dehesselle/jhb/releases/download/\
-v$VERSION/jhb_v$VERSION.tar.xz
+# Nothing here.
 
 ### functions ##################################################################
 
