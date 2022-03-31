@@ -73,8 +73,11 @@ python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 function jhbuild_set_python_interpreter
 {
   # Symlink binaries to USR_DIR/bin.
-  ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
-  ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
+  if command -v gln 1>/dev/null; then
+    local gnu=g   # necessary for union mount
+  fi
+  ${gnu}ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
+  ${gnu}ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
 
   # Set interpreter to the one in USR_DIR/bin.
   while IFS= read -r -d '' file; do
@@ -201,7 +204,10 @@ function jhbuild_configure
 
   } > "$JHBUILDRC-$suffix"
 
-  ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
+  if command -v gln 1>/dev/null; then
+    local gnu=g   # necessary for union mount
+  fi
+  ${gnu}ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
 
   # Update the paths to Python.
   jhbuild_set_python_interpreter
