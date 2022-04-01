@@ -31,4 +31,17 @@
     </branch>
   </autotools>
 
+  <!-- GNU Tar https://www.gnu.org/software/tar/ -->
+  <autotools
+    id="tar"
+    autogen-sh="configure"
+    autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
+    <branch
+      module="tar/tar-1.34.tar.xz"
+      version="1.34"
+      hash="sha256:63bebd26879c5e1eea4352f0d03c991f966aeb3ddeb3c7445c902568d5411d28"
+      repo="gnu">
+    </branch>
+  </autotools>
+
 </moduleset>

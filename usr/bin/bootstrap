@@ -93,4 +93,4 @@ jhbuild bootstrap-gtk-osx
 
 # GNU versions of various utilites make life signifanctly easier on macOS.
 
-jhbuild build coreutils sed
+jhbuild build coreutils sed tar
