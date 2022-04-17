@@ -36,6 +36,8 @@ done
 
 SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
+ARCHIVE_URL="none"   # suitable download for precompiled binaries
+
 ### functions ##################################################################
 
 # Nothing here.
@@ -69,6 +71,20 @@ else
   find "$VER_DIR" -type f -name ".gitignore" -delete
   rm -rf "$VER_DIR"/.git
   rm "$VER_DIR"/.gitmodules
+fi
+
+#------------------------------------- check if precompiled binaries can be used
+
+# This looks for a download and also check if the path inside the archive
+# matches our VER_DIR.
+ARCHIVE_URL=$(jhb_get_archive_url)
+
+if [ "$ARCHIVE_URL" = "none" ]; then
+  echo_i "building everything from scratch"
+else
+  echo_i "using $URL"
+  curl -L "$URL" | tar -C "$WRK_DIR" -xJ
+  exit $?   # we can quit now, nothing further to do
 fi
 
 #---------------------------------------------------------------- install ccache
