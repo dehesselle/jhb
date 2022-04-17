@@ -36,7 +36,7 @@ done
 
 SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
-ARCHIVE_URL="none"   # suitable download for precompiled binaries
+JHB_URL="none"
 
 ### functions ##################################################################
 
@@ -77,13 +77,13 @@ fi
 
 # This looks for a download and also check if the path inside the archive
 # matches our VER_DIR.
-ARCHIVE_URL=$(jhb_get_archive_url)
+JHB_URL=$(archive_get_url)
 
-if [ "$ARCHIVE_URL" = "none" ]; then
+if [ "$JHB_URL" = "none" ]; then
   echo_i "building everything from scratch"
 else
-  echo_i "using $URL"
-  curl -L "$URL" | tar -C "$WRK_DIR" -xJ
+  echo_i "using $JHB_URL"
+  curl -L "$JHB_URL" | tar -C "$WRK_DIR" -xJ
   exit $?   # we can quit now, nothing further to do
 fi
 

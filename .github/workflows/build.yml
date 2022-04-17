@@ -132,16 +132,10 @@ jobs:
         id: jhb
         run: |
           source etc/jhb.conf.sh
-          find $SRC_DIR -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name jhb ! -name jhbuild* -exec rm -rf {} \;
-          rm -rf $VAR_DIR/build/*
-          rm -rf $VAR_DIR/cache/pip/*
-          rm -rf $VAR_DIR/cache/pycache/*
-          rm -rf $TMP_DIR/*
-          tar -C $WRK_DIR -cp $(basename $VER_DIR) | XZ_OPT=-T0 $BIN_DIR/xz > $GITHUB_WORKSPACE/$JHB_ARCHIVE
-          cd $GITHUB_WORKSPACE
-          shasum -a 256 $JHB_ARCHIVE > $GITHUB_WORKSPACE/$JHB_ARCHIVE.sha256
-          cat $GITHUB_WORKSPACE/$JHB_ARCHIVE.sha256
-          echo "::set-output name=JHB_ARCHIVE::$JHB_ARCHIVE"
+          source usr/src/jhb/archive.sh
+          archive_create
+          cat $ARCHIVE_NAME.sha256
+          echo "::set-output name=archive::$ARCHIVE_NAME"
 
       #-------------------------------------------------------- upload artifacts
 
@@ -153,10 +147,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: jhb_archive
-          path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}
+          path: ${{ steps.jhb.outputs.archive }}
 
       - name: upload archive checksum
         uses: actions/upload-artifact@v3
         with:
           name: jhb_archive_sha256
-          path: ${{ steps.jhb.outputs.JHB_ARCHIVE }}.sha256
+          path: ${{ steps.jhb.outputs.archive }}.sha256
