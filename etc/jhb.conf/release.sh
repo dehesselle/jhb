@@ -13,11 +13,13 @@
 
 ### variables ##################################################################
 
-RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$VER_DIR")_$(uname -m)}.tar.xz
+RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$VER_DIR")_$(uname -m).tar.xz}
 
 RELEASE_URL=$(eval echo "${RELEASE_URL:-${RELEASE_URL_TEMPLATE:-\
 https://github.com/dehesselle/jhb/releases/download/\
 v$VERSION/$RELEASE_ARCHIVE}}")
+
+RELEASE_OVERLAY=overlay
 
 ### functions ##################################################################
 

@@ -34,16 +34,13 @@ done
 
 ### variables ##################################################################
 
-TAR_FILE=$RELEASE_ARCHIVE
-DMG_FILE=$(basename -s .tar.xz "$TAR_FILE").dmg
-
-OVERLAY_NAME=overlay
+# Nothing here.
 
 ### functions ##################################################################
 
 function create_tar
 {
-  local file=$ARTIFACT_DIR/$TAR_FILE
+  local file=$ARTIFACT_DIR/$RELEASE_ARCHIVE
 
   echo_i "creating $file"
 
@@ -56,7 +53,7 @@ function create_tar
 
 function create_dmg
 {
-  local file=$ARTIFACT_DIR/$DMG_FILE
+  local file=$ARTIFACT_DIR/$RELEASE_ARCHIVE
 
   ( # create dmg
     local vol_name
@@ -78,14 +75,14 @@ function create_dmg
 
 function mount_dmg
 {
-  local file=$REP_DIR/$DMG_FILE
+  local file=$REP_DIR/$RELEASE_ARCHIVE
   local mountpoint=$VER_DIR
 
   if [ ! -d "$mountpoint" ]; then
     mkdir -p "$mountpoint"
   fi
 
-  echo_i "mounting dmg may take some time"
+  echo_i "mounting $(basename "$file") may take some time"
   local device
   device=$(hdiutil attach -nomount "$file" | grep "^/dev/disk" |
     grep "Apple_HFS" | awk '{ print $1 }')
@@ -123,14 +120,17 @@ function download_dmg
     mkdir -p "$REP_DIR"
   fi
 
-  curl -o "$REP_DIR/$DMG_FILE" -L -C "$RELEASE_URL"
+  local url
+  url="$(dirname "$RELEASE_URL")/$RELEASE_ARCHIVE"
+
+  curl -o "$REP_DIR/$RELEASE_ARCHIVE" -L -C - "$url"
 }
 
 function install_dmg
 {
   local overlay_size=${1:-1}   # unit GiB, default 1
 
-  local file=$REP_DIR/$DMG_FILE
+  local file=$REP_DIR/$RELEASE_ARCHIVE
 
   # download and mount read-only disk image
   if [ -f "$file" ]; then
@@ -143,7 +143,7 @@ function install_dmg
   # create writable overlay
   local device
   device=$(hdiutil attach -nomount ram://$((overlay_size * 1024 * 2048)) | xargs)
-  newfs_hfs -v "$OVERLAY_NAME" "$device" >/dev/null
+  newfs_hfs -v "$RELEASE_OVERLAY" "$device" >/dev/null
   echo_i "$overlay_size GiB ram attached to $device"
   mount -o nobrowse,rw,union -t hfs "$device" "$VER_DIR"
   echo_i "$device union-mounted at $VER_DIR"
