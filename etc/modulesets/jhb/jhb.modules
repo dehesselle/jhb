@@ -5,19 +5,6 @@
 
   <repository name="gnu" type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
 
-  <!-- GNU sed https://www.gnu.org/software/sed/ -->
-  <autotools
-    id="sed"
-    autogen-sh="configure"
-    autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
-    <branch
-      module="sed/sed-4.8.tar.xz"
-      version="4.8"
-      hash="sha256:f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633"
-      repo="gnu">
-    </branch>
-  </autotools>
-
   <!-- GNU core utilities https://www.gnu.org/software/coreutils/ -->
   <autotools
     id="coreutils"
@@ -27,6 +14,32 @@
       module="coreutils/coreutils-8.32.tar.xz"
       version="8.32"
       hash="sha256:4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa"
+      repo="gnu">
+    </branch>
+  </autotools>
+
+  <!-- GNU Find Utilities https://www.gnu.org/software/findutils/ -->
+  <autotools
+    id="findutils"
+    autogen-sh="configure"
+    autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
+    <branch
+      module="findutils/findutils-4.7.0.tar.xz"
+      version="4.7.0"
+      hash="sha256:c5fefbdf9858f7e4feb86f036e1247a54c79fc2d8e4b7064d5aaa1f47dfa789a"
+      repo="gnu">
+    </branch>
+  </autotools>
+
+  <!-- GNU sed https://www.gnu.org/software/sed/ -->
+  <autotools
+    id="sed"
+    autogen-sh="configure"
+    autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
+    <branch
+      module="sed/sed-4.8.tar.xz"
+      version="4.8"
+      hash="sha256:f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633"
       repo="gnu">
     </branch>
   </autotools>

@@ -4,7 +4,7 @@
 
 ### description ################################################################
 
-# FSH-like directory layout
+# FSH-inspired directory layout
 
 ### shellcheck #################################################################
 
@@ -17,6 +17,8 @@
 
 #   WRK_DIR (/Users/Shared/work)
 #    ┃
+#    ┣━━ REP_DIR (repo)
+#    ┃
 #    ┗━━ VER_DIR (jhb-$VERSION)
 #         ┃
 #         ┣━━ BIN_DIR (bin)
@@ -25,10 +27,10 @@
 #         ┣━━ LIB_DIR (lib)
 #         ┣━━ OPT_DIR (opt)
 #         ┃
+#         ┣━━ TMP_DIR (tmp)
+#         ┃
 #         ┣━━ USR_DIR (usr)
 #         ┃    ┗━━ SRC_DIR (src)
-#         ┃
-#         ┣━━ TMP_DIR (tmp)
 #         ┃
 #         ┗━━ VAR_DIR (var)
 #              ┣━━ BLD_DIR (build)
@@ -40,6 +42,8 @@
 #     VER_DIR_TEMPLATE="\$WRK_DIR/myFoo-\$VERSION"
 
 WRK_DIR=$(eval echo "${WRK_DIR:-${WRK_DIR_TEMPLATE:-/Users/Shared/work}}")
+
+REP_DIR=$(eval echo "${REP_DIR:-${REP_DIR_TEMPLATE:-$WRK_DIR/repo}}")
 
 VER_DIR=$(eval echo "${VER_DIR:-${VER_DIR_TEMPLATE:-$WRK_DIR/jhb-$VERSION}}")
 

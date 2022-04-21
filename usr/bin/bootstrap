@@ -36,11 +36,30 @@ done
 
 SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
-JHB_URL="none"
-
 ### functions ##################################################################
 
-# Nothing here.
+function is_release_usable
+{
+  local partial_download="$TMP_DIR/${FUNCNAME[0]}".tar.xz
+  local rc=1
+
+  # download at least 100 kb of data
+  curl -L "$RELEASE_URL" 2>/dev/null | head -c 100000 > "$partial_download"
+  # if we got 100 kb, it's not a "404 file not found"
+  if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
+    # look inside: dir needs to match our VER_DIR to be usable
+    local dir
+    dir=$(basename "$(tar -tvJf "$partial_download" 2>/dev/null |
+      head -n 1 | awk '{ print $NF }')")
+    if [ "$dir" = "$(basename "$VER_DIR")" ]; then
+      rc=0
+    fi
+  fi
+
+  rm "$partial_download"
+
+  return $rc
+}
 
 ### main #######################################################################
 
@@ -73,18 +92,14 @@ else
   rm "$VER_DIR"/.gitmodules
 fi
 
-#------------------------------------- check if precompiled binaries can be used
+#------------------------------------------- check if binary release can be used
 
-# This looks for a download and also check if the path inside the archive
-# matches our VER_DIR.
-JHB_URL=$(archive_get_url)
-
-if [ "$JHB_URL" = "none" ]; then
-  echo_i "building everything from scratch"
-else
-  echo_i "using $JHB_URL"
-  curl -L "$JHB_URL" | tar -C "$WRK_DIR" -xJ
+if is_release_usable; then
+  echo_i "using $RELEASE_URL"
+  curl -L "$RELEASE_URL" | tar -C "$WRK_DIR" -xJ
   exit $?   # we can quit now, nothing further to do
+else
+  echo_i "building everything from scratch"
 fi
 
 #---------------------------------------------------------------- install ccache
@@ -109,4 +124,4 @@ jhbuild bootstrap-gtk-osx
 
 # GNU versions of various utilites make life signifanctly easier on macOS.
 
-jhbuild build coreutils sed tar
+jhbuild build coreutils findutils sed tar

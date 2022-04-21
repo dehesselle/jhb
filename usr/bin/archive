@@ -1,0 +1,203 @@
+#!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+### description ################################################################
+
+# This is a helper to create release archives and mount them.
+
+### shellcheck #################################################################
+
+# Nothing here.
+
+### dependencies ###############################################################
+
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# bash_d is already available (it's part of jhb configuration)
+
+bash_d_include echo
+bash_d_include error
+
+#--------------------------------------------------- source additional functions
+
+for file in "$(dirname "${BASH_SOURCE[0]}")"/../src/jhb/*.sh; do
+  # shellcheck disable=SC1090 # can't point to a single source here
+  source "$file"
+done
+
+### variables ##################################################################
+
+TAR_FILE=$RELEASE_ARCHIVE
+DMG_FILE=$(basename -s .tar.xz "$TAR_FILE").dmg
+
+OVERLAY_NAME=overlay
+
+### functions ##################################################################
+
+function create_tar
+{
+  local file=$ARTIFACT_DIR/$TAR_FILE
+
+  echo_i "creating $file"
+
+  tar -C "$WRK_DIR" -cp "$(basename "$VER_DIR")" |
+    XZ_OPT=-T0 "$BIN_DIR"/xz > "$file"
+
+  shasum -a 256 "$file" > "$file".sha256
+  cat "$file".sha256
+}
+
+function create_dmg
+{
+  local file=$ARTIFACT_DIR/$DMG_FILE
+
+  ( # create dmg
+    local vol_name
+    vol_name=$(basename "$VER_DIR")
+
+    cd "$WRK_DIR" || exit 1
+    hdiutil create -fs HFS+ -ov -format UDBZ \
+      -srcfolder "$vol_name" \
+      -volname "$vol_name" \
+      "$file"
+  )
+
+  ( # create and print checksum
+    cd "$(dirname "$file")" || exit 1
+    shasum -a 256 "$(basename "$file")" > "$file".sha256
+    cat "$file".sha256
+  )
+}
+
+function mount_dmg
+{
+  local file=$REP_DIR/$DMG_FILE
+  local mountpoint=$VER_DIR
+
+  if [ ! -d "$mountpoint" ]; then
+    mkdir -p "$mountpoint"
+  fi
+
+  echo_i "mounting dmg may take some time"
+  local device
+  device=$(hdiutil attach -nomount "$file" | grep "^/dev/disk" |
+    grep "Apple_HFS" | awk '{ print $1 }')
+  echo_i "$file attached to $device"
+  mount -o nobrowse,noowners,noquarantine,ro -t hfs "$device" "$mountpoint"
+  echo_i "$device mounted to $mountpoint"
+}
+
+function unmount_dmg
+{
+  local mountpoint=$VER_DIR
+
+  while : ; do   # unmount everything (in reverse order)
+    local disk
+    disk=$(mount | grep "$mountpoint" | tail -n1 | awk '{ print $1 }')
+    disk=${disk%s[0-9]}  # cut off slice specification
+
+    if [ ${#disk} -eq 0 ]; then
+      break   # nothing to do here
+    else
+      # We loop over the 'eject' since it occasionally timeouts.
+      while ! diskutil eject "$disk" > /dev/null; do
+        echo_w "retrying to eject $disk in 5 seconds"
+        sleep 5
+      done
+
+      echo_i "ejected $disk"
+    fi
+  done
+}
+
+function download_dmg
+{
+  if [ ! -d "$REP_DIR" ]; then
+    mkdir -p "$REP_DIR"
+  fi
+
+  curl -o "$REP_DIR/$DMG_FILE" -L -C "$RELEASE_URL"
+}
+
+function install_dmg
+{
+  local overlay_size=${1:-1}   # unit GiB, default 1
+
+  local file=$REP_DIR/$DMG_FILE
+
+  # download and mount read-only disk image
+  if [ -f "$file" ]; then
+    echo_i "using $file"
+  else
+    download_dmg
+  fi
+  mount_dmg
+
+  # create writable overlay
+  local device
+  device=$(hdiutil attach -nomount ram://$((overlay_size * 1024 * 2048)) | xargs)
+  newfs_hfs -v "$OVERLAY_NAME" "$device" >/dev/null
+  echo_i "$overlay_size GiB ram attached to $device"
+  mount -o nobrowse,rw,union -t hfs "$device" "$VER_DIR"
+  echo_i "$device union-mounted at $VER_DIR"
+
+  # Sadly, there are some limitations involved with union-mounting:
+  #   - Files are not visible to macOS' versions of 'ls' or 'find'.
+  #     (The GNU versions do work though.)
+  #   - You cannot write in a location without having written to its
+  #     parent location first. That's why we need to pre-create all directories
+  #     below.
+  #
+  # (Shadow-mounting a dmg is not a feasible alternative due to its
+  # bad write-performance.)
+
+  # Create and run a script for mass-creating directories.
+  gfind "$VER_DIR" -mindepth 1 -type d \
+    ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \
+    -exec echo "mkdir {}" \; > "$VER_DIR"/create_dirs.sh
+  chmod 755 "$VER_DIR"/create_dirs.sh
+  "$VER_DIR"/create_dirs.sh
+  rm "$VER_DIR"/create_dirs.sh
+}
+
+function uninstall_dmg
+{
+  unmount_dmg
+}
+
+function main
+{
+  local command=$1
+  local option=$2
+
+  case "$command" in
+    create_dmg)
+      create_dmg
+      ;;
+    create_tar)
+      create_tar
+      ;;
+    install_dmg)
+      install_dmg "$option"   # option: overlay size in GiB, defaul is 1
+      ;;
+    uninstall_dmg)
+      uninstall_dmg
+      ;;
+    *)
+      echo_e "usage: $0 {create_dmg|create_tar|install_dmg|uninstall_dmg}"
+      ;;
+  esac
+}
+
+### main #######################################################################
+
+error_trace_enable
+
+main "$@"
