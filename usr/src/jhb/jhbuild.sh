@@ -108,7 +108,7 @@ function jhbuild_install
 
     for pem in "$TMP_DIR"/pem-*; do
       if ! openssl x509 -checkend 0 -noout -in "$pem"; then
-        echo_i "removing $pem: $(openssl x509 -enddate -noout -in "$pem")"
+        echo_d "removing $pem: $(openssl x509 -enddate -noout -in "$pem")"
         cat "$pem"
         rm "$pem"
       fi
