@@ -159,6 +159,7 @@ function install_dmg
   # bad write-performance.)
 
   # Create and run a script for mass-creating directories.
+  echo_i "setting up directories in overlay"
   gfind "$VER_DIR" -mindepth 1 -type d \
     ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \
     -exec echo "mkdir {}" \; > "$VER_DIR"/create_dirs.sh
