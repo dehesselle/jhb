@@ -154,6 +154,10 @@ function jhbuild_configure
     rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$suffix/"
   fi
 
+  local target
+  target=$(/usr/libexec/PlistBuddy -c "Print \
+    :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" "$SDKROOT"/SDKSettings.plist)
+
   # create custom jhbuildrc configuration
   {
     echo "# -*- mode: python -*-"
@@ -170,8 +174,8 @@ function jhbuild_configure
     echo "tarballdir = '$PKG_DIR'"
     echo "top_builddir = '$VAR_DIR/jhbuild'"
 
-    # set macOS SDK
-    echo "setup_sdk(sdkdir=\"$SDKROOT\")"
+    # setup macOS SDK
+    echo "setup_sdk(target=\"$target\")"
 
     # set release build
     echo "setup_release()"
