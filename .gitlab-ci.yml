@@ -1,0 +1,73 @@
+# SPDX-FileCopyrightText: 2022 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+variables:
+  GIT_DEPTH: 1
+  GIT_SUBMODULE_STRATEGY: recursive
+  WRK_DIR: /Users/Shared/work
+  CCACHE_DIR: /Users/Shared/work/ccache
+
+stages:
+  - prepare
+  - build
+
+.config:arm64:
+  variables:
+    SDKROOT: /opt/sdks/MacOSX11.3.sdk
+  tags:
+    - bigsurarm
+
+.config:x86_64:
+  variables:
+    SDKROOT: /opt/sdks/MacOSX10.11.4.sdk
+  tags:
+    - catalina
+
+.jhb:
+  stage: build
+  script:
+    - usr/bin/bootstrap
+    - usr/bin/archive create_tar
+  after_script:
+    # For persistent runners: cleanup afterwards.
+    - source etc/jhb.conf.sh
+    - rm -rf $VER_DIR
+  artifacts:
+    paths:
+      - jhb-*.tar.xz
+
+jhb:arm64:
+  extends:
+    - .config:arm64
+    - .jhb
+
+jhb:x86_64:
+  extends:
+    - .config:x86_64
+    - .jhb
+
+.verify_sdk:
+  stage: prepare
+  script:
+    - |
+      git clone https://github.com/dehesselle/sdkchecksum
+      shasum -a 256 sdkchecksum/$(basename $SDKROOT).sha256
+      cd $(dirname $SDKROOT)
+      if shasum -s -c $CI_PROJECT_DIR/sdkchecksum/$(basename $SDKROOT).sha256; then
+        echo "ok - SDK verified"
+        exit 0
+      else
+        echo "error - SDK verification failed"
+        exit 1
+      fi
+
+verify_sdk:x86_64:
+  extends:
+    - .config:x86_64
+    - .verify_sdk
+
+verify_sdk:arm64:
+  extends:
+    - .config:arm64
+    - .verify_sdk
