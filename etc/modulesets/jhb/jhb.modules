@@ -11,9 +11,9 @@
     autogen-sh="configure"
     autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
     <branch
-      module="coreutils/coreutils-8.32.tar.xz"
-      version="8.32"
-      hash="sha256:4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa"
+      module="coreutils/coreutils-9.1.tar.xz"
+      version="9.1"
+      hash="sha256:61a1f410d78ba7e7f37a5a4f50e6d1320aca33375484a3255eddf17a38580423"
       repo="gnu">
     </branch>
   </autotools>
