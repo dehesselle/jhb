@@ -21,7 +21,7 @@ export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 # https://ccache.dev
 # https://github.com/ccache/ccache
 # https://gitlab.com/dehesselle/ccache_macos
-CCACHE_VER=4.6r2
+CCACHE_VER=4.6.1r1
 CCACHE_URL=https://gitlab.com/api/v4/projects/29039216/packages/generic/\
 ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz
 
