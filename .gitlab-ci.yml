@@ -11,6 +11,7 @@ variables:
 stages:
   - prepare
   - build
+  - release
 
 .config:arm64:
   variables:
@@ -71,3 +72,12 @@ verify_sdk:arm64:
   extends:
     - .config:arm64
     - .verify_sdk
+
+release:
+  stage: release
+  only:
+    - tags
+  image: python:3-alpine
+  script:
+    - pip3 install gitlab-release==5.6
+    - gitlab-release jhb-*.tar.xz
