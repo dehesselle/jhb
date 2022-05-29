@@ -23,7 +23,7 @@ stages:
   variables:
     SDKROOT: /opt/sdks/MacOSX10.11.4.sdk
   tags:
-    - catalina
+    - bigsur
 
 .jhb:
   stage: build
