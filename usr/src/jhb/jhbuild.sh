@@ -206,6 +206,12 @@ function jhbuild_configure
       echo "progress_bar = True"
     fi
 
+    # add moduleset-specific settings if exist
+    local moduleset_rc=$ETC_DIR/modulesets/$suffix/jhbuildrc
+    if [ -f "$moduleset_rc" ]; then
+      cat "$moduleset_rc"
+    fi
+
   } > "$JHBUILDRC-$suffix"
 
   if command -v gln 1>/dev/null; then
