@@ -20,7 +20,7 @@ export JHBUILDRC=$ETC_DIR/jhbuildrc
 export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
 
 JHBUILD_REQUIREMENTS="\
-  certifi==2022.5.18.1\
+  certifi==2022.6.15\
   meson==0.59.2\
   ninja==1.10.2.3\
 "
