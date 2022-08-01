@@ -13,6 +13,8 @@ stages:
   - build
   - release
 
+#----------------------------------------------------------------- configuration
+
 .config:arm64:
   variables:
     SDKROOT: /opt/sdks/MacOSX11.3.sdk
@@ -25,7 +27,26 @@ stages:
   tags:
     - bigsur
 
-.jhb:
+#----------------------------------------------------------------------- prepare
+
+include:
+  - remote: https://raw.githubusercontent.com/dehesselle/sdkchecksum/master/.gitlab-ci/verify_sdk-template.yml
+
+verify_sdk:x86_64:
+  stage: prepare
+  extends:
+    - .config:x86_64
+    - .verify_sdk
+
+verify_sdk:arm64:
+  stage: prepare
+  extends:
+    - .config:arm64
+    - .verify_sdk
+
+#------------------------------------------------------------------------- build
+
+.build:
   stage: build
   script:
     - usr/bin/bootstrap
@@ -45,30 +66,21 @@ stages:
     paths:
       - jhb-*.tar.xz
 
-jhb:arm64:
+build:arm64:
+  needs:
+    - verify_sdk:arm64
   extends:
     - .config:arm64
-    - .jhb
+    - .build
 
-jhb:x86_64:
+build:x86_64:
+  needs:
+    - verify_sdk:x86_64
   extends:
     - .config:x86_64
-    - .jhb
+    - .build
 
-include:
-  - remote: https://raw.githubusercontent.com/dehesselle/sdkchecksum/master/.gitlab-ci/verify_sdk-template.yml
-
-verify_sdk:x86_64:
-  stage: prepare
-  extends:
-    - .config:x86_64
-    - .verify_sdk
-
-verify_sdk:arm64:
-  stage: prepare
-  extends:
-    - .config:arm64
-    - .verify_sdk
+#----------------------------------------------------------------------- release
 
 release:
   stage: release
