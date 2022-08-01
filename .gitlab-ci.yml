@@ -55,27 +55,17 @@ jhb:x86_64:
     - .config:x86_64
     - .jhb
 
-.verify_sdk:
-  stage: prepare
-  script:
-    - |
-      git clone https://github.com/dehesselle/sdkchecksum
-      shasum -a 256 sdkchecksum/$(basename $SDKROOT).sha256
-      cd $(dirname $SDKROOT)
-      if shasum -s -c $CI_PROJECT_DIR/sdkchecksum/$(basename $SDKROOT).sha256; then
-        echo "ok - SDK verified"
-        exit 0
-      else
-        echo "error - SDK verification failed"
-        exit 1
-      fi
+include:
+  - remote: https://raw.githubusercontent.com/dehesselle/sdkchecksum/master/.gitlab-ci/verify_sdk-template.yml
 
 verify_sdk:x86_64:
+  stage: prepare
   extends:
     - .config:x86_64
     - .verify_sdk
 
 verify_sdk:arm64:
+  stage: prepare
   extends:
     - .config:arm64
     - .verify_sdk
