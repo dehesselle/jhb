@@ -128,6 +128,6 @@ jhbuild bootstrap-gtk-osx
 
 #--------------------------------------------------------- install GNU utilities
 
-# GNU versions of various utilites make life signifanctly easier on macOS.
+# GNU versions of various utilites make life significantly easier on macOS.
 
 jhbuild build coreutils findutils sed tar
