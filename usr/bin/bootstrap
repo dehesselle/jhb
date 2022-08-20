@@ -16,7 +16,10 @@
 
 #------------------------------------------------------ source jhb configuration
 
-source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
+# You can install a custom configuration file by passing it as first
+# argument. It has to be named '*.conf.sh'.
+
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh "$1"
 
 #------------------------------------------- source common functions from bash_d
 
