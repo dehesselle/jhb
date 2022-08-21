@@ -23,11 +23,11 @@ Make sure the following prerequisites are met:
 
 - There are __version recommendations__ based on known working setups, targeting the minimum supported OS versions (see [`recommended.sh`](etc/jhb.conf/recommended.sh)).
   - For `x86_64` architecture:
-    - macOS Big Sur 11.6.7
+    - macOS Big Sur 11.6.8
     - Xcode 13.x
     - OS X El Capitan 10.11 SDK (from Xcode 7.3.1)
   - For `arm64` architecture:
-    - macOS Big Sur 11.6.7
+    - macOS Big Sur 11.6.8
     - Xcode 13.x
     - macOS Big Sur 11.3 SDK (from Xcode 13.0)
 
