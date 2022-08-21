@@ -104,12 +104,13 @@ function jhbuild_install
 
     # BSD's csplit does not support '{*}' (it's a GNU extension)
     csplit -n 3 -k -f "$TMP_DIR"/pem- "$pem_bundle" \
-     '/END CERTIFICATE/+1' '{999}' >/dev/null || true
+     '/END CERTIFICATE/+1' '{999}' >/dev/null 2>&1 || true
 
     for pem in "$TMP_DIR"/pem-*; do
-      if ! openssl x509 -checkend 0 -noout -in "$pem"; then
+      if   [ "$(stat -f%z "$pem")" -eq 0 ]; then
+        rm "$pem"  # the csplit command above created one superfluous empty file
+      elif ! openssl x509 -checkend 0 -noout -in "$pem"; then
         echo_d "removing $pem: $(openssl x509 -enddate -noout -in "$pem")"
-        cat "$pem"
         rm "$pem"
       fi
     done
