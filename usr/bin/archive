@@ -120,10 +120,19 @@ function download_dmg
     mkdir -p "$REP_DIR"
   fi
 
-  local url
-  url="$(dirname "$RELEASE_URL")/$RELEASE_ARCHIVE"
+  for url in "${RELEASE_URLS[@]}"; do
+    local partial_download=$REP_DIR/${FUNCNAME[0]}  # TMP_DIR not available yet
+    # download (at least) 100 kb of data
+    curl -L "$url" 2>/dev/null | head -c 100000 > "$partial_download"
+    # if we got 100 kb, it's not a "404 file not found"
+    if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
+      echo_i "downloading $url"
+      curl -o "$REP_DIR/$RELEASE_ARCHIVE" -L -C - "$url"
+      break
+    fi
+  done
 
-  curl -o "$REP_DIR/$RELEASE_ARCHIVE" -L -C - "$url"
+  rm "$partial_download"
 }
 
 function install_dmg

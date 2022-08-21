@@ -99,17 +99,15 @@ fi
 
 #------------------------------------------- check if binary release can be used
 
-if   is_release_usable "$RELEASE_URL"; then
-  echo_i "using $RELEASE_URL"
-  curl -L "$RELEASE_URL" | tar -C "$WRK_DIR" -xJ
-  exit $?   # we can quit now, nothing further to do
-elif is_release_usable "$RELEASE_URL_ALTERNATE"; then
-  echo_i "using $RELEASE_URL_ALTERNATE"
-  curl -L "$RELEASE_URL_ALTERNATE" | tar -C "$WRK_DIR" -xJ
-  exit $?   # we can quit now, nothing further to do
-else
-  echo_i "building everything from scratch"
-fi
+for URL in "${RELEASE_URLS[@]}"; do
+  if is_release_usable "$URL"; then
+    echo_i "using $URL"
+    curl -L "$URL" | tar -C "$WRK_DIR" -xJ
+    exit $?   # we can quit here and now, nothing further to do
+  fi
+done
+
+echo_i "building everything from scratch"
 
 #---------------------------------------------------------------- install ccache
 
