@@ -25,7 +25,7 @@ build:
   rules:
     - if: $RUNNER == "bigsur"
       variables:
-        SDKROOT: /opt/sdks/MacOSX10.11.4.sdk
+        SDKROOT: /opt/sdks/MacOSX10.13.4.sdk
     - if: $RUNNER == "macosarm"
       variables:
         SDKROOT: /opt/sdks/MacOSX11.3.sdk
