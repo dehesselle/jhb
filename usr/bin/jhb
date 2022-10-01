@@ -23,14 +23,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 # bash_d is already available (it's part of etc/jhb.conf)
 
-bash_d_include echo
 bash_d_include error
-
-#--------------------------------------------------- source additional functions
-
-source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/ccache.sh
-source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/jhbuild.sh
-source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/jhb/sys.sh
 
 ### variables ##################################################################
 
@@ -55,10 +48,13 @@ case "$1" in
     ccache_configure
     ;;
   *)
-    if  sys_check_wrkdir &&
-        sys_check_sdkroot &&
-        sys_check_usr_local; then
-      sys_check_versions
+    if  sys_wrkdir_is_usable &&
+        sdkroot_exists &&
+        sys_usrlocal_is_clean; then
+
+      # these checks may issue warnings but have have no consequences otherwise
+      sys_macos_is_recommended || true
+      sys_sdk_is_recommended || true
     else
       exit 1    # cannot continue
     fi

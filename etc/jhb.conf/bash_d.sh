@@ -15,6 +15,8 @@
 # shellcheck source=../../usr/src/bash_d/bash_d.sh
 source "$(dirname "${BASH_SOURCE[0]}")"/../../usr/src/bash_d/bash_d.sh
 
+bash_d_include echo
+
 ### variables ##################################################################
 
 # Nothing here.

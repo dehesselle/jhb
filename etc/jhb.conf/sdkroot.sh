@@ -4,10 +4,9 @@
 
 ### description ################################################################
 
-# If SDKROOT is set, use that. If it is not set, use whatever SDK is available
-# available. This might still end up being invalid if neither Xcode nor CLT
-# have been installed and it will be sys_check_sdkroot's job to complain and
-# bail.
+# If SDKROOT is set, use that. If it is not set, use whatever SDK is available.
+# This might still end up being invalid if neither Xcode nor CLT have been
+# installed, and that's what sdkroot_exists is for.
 
 ### shellcheck #################################################################
 
@@ -27,7 +26,15 @@ export SDKROOT
 
 ### functions ##################################################################
 
-# Nothing here.
+function sdkroot_exists
+{
+  if [ -d "$SDKROOT" ]; then
+    return 0  # SDK found
+  else
+    echo_e "SDK not found: $SDKROOT"
+    return 1
+  fi
+}
 
 ### main #######################################################################
 

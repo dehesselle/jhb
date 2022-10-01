@@ -22,15 +22,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 # bash_d is already available (it's part of jhb configuration)
 
-bash_d_include echo
 bash_d_include error
-
-#--------------------------------------------------- source additional functions
-
-for file in "$(dirname "${BASH_SOURCE[0]}")"/../src/jhb/*.sh; do
-  # shellcheck disable=SC1090 # can't point to a single source here
-  source "$file"
-done
 
 ### variables ##################################################################
 
