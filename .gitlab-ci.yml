@@ -21,9 +21,9 @@ build:
   stage: build
   parallel:
     matrix:
-      - RUNNER: [ "bigsur", "macosarm" ]
+      - RUNNER: [ "macosintel", "macosarm" ]
   rules:
-    - if: $RUNNER == "bigsur"
+    - if: $RUNNER == "macosintel"
       variables:
         SDKROOT: /opt/sdks/MacOSX10.13.4.sdk
     - if: $RUNNER == "macosarm"
