@@ -127,3 +127,7 @@ jhbuild bootstrap-gtk-osx
 # GNU versions of various utilites make life significantly easier on macOS.
 
 jhbuild build coreutils findutils sed tar
+
+#-------------------------------------------------------------- install dmgbuild
+
+dmgbuild_install
