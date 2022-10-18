@@ -1,6 +1,10 @@
 # bootstrapped JHBuild for macOS
 
-This is my version of setting up JHBuild on macOS. It is inspired by and uses components of [gtk-osx](https://gitlab.gnome.org/GNOME/gtk-osx), but deviates from it in a few significant ways:
+![jhb_icon](./share/jhb/logo.png)
+![pipeline status](https://gitlab.com/dehesselle/jhb/badges/master/pipeline.svg)
+![Latest Release](https://gitlab.com/dehesselle/jhb/-/badges/release.svg)
+
+This project (on [GitLab](https://gitlab.com/dehesselle/jhb), [GitHub](https://github.com/dehesselle/jhb)) is my way of setting up JHBuild on macOS in order to build GTK based apps. It is inspired by and uses components of [gtk-osx](https://gitlab.gnome.org/GNOME/gtk-osx), but deviates from it in a few significant ways:
 
 - It uses a [FSH](https://refspecs.linuxfoundation.org/FHS_3.0/fhs-3.0.html)-inspired directory layout.
 
@@ -62,6 +66,13 @@ This is not theoretical work but the result of refactoring and outsourcing parts
 
 - [Inkscape](https://gitlab.com/inkscape/inkscape): see [`110-bootstrap_jhb.sh`](https://gitlab.com/inkscape/inkscape/-/blob/master/packaging/macos/110-bootstrap_jhb.sh), [`120-build_gtk3.sh`](https://gitlab.com/inkscape/inkscape/-/blob/master/packaging/macos/120-build_gtk3.sh)
 - [Zim](https://gitlab.com/dehesselle/zim_macos): see [`110-build_gtk3.sh`](https://gitlab.com/dehesselle/zim_macos/-/blob/master/110-build_gtk3.sh)
+
+## credits
+
+The jhb logo uses modified versions of
+
+- a [construction sign](https://openclipart.org/detail/89593/construction-sign-simple), licensed under [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html)
+- the [GTK logo](https://commons.wikimedia.org/wiki/File:GTK_logo.svg) from Andreas Nilsen, licensed under [CC-BY-SA-3.0](https://spdx.org/licenses/CC-BY-SA-3.0.html)
 
 ## license
 
