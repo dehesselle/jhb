@@ -125,6 +125,8 @@ jobs:
       #------------------------------------------------------------------- build
 
       - name: bootstrap JHBuild
+        env:
+          FORCE_BUILD_FROM_SOURCE: true
         run: usr/bin/bootstrap
 
       - name: remove non-essential files

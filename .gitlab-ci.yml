@@ -29,6 +29,8 @@ build:
     - if: $RUNNER == "macosarm"
       variables:
         SDKROOT: /opt/sdks/MacOSX11.3.sdk
+  variables:
+    FORCE_BUILD_FROM_SOURCE: "true"
   tags:
     - ${RUNNER}
   script:

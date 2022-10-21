@@ -31,6 +31,8 @@ bash_d_include error
 
 SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
+FORCE_BUILD_FROM_SOURCE=${FORCE_BUILD_FROM_SOURCE:-false}
+
 ### functions ##################################################################
 
 function is_release_usable
@@ -95,7 +97,7 @@ fi
 #------------------------------------------- check if binary release can be used
 
 for URL in "${RELEASE_URLS[@]}"; do
-  if is_release_usable "$URL"; then
+  if is_release_usable "$URL" && ! $FORCE_BUILD_FROM_SOURCE; then
     echo_i "using $URL"
     curl -L "$URL" | tar -C "$WRK_DIR" -xJ
     exit $?   # we can quit here and now, nothing further to do
