@@ -39,7 +39,7 @@ jobs:
 
       - name: create cache id
         id: cache_id
-        uses: nanzm/get-time-action@v1.1
+        uses: josStorer/get-current-time@v2.0.2
         with:
           format: "YYYY-MM-DD-HH-mm-ss"
 
@@ -49,7 +49,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-jhb-${{ steps.cache_id.outputs.time }}
+          key: ccache-jhb-${{ steps.cache_id.outputs.formattedTime }}
           restore-keys: ccache-jhb-
 
       # GitHub does not provide 10.13 SDK on their runners and no image older
@@ -141,7 +141,7 @@ jobs:
         run: |
           usr/bin/archive create_tar
           source etc/jhb.conf.sh
-          echo "::set-output name=archive::$RELEASE_ARCHIVE"
+          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
 
       #-------------------------------------------------------- upload artifacts
 

@@ -37,11 +37,11 @@ jobs:
           SYS_IGNORE_USR_LOCAL: true
         run: |
           source etc/jhb.conf/version.sh
-          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: get version tag
         id: tag
-        run: echo "::set-output name=version::${GITHUB_REF##*v}"
+        run: echo "version={GITHUB_REF##*v}" >> $GITHUB_OUTPUT
 
       # Once we have established that the jhb version (version.sh)
       # matches the git tag we can safely rely on the tag from here on.
@@ -91,7 +91,7 @@ jobs:
         id: jhb
         run: |
           source etc/jhb.conf.sh
-          echo "::set-output name=archive::$RELEASE_ARCHIVE"
+          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
 
     #------------------------------------------------------------ create release
 
