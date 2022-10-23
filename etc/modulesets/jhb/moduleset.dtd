@@ -1,4 +1,4 @@
-<!ELEMENT moduleset (redirect|repository|include|autotools|metamodule|tarball|distutils|perl|linux|testmodule|cvsroot|cvsmodule|waf|cmake|meson|systemmodule)+>
+<!ELEMENT moduleset (if|redirect|repository|include|autotools|metamodule|tarball|distutils|perl|linux|testmodule|cvsroot|cvsmodule|waf|cmake|meson|systemmodule)+>
 <!ATTLIST moduleset
 	name     CDATA  #IMPLIED>
 
@@ -10,7 +10,7 @@
      DTD also appears to be incapable of describing the fact that
      exactly one of condition-set='' and condition-unset='' is required.
 -->
-<!ELEMENT if (if|dep|autogenargs|cmakeargs|mesonargs|makeargs|ninjaargs|makeinstallargs)+>
+<!ELEMENT if (if|autotools|dep|autogenargs|cmakeargs|mesonargs|makeargs|ninjaargs|makeinstallargs)+>
 <!ATTLIST if
 	condition-set	CDATA	#IMPLIED
 	condition-unset	CDATA	#IMPLIED>
@@ -62,6 +62,7 @@
 	makefile	CDATA	#IMPLIED
 	bootstrap	(true|false) "false"
 	skip-autogen	(true|false|never) "false"
+	skip-install (yes|no) "no"
 	uninstall-before-install (true|false) "false"
 	supports-non-srcdir-builds (yes|no) "yes"
 	force-non-srcdir-builds (yes|no) "no"
