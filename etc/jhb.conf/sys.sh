@@ -28,6 +28,7 @@ SYS_MACOS_VER=$(sw_vers -productVersion)
 # descending order on purpose: most recent platform first
 # shellcheck disable=2206 # we need expansion for the array to work
 SYS_MACOS_VER_RECOMMENDED=(${SYS_MACOS_VER_RECOMMENDED:-
+  12.6.1
   12.6
   11.7
 })
