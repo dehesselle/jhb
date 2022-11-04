@@ -17,8 +17,8 @@
   <repository type="tarball" name="github" href="https://github.com"/>
 
   <autotools id="xz" autogen-sh="configure" bootstrap="true">
-    <branch repo="tukaani.org" module="xz/xz-5.2.5.tar.bz2" version="5.2.5"
-            hash="sha256:5117f930900b341493827d63aa910ff5e011e0b994197c3b71c08a20228a42df"/>
+    <branch repo="tukaani.org" module="xz/xz-5.2.7.tar.bz2" version="5.2.7"
+            hash="sha256:b65f1d0c2708e57716f4dd2216989a73847ac6fdb4168ffceb155767e22b834b"/>
   </autotools>
 
   <!-- gnu make 4.xx, needed to unbreak parallel builds for the webkit -->
