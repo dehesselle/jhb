@@ -62,9 +62,8 @@ jobs:
       # its genuinity, see here:
       # https://github.com/dehesselle/sdkchecksum
       #
-      # In order to use your custom SDK_DOWNLOAD_URL, create a repository secret
+      # In order to use your own SDK_DOWNLOAD_URL, create a repository secret
       # of said name and proivide a link to a .tar.xz file.
-      # At the moment, only 10.13.4 SDK is supported as it's hardcoded below.
 
       # Using SDK is mandatory if building for a release.
       - name: fail on missing secret SDK_DOWNLOAD_URL
