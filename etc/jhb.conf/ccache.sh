@@ -14,6 +14,8 @@
 
 export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 
+CCACHE_MAXSIZE=${CCACHE_MAXSIZE:-3.0G}
+
 # https://ccache.dev
 # https://github.com/ccache/ccache
 # https://gitlab.com/dehesselle/ccache_macos
@@ -30,7 +32,7 @@ function ccache_configure
   cat <<EOF > "$CCACHE_DIR/ccache.conf"
 base_dir = $WRK_DIR
 hash_dir = false
-max_size = 3.0G
+max_size = $CCACHE_MAXSIZE
 temporary_dir = $CCACHE_DIR/tmp
 EOF
 }
