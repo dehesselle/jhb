@@ -45,7 +45,7 @@ function create_tar
 
 function create_dmg
 {
-  local file=$ARTIFACT_DIR/$RELEASE_ARCHIVE
+  local file=$ARTIFACT_DIR/${RELEASE_ARCHIVE%.tar*}.dmg
 
   ( # create dmg
     local vol_name
