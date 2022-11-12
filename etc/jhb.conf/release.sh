@@ -24,8 +24,6 @@ v$VERSION/$RELEASE_ARCHIVE"
 $VERSION/$RELEASE_ARCHIVE"
 })
 
-RELEASE_OVERLAY=overlay
-
 ### functions ##################################################################
 
 # Nothing here.
