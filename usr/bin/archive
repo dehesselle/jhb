@@ -26,7 +26,7 @@ bash_d_include error
 
 ### variables ##################################################################
 
-# Nothing here.
+SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
 ### functions ##################################################################
 
@@ -141,36 +141,12 @@ function install_dmg
   fi
   mount_dmg
 
-  # create writable overlay
-  local device
-  device=$(hdiutil attach -nomount ram://$((overlay_size * 1024 * 2048)) | xargs)
-  newfs_hfs -v "$RELEASE_OVERLAY" "$device" >/dev/null
-  echo_i "$overlay_size GiB ram attached to $device"
-  mount -o nobrowse,rw,union -t hfs "$device" "$VER_DIR"
-  echo_i "$device union-mounted at $VER_DIR"
-
-  # Sadly, there are some limitations involved with union-mounting:
-  #   - Files are not visible to macOS' versions of 'ls' or 'find'.
-  #     (The GNU versions do work though.)
-  #   - You cannot write in a location without having written to its
-  #     parent location first. That's why we need to pre-create all directories
-  #     below.
-  #
-  # (Shadow-mounting a dmg is not a feasible alternative due to its
-  # bad write-performance.)
-
-  # Create and run a script for mass-creating directories.
-  echo_i "setting up directories in overlay"
-  gfind "$VER_DIR" -mindepth 1 -type d \
-    ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \
-    -exec echo "mkdir {}" \; > "$VER_DIR"/create_dirs.sh
-  chmod 755 "$VER_DIR"/create_dirs.sh
-  "$VER_DIR"/create_dirs.sh
-  rm "$VER_DIR"/create_dirs.sh
+  "$SELF_DIR"/overlay create "$overlay_size"
 }
 
 function uninstall_dmg
 {
+  "$SELF_DIR"/overlay destroy
   unmount_dmg
 }
 

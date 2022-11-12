@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2022 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+### description ################################################################
+
+# This is a hHelper script to create and remove ramdisk overlays.
+
+### shellcheck #################################################################
+
+# Nothing here.
+
+### dependencies ###############################################################
+
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# bash_d is already available (it's part of jhb configuration)
+
+bash_d_include error
+
+### variables ##################################################################
+
+# Nothing here.
+
+### functions ##################################################################
+
+function destroy_overlay
+{
+  while : ; do   # unmount everything, in reverse order
+    local disk
+    disk=$(
+      diskutil list |
+      grep "overlay_$(basename "$VER_DIR")" |
+      tail -n1 |
+      awk '{ print $NF }'
+    )
+
+    if [ ${#disk} -eq 0 ]; then
+      break   # nothing to do here
+    else
+      # We loop over the 'eject' since it occasionally timeouts.
+      while ! diskutil eject "$disk" > /dev/null; do
+        echo_w "retrying to eject $disk in 5 seconds"
+        sleep 5
+      done
+
+      echo_i "ejected $disk"
+    fi
+  done
+}
+
+function create_overlay
+{
+  local overlay_size=$1
+
+  overlay_size=${overlay_size:-1}   # unit GiB, default 1
+
+  # create writa overlay
+  local device
+  device=$(
+    hdiutil attach -nomount ram://$((overlay_size * 1024 * 2048)) | xargs
+  )
+  newfs_hfs -v "overlay_$(basename "$VER_DIR")" "$device" >/dev/null
+  echo_i "$overlay_size GiB ram attached to $device"
+  mount -o nobrowse,rw,union -t hfs "$device" "$VER_DIR"
+  echo_i "$device union-mounted at $VER_DIR"
+
+  # Sadly, there are some limitations involved with union-mounting:
+  #   - Files are not visible to macOS' versions of 'ls' or 'find'.
+  #     (The GNU versions do work though.)
+  #   - You cannot write in a location without having written to its
+  #     parent location first. That's why we need to pre-create all directories
+  #     below. (Otherwise our writes won't go to the overlay.)
+
+  # Create and run a script for mass-creating directories.
+  echo_i "setting up directories in overlay"
+  gfind "$VER_DIR" -mindepth 1 -type d \
+    ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \
+    -exec echo "mkdir {}" \; > "$VER_DIR"/create_dirs.sh
+  chmod 755 "$VER_DIR"/create_dirs.sh
+  "$VER_DIR"/create_dirs.sh
+  rm "$VER_DIR"/create_dirs.sh
+}
+
+### main #######################################################################
+
+error_trace_enable
+
+case "$1" in
+  create)
+    destroy_overlay
+    create_overlay "$2"
+    ;;
+  destroy)
+    destroy_overlay
+    ;;
+  *)
+    echo_e "usage: $0 {create|destroy} {size in GiB}"
+    exit 1
+    ;;
+esac
