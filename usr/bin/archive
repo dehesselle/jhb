@@ -30,9 +30,13 @@ SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
 ### functions ##################################################################
 
+# shellcheck disable=SC2120 # optinal arguments
 function create_tar
 {
-  local file=$ARTIFACT_DIR/$RELEASE_ARCHIVE
+  local suffix=$1   # optional
+
+  local file
+  file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.tar.xz
 
   echo_i "creating $file"
 
@@ -40,12 +44,18 @@ function create_tar
     XZ_OPT=-T0 "$BIN_DIR"/xz > "$file"
 
   shasum -a 256 "$file" > "$file".sha256
-  cat "$file".sha256
+  echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
+
+  echo "$file"
 }
 
+# shellcheck disable=SC2120 # optinal arguments
 function create_dmg
 {
-  local file=$ARTIFACT_DIR/${RELEASE_ARCHIVE%.tar*}.dmg
+  local suffix=$1   # optional
+
+  local file
+  file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.dmg
 
   ( # create dmg
     local vol_name
@@ -55,14 +65,17 @@ function create_dmg
     hdiutil create -fs HFS+ -ov -format UDBZ \
       -srcfolder "$vol_name" \
       -volname "$vol_name" \
-      "$file"
+      "$file" \
+      >/dev/null
   )
 
   ( # create and print checksum
     cd "$(dirname "$file")" || exit 1
     shasum -a 256 "$(basename "$file")" > "$file".sha256
-    cat "$file".sha256
+    echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
   )
+
+  echo "$file"
 }
 
 function mount_dmg
@@ -150,6 +163,16 @@ function uninstall_dmg
   unmount_dmg
 }
 
+function remove_nonessential_files
+{
+  find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d \
+    ! -name bash_d ! -name "jhb*" -exec rm -rf {} \;
+  rm -rf "$VAR_DIR"/build/*
+  rm -rf "$VAR_DIR"/cache/pip/*
+  rm -rf "$VAR_DIR"/cache/pycache/*
+  rm -rf "${TMP_DIR:?}"/*
+}
+
 function main
 {
   local command=$1
@@ -160,16 +183,20 @@ function main
       create_dmg
       ;;
     create_tar)
-      create_tar
+      create_tar "$option"    # option: add suffix to archive, default is none
       ;;
     install_dmg)
-      install_dmg "$option"   # option: overlay size in GiB, defaul is 1
+      install_dmg "$option"   # option: overlay size in GiB, default is 1
       ;;
     uninstall_dmg)
       uninstall_dmg
       ;;
+    remove_nonessentials)
+      remove_nonessential_files
+      ;;
     *)
-      echo_e "usage: $0 {create_dmg|create_tar|install_dmg|uninstall_dmg}"
+      echo_e "usage: $0 {create_dmg|create_tar|install_dmg|uninstall_dmg|\
+remove_nonessentials}"
       ;;
   esac
 }

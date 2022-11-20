@@ -109,21 +109,11 @@ jobs:
           FORCE_BUILD_FROM_SOURCE: true
         run: usr/bin/bootstrap
 
-      - name: remove non-essential files
-        run: |
-          source etc/jhb.conf.sh
-          find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name "jhb*" -exec rm -rf {} \;
-          rm -rf "$VAR_DIR"/build/*
-          rm -rf "$VAR_DIR"/cache/pip/*
-          rm -rf "$VAR_DIR"/cache/pycache/*
-          rm -rf "${TMP_DIR:?}"/*
-
       - name: create archive
         id: jhb
         run: |
-          usr/bin/archive create_tar
-          source etc/jhb.conf.sh
-          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
+          usr/bin/archive remove_nonessentials
+          echo "archive=$(usr/bin/archive create_tar)" >> $GITHUB_OUTPUT
 
       #-------------------------------------------------------- upload artifacts
 

@@ -124,6 +124,10 @@ jhbuild_configure
 
 jhbuild bootstrap-gtk-osx
 
+jhb build pygments
+
+jhb build meta-gtk-osx-bootstrap
+
 #--------------------------------------------------------- install GNU utilities
 
 # GNU versions of various utilites make life significantly easier on macOS.

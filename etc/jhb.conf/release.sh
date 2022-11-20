@@ -26,7 +26,21 @@ $VERSION/$RELEASE_ARCHIVE"
 
 ### functions ##################################################################
 
-# Nothing here.
+function release_archive_get_name
+{
+  case "$RELEASE_ARCHIVE" in
+    *.tar.xz)
+      basename -s .tar.xz "$RELEASE_ARCHIVE"
+      ;;
+    *.dmg)
+      basename -s .dmg    "$RELEASE_ARCHIVE"
+      ;;
+    *)
+      echo_e "unsupported RELEASE_ARCHIVE file type"
+      echo "$RELEASE_ARCHIVE"
+      ;;
+  esac
+}
 
 ### main #######################################################################
 

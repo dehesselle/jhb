@@ -3,6 +3,9 @@
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
 
+  <include href="gtk-osx-bootstrap.modules"/>
+  <include href="gtk-osx-python.modules"/>
+
   <repository name="gnu" type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
 
   <!-- GNU core utilities https://www.gnu.org/software/coreutils/ -->

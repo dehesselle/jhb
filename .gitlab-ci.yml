@@ -36,18 +36,13 @@ build:
   script:
     - !reference [ .verify_sdk, script ]
     - usr/bin/bootstrap
-    - |
-      source etc/jhb.conf.sh
-      find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d ! -name bash_d ! -name "jhb*" -exec rm -rf {} \;
-      rm -rf "$VAR_DIR"/build/*
-      rm -rf "$VAR_DIR"/cache/pip/*
-      rm -rf "$VAR_DIR"/cache/pycache/*
-      rm -rf "${TMP_DIR:?}"/*
+    - usr/bin/archive remove_nonessentials
     - usr/bin/archive create_tar
   after_script:
     # For persistent runners: cleanup afterwards.
-    - source etc/jhb.conf.sh
-    - rm -rf $VER_DIR
+    - |
+      source etc/jhb.conf.sh
+      rm -rf $VER_DIR
   artifacts:
     paths:
       - jhb-*.tar.xz
