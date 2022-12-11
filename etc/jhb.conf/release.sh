@@ -21,7 +21,7 @@ RELEASE_URLS=(${RELEASE_URLS[@]:-
   "https://github.com/dehesselle/jhb/releases/download/\
 v$VERSION/$RELEASE_ARCHIVE"
   "https://gitlab.com/api/v4/projects/35965804/packages/generic/jhb/\
-$VERSION/$RELEASE_ARCHIVE"
+v$VERSION/$RELEASE_ARCHIVE"
 })
 
 ### functions ##################################################################
