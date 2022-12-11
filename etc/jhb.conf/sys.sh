@@ -47,10 +47,8 @@ function sys_create_log
 {
   # Create jhb.log file.
 
-  mkdir -p "$VAR_DIR"/log
-
   for var in SYS_MACOS_VER SYS_SDK_VER VERSION VER_DIR WRK_DIR; do
-    echo "$var = $(eval echo \$$var)" >> "$VAR_DIR"/log/jhb.log
+    echo "$var = $(eval echo \$$var)" >> "$LOG_DIR"/jhb.log
   done
 }
 
