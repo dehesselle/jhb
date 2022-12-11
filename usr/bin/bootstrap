@@ -111,9 +111,13 @@ echo_i "building everything from scratch"
 ccache_install
 ccache_configure
 
-#------------------------------------------ log relevant versions to release.log
+#--------------------------------------------------------- log relevant metadata
 
 sys_create_log
+
+if $CI_GITLAB; then
+  ci_gitlab_add_metadata "$LOG_DIR"/ci.plist
+fi
 
 #------------------------------------------------- install and configure JHBuild
 
