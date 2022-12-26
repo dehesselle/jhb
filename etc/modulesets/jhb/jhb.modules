@@ -5,6 +5,7 @@
 
   <include href="gtk-osx-bootstrap.modules"/>
   <include href="gtk-osx-python.modules"/>
+  <include href="gtk-osx-random.modules"/>
 
   <repository name="gnu" type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
 
