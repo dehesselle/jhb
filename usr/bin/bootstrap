@@ -140,4 +140,5 @@ jhbuild build coreutils findutils sed tar
 
 #-------------------------------------------------------------- install dmgbuild
 
+wheel_install
 dmgbuild_install

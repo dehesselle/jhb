@@ -37,7 +37,7 @@ DMGBUILD_PIP="\
 function dmgbuild_install
 {
   # shellcheck disable=SC2086 # we need word splitting here
-  jhb run $JHBUILD_PYTHON_PIP install --prefix=$USR_DIR wheel $DMGBUILD_PIP
+  jhb run $JHBUILD_PYTHON_PIP install --prefix=$USR_DIR $DMGBUILD_PIP
 
   # dmgbuild has issues with detaching, workaround is to increase max retries
   gsed -i '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$USR_DIR"/bin/dmgbuild
