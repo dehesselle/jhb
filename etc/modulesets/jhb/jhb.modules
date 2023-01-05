@@ -4,6 +4,7 @@
 <moduleset>
 
   <include href="gtk-osx-bootstrap.modules"/>
+  <include href="gtk-osx-network.modules"/>
   <include href="gtk-osx-python.modules"/>
   <include href="gtk-osx-random.modules"/>
 
