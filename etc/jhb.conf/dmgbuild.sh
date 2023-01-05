@@ -47,7 +47,7 @@ function dmgbuild_run
 {
   local config=$1
   local plist=$2
-  local dmg=$3   # optional; default is <name>_<version>_<build>_<arch>.dmg
+  local dmg=$3 # optional; default is <name>_<version>_<build>_<arch>.dmg
 
   local app_dir
   app_dir=$(echo "$ARTIFACT_DIR"/*.app)
@@ -55,7 +55,7 @@ function dmgbuild_run
   if [ -z "$dmg" ]; then
     local version
     version=$(/usr/libexec/PlistBuddy \
-       -c "Print :CFBundleShortVersionString" "$plist")
+      -c "Print :CFBundleShortVersionString" "$plist")
     local build
     build=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$plist")
 

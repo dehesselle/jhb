@@ -29,7 +29,7 @@ export SDKROOT
 function sdkroot_exists
 {
   if [ -d "$SDKROOT" ]; then
-    return 0  # SDK found
+    return 0 # SDK found
   else
     echo_e "SDK not found: $SDKROOT"
     return 1

@@ -29,7 +29,10 @@ bash_d_include error
 
 ### variables ##################################################################
 
-SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
+SELF_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)
 
 FORCE_BUILD_FROM_SOURCE=${FORCE_BUILD_FROM_SOURCE:-false}
 
@@ -43,7 +46,7 @@ function is_release_usable
   local rc=1
 
   # download at least 100 kb of data
-  curl -L "$url" 2>/dev/null | head -c 100000 > "$partial_download"
+  curl -L "$url" 2>/dev/null | head -c 100000 >"$partial_download"
   # if we got 100 kb, it's not a "404 file not found"
   if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
     # look inside: dir needs to match our VER_DIR to be usable
@@ -71,15 +74,12 @@ echo_i "VER_DIR = $VER_DIR"
 
 #--------------------------------------------------------- perform system checks
 
-if  sys_wrkdir_is_usable &&
-    sdkroot_exists &&
-    sys_usrlocal_is_clean; then
-
+if sys_wrkdir_is_usable && sdkroot_exists && sys_usrlocal_is_clean; then
   # these checks may issue warnings but have have no consequences otherwise
   sys_macos_is_recommended || true
   sys_sdk_is_recommended || true
 else
-  exit 1   # cannot continue
+  exit 1 # cannot continue
 fi
 
 #--------------------------------------------------- initialize directory layout
@@ -100,7 +100,7 @@ for URL in "${RELEASE_URLS[@]}"; do
   if is_release_usable "$URL" && ! $FORCE_BUILD_FROM_SOURCE; then
     echo_i "using $URL"
     curl -L "$URL" | tar -C "$WRK_DIR" -xJ
-    exit $?   # we can quit here and now, nothing further to do
+    exit $? # we can quit here and now, nothing further to do
   fi
 done
 

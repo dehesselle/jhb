@@ -13,14 +13,14 @@
 
 ### variables ##################################################################
 
-if [ -z "$CI" ]; then   # both GitHub and GitLab set this
+if [ -z "$CI" ]; then # both GitHub and GitLab set this
   CI=false
   CI_GITHUB=false
   CI_GITLAB=false
 else
   CI=true
 
-  if [ -z "$CI_PROJECT_NAME" ]; then  # this is a GitLab-only variable
+  if [ -z "$CI_PROJECT_NAME" ]; then # this is a GitLab-only variable
     CI_GITHUB=true
     CI_GITLAB=false
   else
@@ -29,7 +29,7 @@ else
 
     # Since GitLab uses colors in their CI there's no need to disable ours.
     # shellcheck disable=SC2034 # this is a bash_d setting
-    ANSI_TERM_ONLY=false   # use ANSI control characters even if not in terminal
+    ANSI_TERM_ONLY=false # use ANSI control characters even if not in terminal
   fi
 fi
 
@@ -40,10 +40,10 @@ function ci_gitlab_add_metadata
   local plist=$1
 
   # add some metadata to make CI identifiable
-  for var in PROJECT_NAME PROJECT_URL COMMIT_BRANCH COMMIT_SHA COMMIT_SHORT_SHA\
-            JOB_ID JOB_URL JOB_NAME PIPELINE_ID PIPELINE_URL; do
+  for var in PROJECT_NAME PROJECT_URL COMMIT_BRANCH COMMIT_SHA \
+    COMMIT_SHORT_SHA JOB_ID JOB_URL JOB_NAME PIPELINE_ID PIPELINE_URL; do
     # use awk to create camel case strings (e.g. PROJECT_NAME to ProjectName)
-    /usr/libexec/PlistBuddy -c "Add CI$(\
+    /usr/libexec/PlistBuddy -c "Add CI$(
       echo $var | awk -F _ '{
         for (i=1; i<=NF; i++)
         printf "%s", toupper(substr($i,1,1)) tolower(substr($i,2))

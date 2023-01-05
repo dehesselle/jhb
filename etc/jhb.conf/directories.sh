@@ -67,7 +67,7 @@ PKG_DIR=$(eval echo "${PKG_DIR:-${PKG_DIR_TEMPLATE:-$VAR_DIR/cache/pkg}}")
 #------------------------------------------------------------ artifact directory
 
 if [ -z "$ARTIFACT_DIR" ]; then
-  if   $CI_GITHUB; then
+  if $CI_GITHUB; then
     ARTIFACT_DIR=$GITHUB_WORKSPACE
   elif $CI_GITLAB; then
     ARTIFACT_DIR=$CI_PROJECT_DIR

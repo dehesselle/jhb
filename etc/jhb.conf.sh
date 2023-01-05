@@ -14,7 +14,10 @@
 
 ### dependencies ###############################################################
 
-SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
+SELF_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)
 
 CUSTOM_CONFIG=$SELF_DIR/jhb-custom.conf.sh
 # copy a custom configuration file to the appropriate place
@@ -30,9 +33,9 @@ fi
 unset CUSTOM_CONFIG
 
 # source items from jhb.conf directory
-for CONFIG_ITEM in $(\
-      "$SELF_DIR"/../usr/bin/run-parts list "$SELF_DIR"/jhb.conf/'*.sh' \
-    ); do
+for CONFIG_ITEM in $(
+  "$SELF_DIR"/../usr/bin/run-parts list "$SELF_DIR"/jhb.conf/'*.sh'
+); do
   # shellcheck disable=SC1090 # can't point to a single source here
   source "$CONFIG_ITEM"
 done

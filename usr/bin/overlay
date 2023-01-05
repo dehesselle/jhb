@@ -32,20 +32,20 @@ bash_d_include error
 
 function destroy_overlay
 {
-  while : ; do   # unmount everything, in reverse order
+  while :; do # unmount everything, in reverse order
     local disk
     disk=$(
       diskutil list |
-      grep "overlay_$(basename "$VER_DIR")" |
-      tail -n1 |
-      awk '{ print $NF }'
+        grep "overlay_$(basename "$VER_DIR")" |
+        tail -n1 |
+        awk '{ print $NF }'
     )
 
     if [ ${#disk} -eq 0 ]; then
-      break   # nothing to do here
+      break # nothing to do here
     else
       # We loop over the 'eject' since it occasionally timeouts.
-      while ! diskutil eject "$disk" > /dev/null; do
+      while ! diskutil eject "$disk" >/dev/null; do
         echo_w "retrying to eject $disk in 5 seconds"
         sleep 5
       done
@@ -59,7 +59,7 @@ function create_overlay
 {
   local overlay_size=$1
 
-  overlay_size=${overlay_size:-1}   # unit GiB, default 1
+  overlay_size=${overlay_size:-1} # unit GiB, default 1
 
   # create writa overlay
   local device
@@ -82,7 +82,7 @@ function create_overlay
   echo_i "setting up directories in overlay"
   gfind "$VER_DIR" -mindepth 1 -type d \
     ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \
-    -exec echo "mkdir {}" \; > "$VER_DIR"/create_dirs.sh
+    -exec echo "mkdir {}" \; >"$VER_DIR"/create_dirs.sh
   chmod 755 "$VER_DIR"/create_dirs.sh
   "$VER_DIR"/create_dirs.sh
   rm "$VER_DIR"/create_dirs.sh

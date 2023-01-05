@@ -33,7 +33,7 @@ function release_archive_get_name
       basename -s .tar.xz "$RELEASE_ARCHIVE"
       ;;
     *.dmg)
-      basename -s .dmg    "$RELEASE_ARCHIVE"
+      basename -s .dmg "$RELEASE_ARCHIVE"
       ;;
     *)
       echo_e "unsupported RELEASE_ARCHIVE file type"

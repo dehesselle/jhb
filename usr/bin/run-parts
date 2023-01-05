@@ -36,12 +36,12 @@ function main
     dir=$(dirname "$dir")
   fi
 
-  file_pattern=${file_pattern:-*}   # default pattern is "*"
+  file_pattern=${file_pattern:-*} # default pattern is "*"
 
   local linked_files
   linked_files=$(find "$dir" -type l -exec readlink {} +)
 
-  for file in "$dir"/$file_pattern; do   # requires 'shopt -s nullglob'
+  for file in "$dir"/$file_pattern; do # requires 'shopt -s nullglob'
     # Only process files that have no symlinks (in that same directory) pointing
     # at them.
     if [[ "$linked_files" != *$(basename "$file")* ]]; then
@@ -61,7 +61,7 @@ function main
 
 set -e
 
-shopt -s nullglob   # in case no files are found
+shopt -s nullglob # in case no files are found
 
 case "$1" in
   list)

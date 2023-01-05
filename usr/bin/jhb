@@ -35,7 +35,7 @@ bash_d_include error
 
 ### main #######################################################################
 
-if $CI; then   # break in CI, otherwise we get interactive prompt by JHBuild
+if $CI; then # break in CI, otherwise we get interactive prompt by JHBuild
   error_trace_enable
 fi
 
@@ -44,19 +44,16 @@ case "$1" in
     echo_d "doing nothing"
     ;;
   configure)
-    jhbuild_configure "$2"   # e.g. 'jhbuild/myapp.modules'
+    jhbuild_configure "$2" # e.g. 'jhbuild/myapp.modules'
     ccache_configure
     ;;
   *)
-    if  sys_wrkdir_is_usable &&
-        sdkroot_exists &&
-        sys_usrlocal_is_clean; then
-
+    if sys_wrkdir_is_usable && sdkroot_exists && sys_usrlocal_is_clean; then
       # these checks may issue warnings but have have no consequences otherwise
       sys_macos_is_recommended || true
       sys_sdk_is_recommended || true
     else
-      exit 1    # cannot continue
+      exit 1 # cannot continue
     fi
     "$USR_DIR"/bin/jhbuild "$@"
     ;;

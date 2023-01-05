@@ -32,8 +32,8 @@ JHBUILD_REQUIREMENTS="\
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://wiki.gnome.org/Projects/Jhbuild/Introduction
 JHBUILD_VER=d1c5316
-JHBUILD_URL=https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
-jhbuild-$JHBUILD_VER.tar.bz2
+JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
+jhbuild-$JHBUILD_VER.tar.bz2"
 
 # A dedicated Python runtime (only) for JHBuild. It is installed and kept
 # separately from the rest of the system. It won't interfere with a Python
@@ -65,16 +65,15 @@ function jhbuild_install_python
   jhbuild_set_python_interpreter
 
   # add to PYTHONPATH
-  echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages"\
-    > "$OPT_DIR"/Python.framework/Versions/$JHBUILD_PYTHON_VER/lib/\
-python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
+  echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages" \
+    >"$JHBUILD_PYTHON_DIR"/lib/python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
 }
 
 function jhbuild_set_python_interpreter
 {
   # Symlink binaries to USR_DIR/bin.
   if command -v gln 1>/dev/null; then
-    local gnu=g   # necessary for union mount
+    local gnu=g # necessary for union mount
   fi
   ${gnu}ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
   ${gnu}ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
@@ -104,23 +103,22 @@ function jhbuild_install
 
     # BSD's csplit does not support '{*}' (it's a GNU extension)
     csplit -n 3 -k -f "$TMP_DIR"/pem- "$pem_bundle" \
-     '/END CERTIFICATE/+1' '{999}' >/dev/null 2>&1 || true
+      '/END CERTIFICATE/+1' '{999}' >/dev/null 2>&1 || true
 
     for pem in "$TMP_DIR"/pem-*; do
-      if   [ "$(stat -f%z "$pem")" -eq 0 ]; then
-        rm "$pem"  # the csplit command above created one superfluous empty file
+      if [ "$(stat -f%z "$pem")" -eq 0 ]; then
+        rm "$pem" # the csplit command above created one superfluous empty file
       elif ! openssl x509 -checkend 0 -noout -in "$pem"; then
         echo_d "removing $pem: $(openssl x509 -enddate -noout -in "$pem")"
         rm "$pem"
       fi
     done
 
-    cat "$TMP_DIR"/pem-??? > "$pem_bundle"
+    cat "$TMP_DIR"/pem-??? >"$pem_bundle"
   }
 
-  local cacert="$USR_DIR"/lib/python$JHBUILD_PYTHON_VER/site-packages/certifi/\
-cacert.pem
-
+  local cacert="$USR_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/\
+certifi/cacert.pem"
   pem_remove_expired "$cacert"
 
   # Download JHBuild. Setting CURL_CA_BUNDLE is required on older macOS, e.g.
@@ -193,10 +191,10 @@ function jhbuild_configure
     fi
 
     # certificates for https
-    echo "os.environ[\"SSL_CERT_FILE\"] = \
-      \"$USR_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
-    echo "os.environ[\"REQUESTS_CA_BUNDLE\"] = \
-      \"$USR_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
+    echo "os.environ[\"SSL_CERT_FILE\"] = \"$USR_DIR/lib/\
+python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
+    echo "os.environ[\"REQUESTS_CA_BUNDLE\"] = \"$USR_DIR/lib/\
+python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
 
     # user home directory
     echo "os.environ[\"HOME\"] = \"$HOME\""
@@ -213,10 +211,10 @@ function jhbuild_configure
       cat "$moduleset_rc"
     fi
 
-  } > "$JHBUILDRC-$suffix"
+  } >"$JHBUILDRC-$suffix"
 
   if command -v gln 1>/dev/null; then
-    local gnu=g   # necessary for union mount
+    local gnu=g # necessary for union mount
   fi
   ${gnu}ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
 

@@ -21,16 +21,16 @@ CCACHE_MAXSIZE=${CCACHE_MAXSIZE:-3.0G}
 # https://gitlab.com/dehesselle/ccache_macos
 # 4.6.3 is the last version to support High Sierra
 CCACHE_VER=4.6.3r1
-CCACHE_URL=https://gitlab.com/api/v4/projects/29039216/packages/generic/\
-ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz
+CCACHE_URL="https://gitlab.com/api/v4/projects/29039216/packages/generic/\
+ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz"
 
 ### functions ##################################################################
 
 function ccache_configure
 {
-    mkdir -p "$CCACHE_DIR"
+  mkdir -p "$CCACHE_DIR"
 
-  cat <<EOF > "$CCACHE_DIR/ccache.conf"
+  cat <<EOF >"$CCACHE_DIR/ccache.conf"
 base_dir = $WRK_DIR
 hash_dir = false
 max_size = $CCACHE_MAXSIZE

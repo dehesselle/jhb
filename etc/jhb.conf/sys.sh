@@ -49,7 +49,7 @@ function sys_create_log
   # Create jhb.log file.
 
   for var in SYS_MACOS_VER SYS_SDK_VER VERSION VER_DIR WRK_DIR; do
-    echo "$var = $(eval echo \$$var)" >> "$LOG_DIR"/jhb.log
+    echo "$var = $(eval echo \$$var)" >>"$LOG_DIR"/jhb.log
   done
 }
 
@@ -83,9 +83,8 @@ function sys_usrlocal_is_clean
   # Based on GitHub CI experience, it appears to be enough to make sure
   # the following folders do not contain files.
   for dir in include lib share; do
-    count=$(( count + \
-      $(find /usr/local/$dir -type f 2>/dev/null | wc -l | awk '{ print $1 }')\
-    ))
+    count=$((count + \
+      $(find /usr/local/$dir -type f 2>/dev/null | wc -l | awk '{ print $1 }')))
   done
 
   if [ "$count" -ne 0 ]; then
@@ -106,9 +105,8 @@ function sys_usrlocal_is_clean
 
 function sys_wrkdir_is_usable
 {
-  if  mkdir -p "$WRK_DIR" 2>/dev/null &&
-      [ -w "$WRK_DIR" ] ; then
-    return 0  # WRK_DIR has been created or was already there and is writable
+  if mkdir -p "$WRK_DIR" 2>/dev/null && [ -w "$WRK_DIR" ]; then
+    return 0 # WRK_DIR has been created or was already there and is writable
   else
     echo_e "WRK_DIR not usable: $WRK_DIR"
     return 1

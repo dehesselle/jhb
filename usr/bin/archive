@@ -26,14 +26,17 @@ bash_d_include error
 
 ### variables ##################################################################
 
-SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
+SELF_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)
 
 ### functions ##################################################################
 
 # shellcheck disable=SC2120 # optinal arguments
 function create_tar
 {
-  local suffix=$1   # optional
+  local suffix=$1 # optional
 
   local file
   file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.tar.xz
@@ -41,9 +44,9 @@ function create_tar
   echo_i "creating $file"
 
   tar -C "$WRK_DIR" -cp "$(basename "$VER_DIR")" |
-    XZ_OPT=-T0 "$BIN_DIR"/xz > "$file"
+    XZ_OPT=-T0 "$BIN_DIR"/xz >"$file"
 
-  shasum -a 256 "$file" > "$file".sha256
+  shasum -a 256 "$file" >"$file".sha256
   echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
 
   echo "$file"
@@ -52,7 +55,7 @@ function create_tar
 # shellcheck disable=SC2120 # optinal arguments
 function create_dmg
 {
-  local suffix=$1   # optional
+  local suffix=$1 # optional
 
   local file
   file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.dmg
@@ -71,7 +74,7 @@ function create_dmg
 
   ( # create and print checksum
     cd "$(dirname "$file")" || exit 1
-    shasum -a 256 "$(basename "$file")" > "$file".sha256
+    shasum -a 256 "$(basename "$file")" >"$file".sha256
     echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
   )
 
@@ -100,16 +103,16 @@ function unmount_dmg
 {
   local mountpoint=$VER_DIR
 
-  while : ; do   # unmount everything (in reverse order)
+  while :; do # unmount everything (in reverse order)
     local disk
     disk=$(mount | grep "$mountpoint" | tail -n1 | awk '{ print $1 }')
-    disk=${disk%s[0-9]}  # cut off slice specification
+    disk=${disk%s[0-9]} # cut off slice specification
 
     if [ ${#disk} -eq 0 ]; then
-      break   # nothing to do here
+      break # nothing to do here
     else
       # We loop over the 'eject' since it occasionally timeouts.
-      while ! diskutil eject "$disk" > /dev/null; do
+      while ! diskutil eject "$disk" >/dev/null; do
         echo_w "retrying to eject $disk in 5 seconds"
         sleep 5
       done
@@ -126,9 +129,9 @@ function download_dmg
   fi
 
   for url in "${RELEASE_URLS[@]}"; do
-    local partial_download=$REP_DIR/${FUNCNAME[0]}  # TMP_DIR not available yet
+    local partial_download=$REP_DIR/${FUNCNAME[0]} # TMP_DIR not available yet
     # download (at least) 100 kb of data
-    curl -L "$url" 2>/dev/null | head -c 100000 > "$partial_download"
+    curl -L "$url" 2>/dev/null | head -c 100000 >"$partial_download"
     # if we got 100 kb, it's not a "404 file not found"
     if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
       echo_i "downloading $url"
@@ -142,7 +145,7 @@ function download_dmg
 
 function install_dmg
 {
-  local overlay_size=${1:-1}   # unit GiB, default 1
+  local overlay_size=${1:-1} # unit GiB, default 1
 
   local file=$REP_DIR/$RELEASE_ARCHIVE
 
@@ -183,10 +186,10 @@ function main
       create_dmg
       ;;
     create_tar)
-      create_tar "$option"    # option: add suffix to archive, default is none
+      create_tar "$option" # option: add suffix to archive, default is none
       ;;
     install_dmg)
-      install_dmg "$option"   # option: overlay size in GiB, default is 1
+      install_dmg "$option" # option: overlay size in GiB, default is 1
       ;;
     uninstall_dmg)
       uninstall_dmg
