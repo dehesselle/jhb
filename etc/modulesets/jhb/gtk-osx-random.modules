@@ -2,13 +2,21 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <repository type="tarball" name="ftp.gnu.org" href="https://ftp.gnu.org/gnu/"/>
+  <!--
+    Please format this file using https://github.com/htacg/tidy-html5
 
-  <autotools id='readline' autogen-sh="configure">
-    <branch repo="ftp.gnu.org" module="readline/readline-8.1.tar.gz"
+        tidy -config ../tidy.conf -m gtk-osx-random.modules
+  -->
+  <repository name="ftp.gnu.org"
+              href="https://ftp.gnu.org/gnu/"
+              type="tarball" />
+  <!---->
+  <autotools id='readline'
+             autogen-sh="configure">
+    <branch module="readline/readline-8.1.tar.gz"
             version="8.1"
-            hash="sha256:f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02">
-    </branch>
+            hash="sha256:f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02"
+            repo="ftp.gnu.org" />
   </autotools>
-
+  <!---->
 </moduleset>
