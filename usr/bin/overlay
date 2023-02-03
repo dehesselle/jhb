@@ -61,24 +61,21 @@ function create_overlay
 
   overlay_size=${overlay_size:-1} # unit GiB, default 1
 
-  # create writa overlay
+  # create writable overlay
   local device
   device=$(
     hdiutil attach -nomount ram://$((overlay_size * 1024 * 2048)) | xargs
   )
   newfs_hfs -v "$RELEASE_OVERLAY" "$device" >/dev/null
   echo_i "$overlay_size GiB ram attached to $device"
-  mount -o nobrowse,rw,union -t hfs "$device" "$VER_DIR"
+  diskutil mount -mountOptions nobrowse,rw,union -mountPoint "$VER_DIR" "$device"
   echo_i "$device union-mounted at $VER_DIR"
 
-  # Sadly, there are some limitations involved with union-mounting:
-  #   - Files are not visible to macOS' versions of 'ls' or 'find'.
-  #     (The GNU versions do work though.)
-  #   - You cannot write in a location without having written to its
-  #     parent location first. That's why we need to pre-create all directories
-  #     below. (Otherwise our writes won't go to the overlay.)
-
-  # Create and run a script for mass-creating directories.
+  # macOS' versions of 'ls' or 'find' only see items from the top layer,
+  # and that is empty right now. In order to be able to write into arbitrary
+  # locations within the top layer, we need to recreate the directory structure
+  # from the bottom layer first. Luckily for us, we can use GNU find as it
+  # does see the files and directories from the bottom layer.
   echo_i "setting up directories in overlay"
   gfind "$VER_DIR" -mindepth 1 -type d \
     ! -path "$BLD_DIR/*" ! -path "$SRC_DIR/*" \

@@ -95,7 +95,10 @@ function mount_dmg
   device=$(hdiutil attach -nomount "$file" | grep "^/dev/disk" |
     grep "Apple_HFS" | awk '{ print $1 }')
   echo_i "$file attached to $device"
-  mount -o nobrowse,noowners,noquarantine,ro -t hfs "$device" "$mountpoint"
+  diskutil mount \
+    -mountOptions nobrowse,noquarantine,ro \
+    -mountPoint "$mountpoint" \
+    "$device"
   echo_i "$device mounted to $mountpoint"
 }
 
