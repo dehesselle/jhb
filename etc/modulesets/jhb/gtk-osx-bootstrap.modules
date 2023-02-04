@@ -18,8 +18,8 @@
               href="http://downloads.sourceforge.net/sourceforge/"
               type="tarball" />
   <repository type="tarball"
-              name="fossies"
-              href="https://fossies.org/linux/misc/" />
+              name="ijg"
+              href="https://www.ijg.org/files/" />
   <repository name="libtiff"
               href="http://download.osgeo.org/"
               type="tarball" />
@@ -57,7 +57,7 @@
             version="9e"
             hash="sha256:4077d6a6a75aeb01884f708919d25934c93305e49f7e3f36db9129320e6f4f3d"
             checkoutdir="jpeg-9e"
-            repo="fossies" />
+            repo="ijg" />
   </autotools>
   <!---->
   <autotools id="libtiff"
