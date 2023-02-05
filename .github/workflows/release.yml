@@ -77,6 +77,12 @@ jobs:
         with:
           submodules: true
 
+      - name: get jhb info
+        id: jhb
+        run: |
+          source etc/jhb.conf.sh
+          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
+
       - name: download artifact
         uses: actions/download-artifact@v3
         with:
@@ -87,41 +93,11 @@ jobs:
         with:
           name: jhb_archive_sha256
 
-      - name: get jhb info
-        id: jhb
-        run: |
-          source etc/jhb.conf.sh
-          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
-
     #------------------------------------------------------------ create release
 
       - name: create release
-        id: release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: jhb ${{ github.ref }}
+          artifacts: "${{ steps.jhb.outputs.archive }}*"
+          token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
-          prerelease: false
-
-      - name: upload archive to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.jhb.outputs.archive }}
-          asset_name: ${{ steps.jhb.outputs.archive }}
-          asset_content_type: application/octet-stream
-
-      - name: upload toolset checksum to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ steps.jhb.outputs.archive }}.sha256
-          asset_name: ${{ steps.jhb.outputs.archive }}.sha256
-          asset_content_type: text/plain
