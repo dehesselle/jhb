@@ -10,6 +10,9 @@
   <repository name="openssl"
               href="https://www.openssl.org/source/"
               type="tarball" />
+  <repository name="zlib"
+              href="https://www.zlib.net/"
+              type="tarball" />
   <!--
     of the many arguments such as prefix and libdir that jhbuild might pass
     to configure, openssl only understands prefix, and only with =.
@@ -25,5 +28,12 @@
             hash="sha256:8dee9b24bdb1dcbf0c3d1e9b02fb8f6bf22165e807f45adeb7c9677536859d3b"
             repo="openssl" />
   </autotools>
+  <!---->
+  <cmake id="zlib">
+    <branch module="zlib-1.2.13.tar.xz"
+            version="1.2.13"
+            hash="sha256:d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98"
+            repo="zlib" />
+  </cmake>
   <!---->
 </moduleset>
