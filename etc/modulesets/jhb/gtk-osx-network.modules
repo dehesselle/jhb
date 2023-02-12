@@ -10,6 +10,9 @@
   <repository name="openssl"
               href="https://www.openssl.org/source/"
               type="tarball" />
+  <repository name="webm"
+              href="http://downloads.webmproject.org/releases/"
+              type="tarball" />
   <repository name="zlib"
               href="https://www.zlib.net/"
               type="tarball" />
@@ -27,6 +30,16 @@
             version="1.1.1t"
             hash="sha256:8dee9b24bdb1dcbf0c3d1e9b02fb8f6bf22165e807f45adeb7c9677536859d3b"
             repo="openssl" />
+  </autotools>
+  <!---->
+  <autotools id="libwebp"
+             autogen-sh="configure"
+             autogenargs="--enable-libwebpmux --enable-libwebpdecoder">
+             
+    <branch module="webp/libwebp-1.2.2.tar.gz"
+            version="1.2.2"
+            hash="sha256:7656532f837af5f4cec3ff6bafe552c044dc39bf453587bd5b77450802f4aee6"
+            repo="webm" />
   </autotools>
   <!---->
   <cmake id="zlib">
