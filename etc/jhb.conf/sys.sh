@@ -17,17 +17,15 @@
 
 ### variables ##################################################################
 
-SYS_ARCH=$(uname -m | tr '[:lower:]' '[:upper:]')
-
 if [ "$SYS_USRLOCAL_IGNORE" != "true" ]; then
   SYS_USRLOCAL_IGNORE=false
 fi
 
 SYS_MACOS_VER=$(sw_vers -productVersion)
 
-# descending order on purpose: most recent platform first
+# order is significant: most used platform first
 # shellcheck disable=2206 # we need expansion for the array to work
-SYS_MACOS_VER_RECOMMENDED=(${SYS_MACOS_VER_RECOMMENDED:-
+SYS_MACOS_VER_SUPPORTED=(${SYS_MACOS_VER_SUPPORTED:-
   12.6.3
   12.6.2
   12.6.1
@@ -40,9 +38,11 @@ SYS_SDK_VER="$(/usr/libexec/PlistBuddy -c \
   "Print :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" \
   "$SDKROOT"/SDKSettings.plist)"
 
-SYS_SDK_VER_RECOMMENDED_X86_64=${SYS_SDK_VER_RECOMMENDED_X86_64:-10.13}
-SYS_SDK_VER_RECOMMENDED_ARM64=${SYS_SDK_VER_RECOMMENDED_ARM64:-11.3}
-SYS_SDK_VER_RECOMMENDED=$(eval echo \$SYS_SDK_VER_RECOMMENDED_"$SYS_ARCH")
+# shellcheck disable=2206 # we need expansion for the array to work
+SYS_SDK_VER_SUPPORTED=(${SYS_SDK_VER_SUPPORTED:-
+  10.13
+  11.3
+})
 
 ### functions ##################################################################
 
@@ -55,26 +55,28 @@ function sys_create_log
   done
 }
 
-function sys_macos_is_recommended
+function sys_macos_is_supported
 {
-  for version in "${SYS_MACOS_VER_RECOMMENDED[@]}"; do
+  for version in "${SYS_MACOS_VER_SUPPORTED[@]}"; do
     if [ "$version" = "$SYS_MACOS_VER" ]; then
       return 0
     fi
   done
 
-  echo_w "using macOS $SYS_MACOS_VER (recommended: \
-${SYS_MACOS_VER_RECOMMENDED[0]})"
+  echo_w "using macOS $SYS_MACOS_VER (supported: \
+${SYS_MACOS_VER_SUPPORTED[*]})"
   return 1
 }
 
-function sys_sdk_is_recommended
+function sys_sdk_is_supported
 {
-  if [ "$SYS_SDK_VER_RECOMMENDED" = "$SYS_SDK_VER" ]; then
-    return 0
-  fi
+  for version in "${SYS_SDK_VER_SUPPORTED[@]}"; do
+    if [ "$version" = "$SYS_SDK_VER" ]; then
+      return 0
+    fi
+  done
 
-  echo_w "using SDK $SYS_SDK_VER (recommended: $SYS_SDK_VER_RECOMMENDED)"
+  echo_w "using SDK $SYS_SDK_VER (supported: ${SYS_SDK_VER_SUPPORTED[*]})"
   return 1
 }
 
