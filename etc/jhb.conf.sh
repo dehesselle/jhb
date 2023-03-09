@@ -32,9 +32,9 @@ if [ -f "$_CUSTOM_CONFIG" ]; then
 fi
 unset _CUSTOM_CONFIG
 
-# source items from jhb.conf directory
+# source items from jhb.conf.d directory
 for _CONFIG_ITEM in $(
-  "$_SELF_DIR"/../usr/bin/run-parts list "$_SELF_DIR"/jhb.conf/'*.sh'
+  "$_SELF_DIR"/../usr/bin/run-parts list "$_SELF_DIR"/jhb.conf.d/'*.sh'
 ); do
   # shellcheck disable=SC1090 # can't point to a single source here
   source "$_CONFIG_ITEM"
