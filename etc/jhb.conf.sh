@@ -14,34 +14,7 @@
 
 ### dependencies ###############################################################
 
-_SELF_DIR=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-  pwd
-)
-
-_CUSTOM_CONFIG=$_SELF_DIR/jhb-custom.conf.sh
-# copy a custom configuration file to the appropriate place
-if [[ $1 == *.conf.sh ]] && [ -f "$1" ]; then
-  cp "$1" "$_CUSTOM_CONFIG"
-fi
-
-# source a custom configuration file if present
-if [ -f "$_CUSTOM_CONFIG" ]; then
-  # shellcheck disable=SC1090 # file is optional
-  source "$_CUSTOM_CONFIG"
-fi
-unset _CUSTOM_CONFIG
-
-# source items from jhb.conf.d directory
-for _CONFIG_ITEM in $(
-  "$_SELF_DIR"/../usr/bin/run-parts list "$_SELF_DIR"/jhb.conf.d/'*.sh'
-); do
-  # shellcheck disable=SC1090 # can't point to a single source here
-  source "$_CONFIG_ITEM"
-done
-unset _CONFIG_ITEM
-
-unset _SELF_DIR
+# Nothing here.
 
 ### variables ##################################################################
 
@@ -53,4 +26,37 @@ unset _SELF_DIR
 
 ### main #######################################################################
 
-# Nothing here.
+_SELF_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)
+
+_CALLER_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[${#BASH_SOURCE[@]}]}")" || exit 1
+  pwd
+)
+
+# iterate through all .conf.d directories
+for _DIR in "$_CALLER_DIR"/*.conf.d "$_SELF_DIR"/*.conf.d; do
+  # make sure we're not creating duplicate entries
+  if [[ "$_DIRS" != *"$(basename "$_DIR")"* ]]; then
+    # make sure that job.conf.d is the last item in the list so other
+    # configuration directories take precedence
+    if [ "$(basename "$_DIR")" = "jhb.conf.d" ]; then
+      _DIRS="$_DIRS $_DIR"
+    else
+      _DIRS="$_DIR $_DIRS"
+    fi
+  fi
+done
+
+# source items from configuration directories
+for _DIR in $_DIRS; do
+  for _FILE in $("$_SELF_DIR"/../usr/bin/run-parts list "$_DIR"/'*.sh'); do
+    # shellcheck disable=SC1090 # can't point to a single source here
+    source "$_FILE"
+  done
+done
+
+unset _FILE _DIR _DIRS
+unset _SELF_DIR _CALLER_DIR

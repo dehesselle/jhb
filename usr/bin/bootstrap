@@ -19,7 +19,7 @@
 # You can install a custom configuration file by passing it as first
 # argument. It has to be named '*.conf.sh'.
 
-source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh "$1"
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 #------------------------------------------- source common functions from bash_d
 
@@ -31,6 +31,11 @@ bash_d_include error
 
 SELF_DIR=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)
+
+CALLER_DIR=$(
+  cd "$(dirname "${BASH_SOURCE[${#BASH_SOURCE[@]}]}")" || exit 1
   pwd
 )
 
@@ -92,6 +97,9 @@ else
   find "$VER_DIR" -type f -name ".gitignore" -delete
   rm -rf "$VER_DIR"/.git
   rm "$VER_DIR"/.gitmodules
+
+  # copy custom configuration directories into target structure
+  find "$CALLER_DIR" -type d -name "*.conf.d" -exec rsync -a {} "$ETC_DIR" \;
 fi
 
 #------------------------------------------- check if binary release can be used
