@@ -38,14 +38,20 @@ _CALLER_DIR=$(
 
 # iterate through all .conf.d directories
 for _DIR in "$_CALLER_DIR"/*.conf.d "$_SELF_DIR"/*.conf.d; do
-  # make sure we're not creating duplicate entries
-  if [[ "$_DIRS" != *"$(basename "$_DIR")"* ]]; then
-    # make sure that job.conf.d is the last item in the list so other
-    # configuration directories take precedence
-    if [ "$(basename "$_DIR")" = "jhb.conf.d" ]; then
-      _DIRS="$_DIRS $_DIR"
-    else
-      _DIRS="$_DIR $_DIRS"
+  # First check if (at least one) directory exists (as there is a wildcard).
+  # Otherwise we end up adding an unresolvable expression to the _DIRS which
+  # would lead to errors later. This is specifically meant to catch cases
+  # where _CALLER_DIR contains no configuration subdirectory.
+  if [ -d "$_DIR" ]; then
+    # make sure we're not creating duplicate entries
+    if [[ "$_DIRS" != *"$(basename "$_DIR")"* ]]; then
+      # make sure that job.conf.d is the last item in the list so other
+      # configuration directories take precedence
+      if [ "$(basename "$_DIR")" = "jhb.conf.d" ]; then
+        _DIRS="$_DIRS $_DIR"
+      else
+        _DIRS="$_DIR $_DIRS"
+      fi
     fi
   fi
 done

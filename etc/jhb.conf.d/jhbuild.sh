@@ -16,8 +16,8 @@
 
 ### variables ##################################################################
 
-export JHBUILDRC=$ETC_DIR/jhbuildrc
-export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
+export JHBUILDRC=${JHBUILDRC:-$ETC_DIR/jhbuildrc}
+export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS="\
   certifi==2022.12.7\
@@ -153,10 +153,6 @@ function jhbuild_configure
     rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$suffix/"
   fi
 
-  local target
-  target=$(/usr/libexec/PlistBuddy -c "Print \
-    :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" "$SDKROOT"/SDKSettings.plist)
-
   # create custom jhbuildrc configuration
   {
     echo "# -*- mode: python -*-"
@@ -174,7 +170,7 @@ function jhbuild_configure
     echo "top_builddir = '$VAR_DIR/jhbuild'"
 
     # setup macOS SDK
-    echo "setup_sdk(target=\"$target\")"
+    echo "setup_sdk(target=\"$SYS_SDK_VER\")"
 
     # set release build
     echo "setup_release()"

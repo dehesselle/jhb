@@ -20,7 +20,7 @@ CCACHE_MAXSIZE=${CCACHE_MAXSIZE:-3.0G}
 # https://github.com/ccache/ccache
 # https://gitlab.com/dehesselle/ccache_macos
 # 4.6.3 is the last version to support High Sierra
-CCACHE_VER=4.6.3r1
+CCACHE_VER=${CCACHE_VER:-4.6.3r1}
 CCACHE_URL="https://gitlab.com/api/v4/projects/29039216/packages/generic/\
 ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz"
 

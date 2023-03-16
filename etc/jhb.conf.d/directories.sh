@@ -26,7 +26,7 @@
 #         ┣━━ INC_DIR (include)
 #         ┣━━ LIB_DIR (lib)
 #         ┣━━ OPT_DIR (opt)
-#         ┃
+#         ┣━━ SHR_DIR (share)
 #         ┣━━ TMP_DIR (tmp)
 #         ┃
 #         ┣━━ USR_DIR (usr)
@@ -53,6 +53,7 @@ ETC_DIR=$(eval echo "${ETC_DIR:-${ETC_DIR_TEMPLATE:-$VER_DIR/etc}}")
 INC_DIR=$(eval echo "${INC_DIR:-${INC_DIR_TEMPLATE:-$VER_DIR/include}}")
 LIB_DIR=$(eval echo "${LIB_DIR:-${LIB_DIR_TEMPLATE:-$VER_DIR/lib}}")
 OPT_DIR=$(eval echo "${OPT_DIR:-${OPT_DIR_TEMPLATE:-$VER_DIR/opt}}")
+SHR_DIR=$(eval echo "${SHR_DIR:-${SHR_DIR_TEMPLATE:-$VER_DIR/share}}")
 
 USR_DIR=$(eval echo "${USR_DIR:-${USR_DIR_TEMPLATE:-$VER_DIR/usr}}")
 SRC_DIR=$(eval echo "${SRC_DIR:-${SRC_DIR_TEMPLATE:-$USR_DIR/src}}")
