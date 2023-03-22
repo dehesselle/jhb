@@ -136,6 +136,8 @@ jhbuild_configure
 
 jhbuild bootstrap-gtk-osx
 
+jhb build python3
+ln -sf python3 "$BIN_DIR"/python # workaround for pip3.10/pip3
 jhb build pygments
 
 jhb build meta-gtk-osx-bootstrap
