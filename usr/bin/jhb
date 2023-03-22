@@ -7,7 +7,7 @@
 ### description ################################################################
 
 # This script is a wrapper around the jhbuild binary to run it in our
-# configured environment (etc/jhb.conf).
+# configured environment (etc/jhb.conf.d).
 
 ### shellcheck #################################################################
 
@@ -21,7 +21,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 #------------------------------------------- source common functions from bash_d
 
-# bash_d is already available (it's part of etc/jhb.conf)
+# bash_d is already available (it's part of etc/jhb.conf.d)
 
 bash_d_include error
 

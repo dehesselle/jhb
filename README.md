@@ -25,7 +25,7 @@ Make sure the following prerequisites are met:
   - Undo any customizations in dotfiles like `.profile`, `.bashrc` etc. that interfere with the environment.
     - If in doubt, use a dedicated user account instead.
 
-- There are __version recommendations__ based on known working setups, targeting the minimum supported OS versions (see [`sys.sh`](etc/jhb.conf/sys.sh)).
+- There are __version recommendations__ based on known working setups, targeting the minimum supported OS versions (see [`sys.sh`](etc/jhb.conf.d/sys.sh)).
   - macOS Monterey 12.6.x
   - Xcode 13.x
   - macOS High Sierra 10.13.4 SDK (from Xcode 9.4.1) for `x86_64` architecture
@@ -38,7 +38,7 @@ Make sure the following prerequisites are met:
 1. Download a release archive, extract and `cd` into it.
 
 1. 💁 _This is an optional step. You are encouraged to skip this._  
-   By default we're going to use `/Users/Shared/work` (see [`directories.sh`](etc/jhb.conf/directories.sh)) to build and install everything as that is a user-independent but user-writable location present on every macOS installation. If you're not comfortable with that, run e.g.
+   By default we're going to use `/Users/Shared/work` (see [`directories.sh`](etc/jhb.conf.d/directories.sh)) to build and install everything as that is a user-independent but user-writable location present on every macOS installation. If you're not comfortable with that, run e.g.
 
     ```bash
     export WRK_DIR=$HOME/my_custom_location
@@ -68,6 +68,7 @@ This is not theoretical work but the result of refactoring and outsourcing parts
 - [Inkscape](https://gitlab.com/inkscape/inkscape): see [mibap](https://gitlab.com/inkscape/devel/mibap)
 - [Zim](https://zim-wiki.org): see [zim_macos](https://gitlab.com/dehesselle/zim_macos)
 - [Siril](https://siril.org): see [siril_macos](https://gitlab.com/free-astro/siril_macos)
+
 ## credits
 
 The jhb logo uses modified versions of
