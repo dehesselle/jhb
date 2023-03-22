@@ -18,7 +18,7 @@
 
 # https://pypi.org/project/wheel
 WHEEL_PIP="\
-  wheel==0.38.4\
+  wheel==0.40.0\
 "
 
 ### functions ##################################################################
