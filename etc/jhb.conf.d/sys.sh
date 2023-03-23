@@ -25,7 +25,7 @@ SYS_MACOS_VER=$(sw_vers -productVersion)
 
 # order is significant: most used platform first
 # shellcheck disable=2206 # we need expansion for the array to work
-SYS_MACOS_VER_SUPPORTED=(${SYS_MACOS_VER_SUPPORTED:-
+SYS_MACOS_VER_SUPPORTED=(${SYS_MACOS_VER_SUPPORTED[@]:-
   12.6.3
   12.6.2
   12.6.1
@@ -39,7 +39,7 @@ SYS_SDK_VER="$(/usr/libexec/PlistBuddy -c \
   "$SDKROOT"/SDKSettings.plist)"
 
 # shellcheck disable=2206 # we need expansion for the array to work
-SYS_SDK_VER_SUPPORTED=(${SYS_SDK_VER_SUPPORTED:-
+SYS_SDK_VER_SUPPORTED=(${SYS_SDK_VER_SUPPORTED[@]:-
   10.13
   11.3
 })
