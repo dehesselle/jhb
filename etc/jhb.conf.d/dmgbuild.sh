@@ -24,12 +24,12 @@
 # - pyobjc-*: framework wrappers
 DMGBUILD_PIP="\
   biplist==1.0.3\
-  dmgbuild==1.5.2\
-  ds-store==1.3.0\
-  mac-alias==2.2.0\
-  pyobjc-core==8.5.1\
-  pyobjc-framework-Cocoa==8.5.1\
-  pyobjc-framework-Quartz==8.5.1\
+  dmgbuild==1.6.0\
+  ds-store==1.3.1\
+  mac-alias==2.2.2\
+  pyobjc-core==9.0.1\
+  pyobjc-framework-Cocoa==9.0.1\
+  pyobjc-framework-Quartz==9.0.1\
 "
 
 ### functions ##################################################################
@@ -37,10 +37,10 @@ DMGBUILD_PIP="\
 function dmgbuild_install
 {
   # shellcheck disable=SC2086 # we need word splitting here
-  jhb run $JHBUILD_PYTHON_PIP install --prefix=$USR_DIR $DMGBUILD_PIP
+  jhb run pip3 install --prefix=$VER_DIR $DMGBUILD_PIP
 
   # dmgbuild has issues with detaching, workaround is to increase max retries
-  gsed -i '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$USR_DIR"/bin/dmgbuild
+  gsed -i '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$BIN_DIR"/dmgbuild
 }
 
 function dmgbuild_run

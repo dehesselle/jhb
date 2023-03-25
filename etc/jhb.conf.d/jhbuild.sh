@@ -35,38 +35,48 @@ JHBUILD_VER=acb52b0
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
-# A dedicated Python runtime (only) for JHBuild. It is installed and kept
-# separately from the rest of the system. It won't interfere with a Python
-# that might get installed as part of building modules with JHBuild.
-JHBUILD_PYTHON_VER_MAJOR=3
-JHBUILD_PYTHON_VER_MINOR=8
-JHBUILD_PYTHON_VER=$JHBUILD_PYTHON_VER_MAJOR.$JHBUILD_PYTHON_VER_MINOR
+#---------------------------------------------- Python runtime for bootstrapping
+
+# This is a dedicated Python runtime to bootstrap JHBuild. It will be removed
+# after bootstrapping has been completed.
+
+JHBUILD_PYTHON_VER_FULL=$(
+  xmllint \
+    --xpath "string(//moduleset/autotools[@id='python3']/branch/@version)" \
+    "$(dirname "${BASH_SOURCE[0]}")"/../modulesets/jhb/gtk-osx-python.modules
+)
+JHBUILD_PYTHON_VER=${JHBUILD_PYTHON_VER_FULL%.*} # reduce to major.minor
+
 JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
 generic/python_macos/v17/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
-JHBUILD_PYTHON_DIR=$OPT_DIR/Python.framework/Versions/$JHBUILD_PYTHON_VER
-JHBUILD_PYTHON_BIN_DIR=$JHBUILD_PYTHON_DIR/bin
 
-export JHBUILD_PYTHON_BIN=$JHBUILD_PYTHON_BIN_DIR/python$JHBUILD_PYTHON_VER
-export JHBUILD_PYTHON_PIP=$JHBUILD_PYTHON_BIN_DIR/pip$JHBUILD_PYTHON_VER
+JHBUILD_PYTHON_DIR=$TMP_DIR/Python.framework
+JHBUILD_PYTHON_VER_DIR=$JHBUILD_PYTHON_DIR/Versions/$JHBUILD_PYTHON_VER
+JHBUILD_PYTHON_BIN_DIR=$JHBUILD_PYTHON_VER_DIR/bin
 
 ### functions ##################################################################
 
 function jhbuild_install_python
 {
-  # Download and extract Python.framework to OPT_DIR.
-  curl -L "$JHBUILD_PYTHON_URL" | tar -C "$OPT_DIR" -x
+  # Download and extract Python.framework to JHBUILD_PYTHON_DIR.
+  curl -L "$JHBUILD_PYTHON_URL" | tar -C "$(dirname "$JHBUILD_PYTHON_DIR")" -x
 
   # Create a pkg-config configuration to match our installation location.
   # Note: sed changes the prefix and exec_prefix lines!
-  find "$JHBUILD_PYTHON_DIR"/lib/pkgconfig/*.pc \
+  find "$JHBUILD_PYTHON_VER_DIR"/lib/pkgconfig/*.pc \
     -type f \
-    -exec sed -i "" "s|prefix=.*|prefix=$JHBUILD_PYTHON_DIR|" {} \;
+    -exec sed -i "" "s|prefix=.*|prefix=$JHBUILD_PYTHON_VER_DIR|" {} \;
 
   jhbuild_set_python_interpreter
 
   # add to PYTHONPATH
-  echo "../../../../../../../usr/lib/python$JHBUILD_PYTHON_VER/site-packages" \
-    >"$JHBUILD_PYTHON_DIR"/lib/python$JHBUILD_PYTHON_VER/site-packages/jhb.pth
+  echo "../../../../../../../lib/python$JHBUILD_PYTHON_VER/site-packages" \
+    >"$JHBUILD_PYTHON_VER_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/jhb.pth"
+}
+
+function jhbuild_uninstall_python
+{
+  rm -rf "$JHBUILD_PYTHON_DIR"
 }
 
 function jhbuild_set_python_interpreter
@@ -75,27 +85,24 @@ function jhbuild_set_python_interpreter
   if command -v gln 1>/dev/null; then
     local gnu=g # necessary for union mount
   fi
-  ${gnu}ln -sf "$JHBUILD_PYTHON_BIN" "$USR_DIR"/bin
-  ${gnu}ln -sf "$JHBUILD_PYTHON_PIP" "$USR_DIR"/bin
+  "$gnu"ln -sf "$JHBUILD_PYTHON_BIN_DIR/python$JHBUILD_PYTHON_VER" "$BIN_DIR"
+  "$gnu"ln -sf "$JHBUILD_PYTHON_BIN_DIR/pip$JHBUILD_PYTHON_VER" "$BIN_DIR"
 
-  # Set interpreter to the one in USR_DIR/bin.
+  # Set interpreter to the one in BIN_DIR.
   while IFS= read -r -d '' file; do
     local file_type
     file_type=$(file "$file")
     if [[ $file_type = *"Python script"* ]]; then
-      sed -i "" "1 s|.*|#!$USR_DIR/bin/python$JHBUILD_PYTHON_VER|" "$file"
+      sed -i "" "1 s|.*|#!$BIN_DIR/python$JHBUILD_PYTHON_VER|" "$file"
     fi
-  done < <(find "$USR_DIR"/bin/ -maxdepth 1 -type f -print0)
+  done < <(find "$BIN_DIR"/ -maxdepth 1 -type f -print0)
 }
 
 function jhbuild_install
 {
-  # We use our own custom Python.
-  jhbuild_install_python
-
   # Install dependencies.
   # shellcheck disable=SC2086 # we need word splitting for requirements
-  $JHBUILD_PYTHON_PIP install --prefix=$USR_DIR $JHBUILD_REQUIREMENTS
+  pip$JHBUILD_PYTHON_VER install --prefix=$VER_DIR $JHBUILD_REQUIREMENTS
 
   function pem_remove_expired
   {
@@ -117,7 +124,7 @@ function jhbuild_install
     cat "$TMP_DIR"/pem-??? >"$pem_bundle"
   }
 
-  local cacert="$USR_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/\
+  local cacert="$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/\
 certifi/cacert.pem"
   pem_remove_expired "$cacert"
 
@@ -131,8 +138,8 @@ certifi/cacert.pem"
   ( # Install JHBuild.
     cd "$SRC_DIR"/jhbuild-$JHBUILD_VER || exit 1
     ./autogen.sh \
-      --prefix="$USR_DIR" \
-      --with-python="$JHBUILD_PYTHON_BIN"
+      --prefix="$VER_DIR" \
+      --with-python="$BIN_DIR/python$JHBUILD_PYTHON_VER"
     make
     make install
   )
@@ -187,10 +194,10 @@ function jhbuild_configure
     fi
 
     # certificates for https
-    echo "os.environ[\"SSL_CERT_FILE\"] = \"$USR_DIR/lib/\
-python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
-    echo "os.environ[\"REQUESTS_CA_BUNDLE\"] = \"$USR_DIR/lib/\
-python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
+    echo "os.environ[\"SSL_CERT_FILE\"] = \
+\"$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
+    echo "os.environ[\"REQUESTS_CA_BUNDLE\"] = \
+\"$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
 
     # user home directory
     echo "os.environ[\"HOME\"] = \"$HOME\""
@@ -212,10 +219,7 @@ python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
   if command -v gln 1>/dev/null; then
     local gnu=g # necessary for union mount
   fi
-  ${gnu}ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
-
-  # Update the paths to Python.
-  jhbuild_set_python_interpreter
+  "$gnu"ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
 }
 
 ### main #######################################################################

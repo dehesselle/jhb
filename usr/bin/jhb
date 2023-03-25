@@ -55,6 +55,6 @@ case "$1" in
     else
       exit 1 # cannot continue
     fi
-    "$USR_DIR"/bin/jhbuild "$@"
+    "$BIN_DIR"/jhbuild "$@"
     ;;
 esac

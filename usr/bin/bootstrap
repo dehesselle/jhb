@@ -112,7 +112,11 @@ for URL in "${RELEASE_URLS[@]}"; do
   fi
 done
 
-echo_i "building everything from scratch"
+if $FORCE_BUILD_FROM_SOURCE; then
+  echo_i "building everything from scratch: FORCE_BUILD_FROM_SOURCE is set"
+else
+  echo_i "building everything from scratch: no suitable binary release"
+fi
 
 #---------------------------------------------------------------- install ccache
 
@@ -129,6 +133,12 @@ fi
 
 #------------------------------------------------- install and configure JHBuild
 
+# We need to solve the "chicken or the egg" problem: we are going to build
+# Python using JHBuild, but JHBuild itself requires Python to run. So we
+# temporarily install and use an externally built Python until we're
+# self-sufficient.
+jhbuild_install_python
+
 jhbuild_install
 jhbuild_configure
 
@@ -137,8 +147,8 @@ jhbuild_configure
 jhbuild bootstrap-gtk-osx
 
 jhb build python3
-ln -sf python3 "$BIN_DIR"/python # workaround for pip3.10/pip3
-jhb build pygments
+jhb build pip wheel pygments
+jhbuild_uninstall_python # we have our own Python now (see comment above)
 
 jhb build meta-gtk-osx-bootstrap
 
@@ -150,5 +160,4 @@ jhbuild build coreutils findutils sed tar
 
 #-------------------------------------------------------------- install dmgbuild
 
-wheel_install
 dmgbuild_install
