@@ -18,12 +18,8 @@
 ### variables ##################################################################
 
 # https://dmgbuild.readthedocs.io/en/latest/
-# https://github.com/al45tair/dmgbuild
-# including optional dependencies:
-# - biplist: binary plist parser/generator
-# - pyobjc-*: framework wrappers
+# https://github.com/dmgbuild/dmgbuild
 DMGBUILD_PIP="\
-  biplist==1.0.3\
   dmgbuild==1.6.0\
   ds-store==1.3.1\
   mac-alias==2.2.2\
