@@ -4,9 +4,9 @@
 
 ### description ################################################################
 
-# This is a convenience wrapper to source all individual configuration files.
-# It also takes care of placing a custom configuration file in the appropriate
-# location.
+# This is a convenience wrapper to source all individual configuration files
+# from jhb.conf.d directory. It supports customizing the configuration by
+# looking for a "downstream" *.conf.d directory which takes precedence.
 
 ### shellcheck #################################################################
 
@@ -31,6 +31,10 @@ _SELF_DIR=$(
   pwd
 )
 
+# Since jhb is intended to be used as submodule in a downstream project, this
+# is the path to downstream's root folder. Downstream's root folder will be
+# checked for a *.conf.d directory to be able to customize/override the
+# configuration (see loop below).
 _CALLER_DIR=$(
   cd "$(dirname "${BASH_SOURCE[${#BASH_SOURCE[@]}]}")" || exit 1
   pwd
