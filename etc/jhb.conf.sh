@@ -5,8 +5,9 @@
 ### description ################################################################
 
 # This is a convenience wrapper to source all individual configuration files
-# from jhb.conf.d directory. It supports customizing the configuration by
-# looking for a "downstream" *.conf.d directory which takes precedence.
+# from jhb.conf.d directory. It supports customizing that configuration in
+# downstream projects by looking for *.conf.d directories on the same level
+# where jhb has been cloned to as submodule.
 
 ### shellcheck #################################################################
 
@@ -31,17 +32,8 @@ _SELF_DIR=$(
   pwd
 )
 
-# Since jhb is intended to be used as submodule in a downstream project, this
-# is the path to downstream's root folder. Downstream's root folder will be
-# checked for a *.conf.d directory to be able to customize/override the
-# configuration (see loop below).
-_CALLER_DIR=$(
-  cd "$(dirname "${BASH_SOURCE[${#BASH_SOURCE[@]}]}")" || exit 1
-  pwd
-)
-
 # iterate through all .conf.d directories
-for _DIR in "$_CALLER_DIR"/*.conf.d "$_SELF_DIR"/*.conf.d; do
+for _DIR in "$_SELF_DIR"/../../*.conf.d "$_SELF_DIR"/*.conf.d; do
   # First check if (at least one) directory exists (as there is a wildcard).
   # Otherwise we end up adding an unresolvable expression to the _DIRS which
   # would lead to errors later. This is specifically meant to catch cases
@@ -69,4 +61,4 @@ for _DIR in $_DIRS; do
 done
 
 unset _FILE _DIR _DIRS
-unset _SELF_DIR _CALLER_DIR
+unset _SELF_DIR
