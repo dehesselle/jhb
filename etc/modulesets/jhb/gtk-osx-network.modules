@@ -22,13 +22,11 @@
   -->
   <autotools id="openssl"
              autogen-sh="Configure"
-             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
-             autogenargs="shared"
-             makeinstallargs="install_sw"
-             supports-non-srcdir-builds="no">
-    <branch module="openssl-1.1.1t.tar.gz"
-            version="1.1.1t"
-            hash="sha256:8dee9b24bdb1dcbf0c3d1e9b02fb8f6bf22165e807f45adeb7c9677536859d3b"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s">
+
+    <branch module="openssl-3.1.0.tar.gz"
+            version="3.1.0"
+            hash="sha256:aaa925ad9828745c4cad9d9efeb273deca820f2cdcf2c3ac7d7c1212b7c497b4"
             repo="openssl" />
   </autotools>
   <!---->
