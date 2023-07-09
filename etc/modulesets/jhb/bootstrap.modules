@@ -32,9 +32,9 @@
   <autotools id="xz"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="xz/xz-5.4.2.tar.bz2"
-            version="5.4.2"
-            hash="sha256:aa49909cbd9028c4666a35fa4975f9a6203ed98154fbb8223ee43ef9ceee97c3"
+    <branch module="xz/xz-5.4.3.tar.bz2"
+            version="5.4.3"
+            hash="sha256:9243a04598d7a70c1f567a0143a255581ac5c64b140fd55fd5cbc1e00b0e6f90"
             repo="tukaani.org" />
   </autotools>
   <!--
@@ -64,10 +64,11 @@
   -->
   <autotools id="cmake"
              autogen-sh="bootstrap"
-             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --docdir=share/doc/cmake-3.25"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s"
              bootstrap="true">
-    <branch module="v3.25/cmake-3.25.1.tar.gz"
-            version="3.25.1"
+    <branch module="v3.26/cmake-3.26.4.tar.gz"
+            version="3.26.4"
+            hash="sha256:313b6880c291bd4fe31c0aa51d6e62659282a521e695f30d5cc0d25abbd5c208"
             repo="cmake" />
   </autotools>
   <!--
@@ -99,18 +100,18 @@
   <autotools id="autoconf-archive"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="autoconf-archive/autoconf-archive-2022.09.03.tar.xz"
-            version="2022-09-03"
-            hash="sha256:e07454f00d8cae7907bed42d0747798927809947684d94c37207a4d63a32f423"
+    <branch module="autoconf-archive/autoconf-archive-2023.02.20.tar.xz"
+            version="2023-02-20"
+            hash="sha256:71d4048479ae28f1f5794619c3d72df9c01df49b1c628ef85fde37596dc31a33"
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
   <autotools id="libtool"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="libtool/libtool-2.4.6.tar.gz"
-            version="2.4.6"
-            hash="sha256:e3bd4d5d3d025a36c21dd6af7ea818a2afcd4dfc1ea5a17b39d7854bcd0c06e3"
+    <branch module="libtool/libtool-2.4.7.tar.gz"
+            version="2.4.7"
+            hash="sha256:04e96c2404ea70c590c546eba4202a4e12722c640016c12b9b2f1ce3d481e9a8"
             repo="ftp.gnu.org">
       <patch file="libtool-apple-sort.patch"
              strip="1" />
@@ -185,19 +186,11 @@
             version="0.51.0"
             hash="sha256:67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
             repo="intltool" />
-    <!--
-    <dependencies>
-      <dep package="perl-xml-parser"/>
-    </dependencies>
-    -->
   </autotools>
   <!---->
   <metamodule id="meta-bootstrap">
     <dependencies>
       <dep package="xz" />
-      <!--
-        Needed for 64-bit
-      -->
       <dep package="gettext" />
       <dep package="cmake" />
       <dep package="autoconf-archive" />
