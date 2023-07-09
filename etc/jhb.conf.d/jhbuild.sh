@@ -20,18 +20,18 @@ export JHBUILDRC=${JHBUILDRC:-$ETC_DIR/jhbuildrc}
 export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS="\
-  certifi==2022.12.7\
-  meson==1.0.0\
+  certifi==2023.5.7\
+  meson==1.1.1\
   ninja==1.11.1\
 "
 
-# JHBuild build system >3.38.0 (current master as of 22.03.2023)
+# JHBuild build system >3.38.0 (current master as of 30.06.2023)
 # The last stable release (3.38.0) is missing at least one critical fix
 # (a896cbf404461cab979fa3cd1c83ddf158efe83b) and other enhancements
 # (e.g. acb52b03594989cfb45173841b318fccf557fefb).
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://wiki.gnome.org/Projects/Jhbuild/Introduction
-JHBUILD_VER=acb52b0
+JHBUILD_VER=7d96aa5
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
@@ -48,7 +48,7 @@ JHBUILD_PYTHON_VER_FULL=$(
 JHBUILD_PYTHON_VER=${JHBUILD_PYTHON_VER_FULL%.*} # reduce to major.minor
 
 JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
-generic/python_macos/v17/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
+generic/python_macos/v19/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
 
 JHBUILD_PYTHON_DIR=$TMP_DIR/Python.framework
 JHBUILD_PYTHON_VER_DIR=$JHBUILD_PYTHON_DIR/Versions/$JHBUILD_PYTHON_VER
