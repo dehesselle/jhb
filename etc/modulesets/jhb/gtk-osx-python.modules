@@ -37,9 +37,9 @@
   </autotools>
   <!---->
   <distutils id="pip">
-    <branch module="6b/8b/0b16094553ecc680e43ded8f920c3873b01b1da79a54274c98f08cb29fca/pip-23.0.1.tar.gz"
-            version="23.0.1"
-            hash="sha256:cd015ea1bfb0fcef59d8a286c1f8bebcb983f6317719d415dc5351efb7cd7024"
+    <branch module="fa/ee/74ff76da0ab649eec7581233daeb43d8aa35383d8f75317b2ab3b80c922f/pip-23.1.2.tar.gz"
+            version="23.1.2"
+            hash="sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"
             repo="pymodules" />
     <dependencies>
       <dep package="python3" />
