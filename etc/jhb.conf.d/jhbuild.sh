@@ -160,6 +160,12 @@ function jhbuild_configure
     rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$suffix/"
   fi
 
+  if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
+    local target=$SYS_SDK_VER
+  else
+    local target=$MACOSX_DEPLOYMENT_TARGET
+  fi
+
   # create custom jhbuildrc configuration
   {
     echo "# -*- mode: python -*-"
@@ -177,7 +183,7 @@ function jhbuild_configure
     echo "top_builddir = '$VAR_DIR/jhbuild'"
 
     # setup macOS SDK
-    echo "setup_sdk(target=\"$SYS_SDK_VER\")"
+    echo "setup_sdk(target=\"$target\")"
 
     # set release build
     echo "setup_release()"
