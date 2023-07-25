@@ -5,7 +5,7 @@
   <!--
     Please format this file using https://github.com/htacg/tidy-html5
 
-        tidy -config ../tidy.conf -m gtk-osx-bootstrap.modules
+        tidy -config tidy.conf -m gtk-osx-bootstrap.modules
   -->
   <repository name="download.gnome.org"
               default="yes"

@@ -5,7 +5,7 @@
   <!--
     Please format this file using https://github.com/htacg/tidy-html5
 
-        tidy -config ../tidy.conf -m bootstrap.modules
+        tidy -config tidy.conf -m bootstrap.modules
   -->
   <repository name="ftp.gnu.org"
               href="https://ftp.gnu.org/gnu/"
