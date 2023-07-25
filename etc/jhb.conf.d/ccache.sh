@@ -14,7 +14,7 @@
 
 export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 
-CCACHE_MAXSIZE=${CCACHE_MAXSIZE:-3.0G}
+CCACHE_MAXSIZE=${CCACHE_MAXSIZE:-3.5G}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
