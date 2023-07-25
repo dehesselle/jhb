@@ -33,7 +33,7 @@ SELF_DIR=$(
 
 ### functions ##################################################################
 
-# shellcheck disable=SC2120 # optinal arguments
+# shellcheck disable=SC2120 # optional arguments
 function create_tar
 {
   local suffix=$1 # optional
@@ -52,7 +52,7 @@ function create_tar
   echo "$file"
 }
 
-# shellcheck disable=SC2120 # optinal arguments
+# shellcheck disable=SC2120 # optional arguments
 function create_dmg
 {
   local suffix=$1 # optional
