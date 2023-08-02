@@ -150,14 +150,14 @@ function jhbuild_configure
   local moduleset=$1
 
   moduleset=${moduleset:-jhb.modules}
-  local suffix
-  suffix=$(basename -s .modules "$moduleset")
+  local name
+  name=$(basename -s .modules "$moduleset")
 
   # install custom moduleset
-  if [ "$suffix" != "jhb" ]; then
+  if [ "$name" != "jhb" ]; then
     local moduleset_dir
     moduleset_dir=$(dirname "$(greadlink -f "$moduleset")")
-    rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$suffix/"
+    rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$name/"
   fi
 
   if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
@@ -171,7 +171,7 @@ function jhbuild_configure
     echo "# -*- mode: python -*-"
 
     # moduleset
-    echo "modulesets_dir = '$ETC_DIR/modulesets/$suffix'"
+    echo "modulesets_dir = '$ETC_DIR/modulesets/$name'"
     echo "moduleset = '$(basename "$moduleset")'"
     echo "use_local_modulesets = True"
 
@@ -215,17 +215,17 @@ function jhbuild_configure
     fi
 
     # add moduleset-specific settings if exist
-    local moduleset_rc=$ETC_DIR/modulesets/$suffix/jhbuildrc
+    local moduleset_rc=$ETC_DIR/modulesets/$name/jhbuildrc
     if [ -f "$moduleset_rc" ]; then
       cat "$moduleset_rc"
     fi
 
-  } >"$JHBUILDRC-$suffix"
+  } >"$JHBUILDRC-$name"
 
   if command -v gln 1>/dev/null; then
     local gnu=g # necessary for union mount
   fi
-  "$gnu"ln -sf "$(basename "$JHBUILDRC-$suffix")" "$JHBUILDRC_CUSTOM"
+  "$gnu"ln -sf "$(basename "$JHBUILDRC-$name")" "$JHBUILDRC_CUSTOM"
 }
 
 ### main #######################################################################
