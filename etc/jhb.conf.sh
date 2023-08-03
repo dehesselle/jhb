@@ -6,8 +6,8 @@
 
 # This is a convenience wrapper to source all individual configuration files
 # from jhb.conf.d directory. It supports customizing that configuration in
-# downstream projects by looking for *.conf.d directories on the same level
-# where jhb has been cloned to as submodule.
+# downstream projects by looking for pre.conf.d and post.conf.d directories
+# on the same level where jhb has been cloned to as submodule.
 
 ### shellcheck #################################################################
 
@@ -32,22 +32,18 @@ _SELF_DIR=$(
   pwd
 )
 
-# iterate through all .conf.d directories
-for _DIR in "$_SELF_DIR"/../../*.conf.d "$_SELF_DIR"/*.conf.d; do
-  # First check if (at least one) directory exists (as there is a wildcard).
-  # Otherwise we end up adding an unresolvable expression to the _DIRS which
-  # would lead to errors later. This is specifically meant to catch cases
-  # where _CALLER_DIR contains no configuration subdirectory.
+_DIRS=$_SELF_DIR/jhb.conf.d
+# shellcheck disable=SC1073 # this is more readable
+# iterate through all conf.d directories
+for _DIR in "$_SELF_DIR"{/.,/../../}*{pre,post}.conf.d; do
+  # Check if _DIR is actually a valid/existing directory. Otherwise we
+  # end up adding an unresolved wildcard expression to _DIRS.
   if [ -d "$_DIR" ]; then
-    # make sure we're not creating duplicate entries
-    if [[ "$_DIRS" != *"$(basename "$_DIR")"* ]]; then
-      # make sure that job.conf.d is the last item in the list so other
-      # configuration directories take precedence
-      if [ "$(basename "$_DIR")" = "jhb.conf.d" ]; then
-        _DIRS="$_DIRS $_DIR"
-      else
-        _DIRS="$_DIR $_DIRS"
-      fi
+    # Decide if the directory needs to prepended or appended to the list.
+    if [[ $_DIR = *pre* ]]; then
+      _DIRS="$_DIR $_DIRS"  # prepend
+    else
+      _DIRS="$_DIRS $_DIR"  # append
     fi
   fi
 done
