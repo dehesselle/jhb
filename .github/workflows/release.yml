@@ -16,22 +16,22 @@ jobs:
 
 ################################################################################
 
-  check_requirements:
+  check_prerequisites:
     runs-on: macos-12
     steps:
 
-      - name: checkout jhb repository
+      - name: Checkout jhb repository
         uses: actions/checkout@v3
         with:
           submodules: true
 
-      - name: fail on missing version tag
+      - name: Fail on missing version tag
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         uses: actions/github-script@v3
         with:
           script: core.setFailed("version tag not found")
 
-      - name: get jhb version
+      - name: Get jhb version
         id: jhb
         env:
           SYS_IGNORE_USR_LOCAL: true
@@ -39,13 +39,9 @@ jobs:
           source etc/jhb.conf.d/version.sh
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: get version tag
-        id: tag
-        run: echo "version={GITHUB_REF##*v}" >> $GITHUB_OUTPUT
-
       # Once we have established that the jhb version (version.sh)
       # matches the git tag we can safely rely on the tag from here on.
-      - name: fail on version mismatch
+      - name: Fail on version mismatch
         if: ${{ !endsWith(github.ref, steps.jhb.outputs.version) }}
         uses: actions/github-script@v3
         with:
@@ -53,51 +49,29 @@ jobs:
 
 ################################################################################
 
-  call_build:
+  build_jhb:
     uses: ./.github/workflows/build.yml
     with:
       SDK_DOWNLOAD_URL_REQUIRED: true
     secrets:
       SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-    needs: check_requirements
+    needs: check_prerequisites
 
 ################################################################################
 
   create_release:
-    runs-on: macos-12
-    needs: call_build
-    env:
-      WRK_DIR: /Users/Shared/work
+    runs-on: ubuntu-latest
+    needs: build_jhb
     steps:
 
-    #--------------------------------------------------- prepare the environment
-
-      - name: checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true
-
-      - name: get jhb info
-        id: jhb
-        run: |
-          source etc/jhb.conf.sh
-          echo "archive=$RELEASE_ARCHIVE" >> $GITHUB_OUTPUT
-
-      - name: download artifact
+      - name: Download jhb archive
         uses: actions/download-artifact@v3
         with:
-          name: jhb_archive
-
-      - name: download artifact checksum
-        uses: actions/download-artifact@v3
-        with:
-          name: jhb_archive_sha256
-
-    #------------------------------------------------------------ create release
+          name: jhb
 
       - name: create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ steps.jhb.outputs.archive }}*"
+          artifacts: jhb*.tar.xz
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true

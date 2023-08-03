@@ -35,7 +35,7 @@ _SELF_DIR=$(
 _DIRS=$_SELF_DIR/jhb.conf.d
 # shellcheck disable=SC1073 # this is more readable
 # iterate through all conf.d directories
-for _DIR in "$_SELF_DIR"{/.,/../../}*{pre,post}.conf.d; do
+for _DIR in "$_SELF_DIR"{/,/../../}*{pre,post}.conf.d; do
   # Check if _DIR is actually a valid/existing directory. Otherwise we
   # end up adding an unresolved wildcard expression to _DIRS.
   if [ -d "$_DIR" ]; then

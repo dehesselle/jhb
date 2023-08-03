@@ -32,29 +32,29 @@ jobs:
 
       #------------------------------------------------- prepare the environemnt
 
-      - name: checkout jhb repository
+      - name: Checkout jhb repository
         uses: actions/checkout@v3
         with:
           submodules: true
 
-      - name: create cache id
-        id: cache_id
-        uses: josStorer/get-current-time@v2.0.2
+      - name: Create timestamp
+        id: timestamp
+        uses: josStorer/get-current-time@v2
         with:
           format: "YYYY-MM-DD-HH-mm-ss"
 
       # Create a new cache, building ontop the most recent old one.
-      - name: setup cache
+      - name: Set up cache
         id: cache
         uses: actions/cache@v3
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-jhb-${{ steps.cache_id.outputs.formattedTime }}
+          key: ccache-jhb-${{ steps.timestamp.outputs.formattedTime }}
           restore-keys: ccache-jhb-
 
-      # GitHub does not provide 10.13 SDK on their runners and no image older
-      # than Catalina. See here for what you can expect in their images:
-      # https://github.com/actions/virtual-environments/tree/main/images/macos
+      # Install a macOS SDK to target a minimum OS version if SDK_DOWNLOAD_URL
+      # has been provided, otherwise whatever SDK is the runner's default one
+      # is being used.
       #
       # Official downloads from Apple are not accessible without a developer
       # account and I don't trust 3rd party sources (e.g. "phracker"). So I'm
@@ -63,10 +63,10 @@ jobs:
       # https://github.com/dehesselle/sdkchecksum
       #
       # In order to use your own SDK_DOWNLOAD_URL, create a repository secret
-      # of said name and proivide a link to a .tar.xz file.
+      # of said name and provide a link to a .tar.xz file.
 
       # Using SDK is mandatory if building for a release.
-      - name: fail on missing secret SDK_DOWNLOAD_URL
+      - name: Fail on missing secret SDK_DOWNLOAD_URL
         if: |
           env.SDK_DOWNLOAD_URL == null &&
           inputs.SDK_DOWNLOAD_URL_REQUIRED
@@ -76,7 +76,7 @@ jobs:
         with:
           script: core.setFailed("SDK_DOWNLOAD_URL secret not found")
 
-      - name: install macOS SDK
+      - name: Install macOS SDK
         if: env.SDK_DOWNLOAD_URL != null
         env:
           SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
@@ -85,7 +85,7 @@ jobs:
           curl --http1.1 -L ${{ secrets.SDK_DOWNLOAD_URL }} | tar -C $WRK_DIR -xJp
           echo "SDKROOT=$WRK_DIR/$(basename ${SDK_DOWNLOAD_URL%%.tar.xz*})" >> $GITHUB_ENV
 
-      - name: verify SDK
+      - name: Verify macOS SDK
         if: env.SDK_DOWNLOAD_URL != null
         env:
           SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
@@ -97,38 +97,31 @@ jobs:
       # GitHub does not provide a clean macOS installation. We need to move the
       # pre-installed components out of the way so we don't pick them up by
       # accident.
-      - name: disable /usr/local
+      - name: Disable /usr/local
         run: |
           cd /usr/local
           for dir in include lib share; do sudo mv $dir $dir.disabled; done
 
       #------------------------------------------------------------------- build
 
-      - name: bootstrap JHBuild
+      - name: Bootstrap JHBuild
         env:
           FORCE_BUILD_FROM_SOURCE: true
         run: usr/bin/bootstrap
 
-      - name: create archive
-        id: jhb
+      - name: Create archive
         run: |
           usr/bin/archive remove_nonessentials
-          echo "archive=$(usr/bin/archive create_tar)" >> $GITHUB_OUTPUT
+          usr/bin/archive create_tar
 
       #-------------------------------------------------------- upload artifacts
 
       # Restore /usr/local, GitHub actions depend on these.
-      - name: restore /usr/local
+      - name: Restore /usr/local
         run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
 
       - name: upload archive
         uses: actions/upload-artifact@v3
         with:
-          name: jhb_archive
-          path: ${{ steps.jhb.outputs.archive }}
-
-      - name: upload archive checksum
-        uses: actions/upload-artifact@v3
-        with:
-          name: jhb_archive_sha256
-          path: ${{ steps.jhb.outputs.archive }}.sha256
+          name: jhb
+          path: jhb*.tar.xz
