@@ -25,9 +25,9 @@ Make sure the following prerequisites are met:
   - Undo any customizations in dotfiles like `.profile`, `.bashrc` etc. that interfere with the environment.
     - If in doubt, use a dedicated user account instead.
 
-- There are __version recommendations__ based on known working setups, targeting the minimum supported OS versions (see [`sys.sh`](etc/jhb.conf.d/sys.sh)).
+- There are __version recommendations__ based on a known working setup (used in CI), targeting the minimum supported OS versions (see [`sys.sh`](etc/jhb.conf.d/sys.sh)).
   - macOS Monterey 12.6.x
-  - Xcode 13.x
+  - Xcode 14.0.1 (last version containing Monterey 12.3 SDK)
   - macOS High Sierra 10.13.4 SDK (from Xcode 9.4.1) for `x86_64` architecture
   - macOS Big Sur 11.3 SDK (from Xcode 13.0) for `arm64` architecture
 
@@ -65,7 +65,7 @@ Make sure the following prerequisites are met:
 
 This is not theoretical work but the result of refactoring and outsourcing parts of Inkscape's build pipeline so it can be reused to build other GTK-based apps on macOS. Here you can see this in production:
 
-- [Inkscape](https://gitlab.com/inkscape/inkscape): see [mibap](https://gitlab.com/inkscape/devel/mibap)
+- [Inkscape](https://gitlab.com/inkscape/inkscape): see [deps.macos](https://gitlab.com/inkscape/deps/macos)
 - [Zim](https://zim-wiki.org): see [zim_macos](https://gitlab.com/dehesselle/zim_macos)
 - [Siril](https://siril.org): see [siril_macos](https://gitlab.com/free-astro/siril_macos)
 
