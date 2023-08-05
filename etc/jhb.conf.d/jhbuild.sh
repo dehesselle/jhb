@@ -157,7 +157,9 @@ function jhbuild_configure
   if [ "$name" != "jhb" ]; then
     local moduleset_dir
     moduleset_dir=$(dirname "$(greadlink -f "$moduleset")")
-    rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$name/"
+    # Syncing links throws errors on the overlay ("cannot update timestamps")
+    # and since this only affects the dtd and xsl files, we skip them.
+    rsync -a --no-links --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$name/"
   fi
 
   if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
