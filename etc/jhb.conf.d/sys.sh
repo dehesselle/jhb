@@ -23,29 +23,16 @@ fi
 
 SYS_MACOS_VER=$(sw_vers -productVersion)
 
-# order is significant: most used platform first
-# shellcheck disable=2206 # we need expansion for the array to work
-SYS_MACOS_VER_SUPPORTED=(${SYS_MACOS_VER_SUPPORTED[@]:-
-  12.6.8
-  12.6.7
-  12.6.6
-  12.6.5
-  12.6.4
-  12.6.3
-  12.6.2
-  12.6.1
-  12.6
-  13.5
-})
-
 SYS_SDK_VER="$(/usr/libexec/PlistBuddy -c \
   "Print :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" \
   "$SDKROOT"/SDKSettings.plist)"
 
+SYS_UNAME=$(uname -m)
+
 # shellcheck disable=2206 # we need expansion for the array to work
-SYS_SDK_VER_SUPPORTED=(${SYS_SDK_VER_SUPPORTED[@]:-
-  10.13
-  11.3
+SYS_PLATFORM_SUPPORTED=(${SYS_PLATFORM_SUPPORTED[@]:-
+  "x86_64 12.6 10.13"
+  "arm64 12.6 11.3"
 })
 
 ### functions ##################################################################
@@ -59,28 +46,24 @@ function sys_create_log
   done
 }
 
-function sys_macos_is_supported
+function sys_platform_is_supported
 {
-  for version in "${SYS_MACOS_VER_SUPPORTED[@]}"; do
-    if [ "$version" = "$SYS_MACOS_VER" ]; then
-      return 0
+  for triplet in "${SYS_PLATFORM_SUPPORTED[@]}"; do
+    if [[ $triplet =~ ^(x86_64|arm64)\ ([0-9\.]+)\ ([0-9\.]+)$  ]]; then
+      local uname="${BASH_REMATCH[1]}"
+      local macos_ver="${BASH_REMATCH[2]}"
+      local sdk_ver="${BASH_REMATCH[3]}"
+
+      if [ "$SYS_UNAME" = "$uname" ] &&
+         [[ "$SYS_MACOS_VER" = "$macos_ver"* ]] &&
+         [ "$SYS_SDK_VER" = "$sdk_ver" ]; then
+        echo_d "supported build: uname=$SYS_UNAME macOS=$SYS_MACOS_VER SDK=$SYS_SDK_VER"
+        return 0
+      fi
     fi
   done
 
-  echo_w "using macOS $SYS_MACOS_VER (supported: \
-${SYS_MACOS_VER_SUPPORTED[*]})"
-  return 1
-}
-
-function sys_sdk_is_supported
-{
-  for version in "${SYS_SDK_VER_SUPPORTED[@]}"; do
-    if [ "$version" = "$SYS_SDK_VER" ]; then
-      return 0
-    fi
-  done
-
-  echo_w "using SDK $SYS_SDK_VER (supported: ${SYS_SDK_VER_SUPPORTED[*]})"
+  echo_w "unsupported build: uname=$SYS_UNAME macOS=$SYS_MACOS_VER SDK=$SYS_SDK_VER"
   return 1
 }
 

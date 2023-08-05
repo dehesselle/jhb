@@ -49,9 +49,8 @@ case "$1" in
     ;;
   *)
     if sys_wrkdir_is_usable && sdkroot_exists && sys_usrlocal_is_clean; then
-      # these checks may issue warnings but have have no consequences otherwise
-      sys_macos_is_supported || true
-      sys_sdk_is_supported || true
+      # these checks may issue warnings but have no consequences otherwise
+      sys_platform_is_supported || true
     else
       exit 1 # cannot continue
     fi
