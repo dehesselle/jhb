@@ -29,9 +29,9 @@
   <autotools id="xz"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="xz/xz-5.4.3.tar.bz2"
-            version="5.4.3"
-            hash="sha256:9243a04598d7a70c1f567a0143a255581ac5c64b140fd55fd5cbc1e00b0e6f90"
+    <branch module="xz/xz-5.4.4.tar.bz2"
+            version="5.4.4"
+            hash="sha256:0b6fcde1ac38e90433a2556f500c065950b9bcd2d602006efc334782bdfe6296"
             repo="tukaani.org" />
   </autotools>
   <!--
