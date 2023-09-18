@@ -27,14 +27,6 @@ SYS_SDK_VER="$(/usr/libexec/PlistBuddy -c \
   "Print :DefaultProperties:MACOSX_DEPLOYMENT_TARGET" \
   "$SDKROOT"/SDKSettings.plist)"
 
-SYS_UNAME=$(uname -m)
-
-# shellcheck disable=2206 # we need expansion for the array to work
-SYS_PLATFORM_SUPPORTED=(${SYS_PLATFORM_SUPPORTED[@]:-
-  "x86_64 12.6 10.13"
-  "arm64 12.6 11.3"
-})
-
 ### functions ##################################################################
 
 function sys_create_log
@@ -44,27 +36,6 @@ function sys_create_log
   for var in SYS_MACOS_VER SYS_SDK_VER VERSION VER_DIR WRK_DIR; do
     echo "$var = $(eval echo \$$var)" >>"$LOG_DIR"/jhb.log
   done
-}
-
-function sys_platform_is_supported
-{
-  for triplet in "${SYS_PLATFORM_SUPPORTED[@]}"; do
-    if [[ $triplet =~ ^(x86_64|arm64)\ ([0-9\.]+)\ ([0-9\.]+)$  ]]; then
-      local uname="${BASH_REMATCH[1]}"
-      local macos_ver="${BASH_REMATCH[2]}"
-      local sdk_ver="${BASH_REMATCH[3]}"
-
-      if [ "$SYS_UNAME" = "$uname" ] &&
-         [[ "$SYS_MACOS_VER" = "$macos_ver"* ]] &&
-         [ "$SYS_SDK_VER" = "$sdk_ver" ]; then
-        echo_d "supported build: uname=$SYS_UNAME macOS=$SYS_MACOS_VER SDK=$SYS_SDK_VER"
-        return 0
-      fi
-    fi
-  done
-
-  echo_w "unsupported build: uname=$SYS_UNAME macOS=$SYS_MACOS_VER SDK=$SYS_SDK_VER"
-  return 1
 }
 
 function sys_usrlocal_is_clean

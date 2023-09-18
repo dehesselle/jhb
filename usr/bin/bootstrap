@@ -77,8 +77,7 @@ echo_i "VER_DIR = $VER_DIR"
 #--------------------------------------------------------- perform system checks
 
 if sys_wrkdir_is_usable && sdkroot_exists && sys_usrlocal_is_clean; then
-  # these checks may issue warnings but have no consequences otherwise
-  : # sys_platform_is_supported || true # FIXME: not working as intended
+  :      # We're ok!
 else
   exit 1 # cannot continue
 fi
