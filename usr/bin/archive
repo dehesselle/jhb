@@ -43,7 +43,9 @@ function create_tar
 
   echo_i "creating $file"
 
-  tar -C "$WRK_DIR" -cp "$(basename "$VER_DIR")" |
+  tar -C "$WRK_DIR" \
+      --exclude="$(basename "$TMP_DIR")"/?* \
+      -cp "$(basename "$VER_DIR")" |
     XZ_OPT=-T0 "$BIN_DIR"/xz >"$file"
 
   shasum -a 256 "$file" >"$file".sha256

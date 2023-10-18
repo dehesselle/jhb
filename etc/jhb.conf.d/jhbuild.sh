@@ -74,11 +74,6 @@ function jhbuild_install_python
     >"$JHBUILD_PYTHON_VER_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/jhb.pth"
 }
 
-function jhbuild_uninstall_python
-{
-  rm -rf "$JHBUILD_PYTHON_DIR"
-}
-
 function jhbuild_set_python_interpreter
 {
   # Symlink binaries to USR_DIR/bin.

@@ -142,7 +142,6 @@ jhbuild_configure
 jhbuild bootstrap-gtk-osx
 
 jhb build python3 pip
-jhbuild_uninstall_python # we have our own Python now (see comment above)
 
 jhb build meta-gtk-osx-bootstrap
 
