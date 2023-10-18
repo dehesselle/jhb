@@ -61,7 +61,8 @@
   -->
   <autotools id="cmake"
              autogen-sh="bootstrap"
-             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s %(autogenargs)s"
+             autogenargs="--docdir=share/doc/cmake-3.26"
              bootstrap="true">
     <branch module="v3.26/cmake-3.26.4.tar.gz"
             version="3.26.4"
