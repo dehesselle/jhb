@@ -55,7 +55,7 @@ function dmgbuild_run
     local build
     build=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$plist")
 
-    dmg=$(basename -s .app "$app_dir")_${version}+${build}_$(uname -m).dmg
+    dmg=$(basename -s .app "$app_dir")-${version}+${build}_$(uname -m).dmg
   fi
 
   # Copy templated version of the file (it contains placeholders) to source
