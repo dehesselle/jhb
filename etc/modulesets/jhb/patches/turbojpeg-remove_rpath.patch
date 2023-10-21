@@ -1,0 +1,36 @@
+--- a/CMakeLists.txt	2023-10-11 22:11:45
++++ b/CMakeLists.txt	2023-10-21 17:58:43
+@@ -678,10 +678,11 @@
+     endif()
+     if(APPLE AND (NOT CMAKE_OSX_DEPLOYMENT_TARGET OR
+                   CMAKE_OSX_DEPLOYMENT_TARGET VERSION_GREATER 10.4))
+-      if(NOT CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG)
+-        set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
+-      endif()
+-      set_target_properties(turbojpeg PROPERTIES MACOSX_RPATH 1)
++      #if(NOT CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG)
++        #set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
++      #endif()
++      #set_target_properties(turbojpeg PROPERTIES MACOSX_RPATH 1)
++      set_target_properties(turbojpeg PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_FULL_LIBDIR}")
+     endif()
+     set_target_properties(turbojpeg PROPERTIES
+       SOVERSION ${TURBOJPEG_SO_MAJOR_VERSION} VERSION ${TURBOJPEG_SO_VERSION})
+--- a/sharedlib/CMakeLists.txt	2023-10-11 22:11:45
++++ b/sharedlib/CMakeLists.txt	2023-10-21 18:06:09
+@@ -43,10 +43,11 @@
+   VERSION ${SO_MAJOR_VERSION}.${SO_AGE}.${SO_MINOR_VERSION})
+ if(APPLE AND (NOT CMAKE_OSX_DEPLOYMENT_TARGET OR
+               CMAKE_OSX_DEPLOYMENT_TARGET VERSION_GREATER 10.4))
+-  if(NOT CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG)
+-    set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
+-  endif()
+-  set_target_properties(jpeg PROPERTIES MACOSX_RPATH 1)
++  #if(NOT CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG)
++    #set(CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "-Wl,-rpath,")
++  #endif()
++  #set_target_properties(jpeg PROPERTIES MACOSX_RPATH 1)
++  set_target_properties(jpeg PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_FULL_LIBDIR}")
+ endif()
+ if(MAPFLAG)
+   set_target_properties(jpeg PROPERTIES
