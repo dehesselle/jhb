@@ -40,8 +40,14 @@ temporary_dir = $CCACHE_DIR/tmp
 EOF
   fi
 
+  # If GNU's ln is available (gln), use that. Necessary when working
+  # with union-mounts.
+  if command -v gln 1>/dev/null; then
+    local gnu=g
+  fi
+
   for compiler in clang clang++ gcc g++; do
-    ln -sf "$CCACHE_BIN" "$USR_DIR"/bin/$compiler
+    "$gnu"ln -sf "$CCACHE_BIN" "$USR_DIR"/bin/$compiler
   done
 }
 
