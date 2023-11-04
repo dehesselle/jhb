@@ -4,7 +4,6 @@
 ./cmake-*
 ./flex-*
 ./gettext-*
-./gtk-osx-docbook-*
 ./intltool-*
 ./jhbuild-*
 ./libtool-*
