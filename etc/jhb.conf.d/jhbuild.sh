@@ -21,7 +21,7 @@ export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS="\
   certifi==2023.7.22\
-  meson==1.1.1\
+  meson==1.2.3\
   ninja==1.11.1\
 "
 
