@@ -25,8 +25,8 @@ Make sure the following prerequisites are met:
   - Undo any customizations in dotfiles like `.profile`, `.bashrc` etc. that interfere with the environment.
     - If in doubt, use a dedicated user account instead.
 
-- There are __version recommendations__ based on a known working setup (used in CI), targeting the minimum supported OS versions (see [`sys.sh`](etc/jhb.conf.d/sys.sh)).
-  - macOS Monterey 12.6.x
+- There are __version recommendations__ based on a known working setup (used in CI).
+  - macOS Monterey 12.x (latest version)
   - Xcode 14.0.1 (last version containing Monterey 12.3 SDK)
   - macOS High Sierra 10.13.4 SDK (from Xcode 9.4.1) for `x86_64` architecture
   - macOS Big Sur 11.3 SDK (from Xcode 13.0) for `arm64` architecture
