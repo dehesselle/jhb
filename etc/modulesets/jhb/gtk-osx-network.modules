@@ -24,9 +24,9 @@
              autogen-sh="Configure"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s">
 
-    <branch module="openssl-3.2.0.tar.gz"
-            version="3.2.0"
-            hash="sha256:14c826f07c7e433706fb5c69fa9e25dab95684844b4c962a2cf1bf183eb4690e"
+    <branch module="openssl-3.2.1.tar.gz"
+            version="3.2.1"
+            hash="sha256:83c7329fe52c850677d75e5d0b0ca245309b97e8ecbcfdc1dfdc4ab9fac35b39"
             repo="openssl" />
   </autotools>
   <!---->
