@@ -33,7 +33,7 @@ jobs:
       #------------------------------------------------- prepare the environemnt
 
       - name: Checkout jhb repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -46,7 +46,7 @@ jobs:
       # Create a new cache, building ontop the most recent old one.
       - name: Set up cache
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-jhb-${{ steps.timestamp.outputs.formattedTime }}
@@ -72,7 +72,7 @@ jobs:
           inputs.SDK_DOWNLOAD_URL_REQUIRED
         env:
           SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           script: core.setFailed("SDK_DOWNLOAD_URL secret not found")
 
@@ -121,7 +121,7 @@ jobs:
         run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
 
       - name: upload archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jhb
           path: jhb*.tar.xz
