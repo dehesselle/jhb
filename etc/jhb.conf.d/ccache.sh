@@ -18,11 +18,9 @@ CCACHE_BIN=${CCACHE_BIN:-ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
-# https://gitlab.com/dehesselle/ccache_macos
-# 4.6.3 is the last version to support High Sierra
-CCACHE_VER=${CCACHE_VER:-4.6.3r1}
-CCACHE_URL="https://gitlab.com/api/v4/projects/29039216/packages/generic/\
-ccache_macos/$CCACHE_VER/ccache_$(uname -m).tar.xz"
+CCACHE_VER=${CCACHE_VER:-4.9.1}
+CCACHE_URL="https://github.com/ccache/ccache/releases/download/v$CCACHE_VER/\
+ccache-$CCACHE_VER-darwin.tar.gz"
 
 ### functions ##################################################################
 
@@ -53,7 +51,9 @@ EOF
 
 function ccache_install
 {
-  curl -L "$CCACHE_URL" | tar -C "$USR_DIR"/bin --exclude="ccache.sha256" -xJ
+  curl -L "$CCACHE_URL" |
+    tar -C "$USR_DIR"/bin -xz --strip-components 1 \
+    ccache-"$CCACHE_VER"-darwin/ccache
 }
 
 ### main #######################################################################
