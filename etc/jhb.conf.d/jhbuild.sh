@@ -20,7 +20,6 @@ export JHBUILDRC=${JHBUILDRC:-$ETC_DIR/jhbuildrc}
 export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS="\
-  certifi==2023.11.17\
   meson==1.2.3\
   ninja==1.11.1\
 "
@@ -102,35 +101,9 @@ function jhbuild_install
   # shellcheck disable=SC2086 # we need word splitting for requirements
   pip$JHBUILD_PYTHON_VER install --prefix=$VER_DIR $JHBUILD_REQUIREMENTS
 
-  function pem_remove_expired
-  {
-    local pem_bundle=$1
-
-    # BSD's csplit does not support '{*}' (it's a GNU extension)
-    csplit -n 3 -k -f "$TMP_DIR"/pem- "$pem_bundle" \
-      '/END CERTIFICATE/+1' '{999}' >/dev/null 2>&1 || true
-
-    for pem in "$TMP_DIR"/pem-*; do
-      if [ "$(stat -f%z "$pem")" -eq 0 ]; then
-        rm "$pem" # the csplit command above created one superfluous empty file
-      elif ! openssl x509 -checkend 0 -noout -in "$pem"; then
-        echo_d "removing $pem: $(openssl x509 -enddate -noout -in "$pem")"
-        rm "$pem"
-      fi
-    done
-
-    cat "$TMP_DIR"/pem-??? >"$pem_bundle"
-  }
-
-  local cacert="$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/\
-certifi/cacert.pem"
-  pem_remove_expired "$cacert"
-
-  # Download JHBuild. Setting CURL_CA_BUNDLE is required on older macOS, e.g.
-  # High Sierra.
   local archive
   archive=$PKG_DIR/$(basename $JHBUILD_URL)
-  CURL_CA_BUNDLE=$cacert curl -o "$archive" -L "$JHBUILD_URL"
+  curl -o "$archive" -L "$JHBUILD_URL"
   tar -C "$SRC_DIR" -xf "$archive"
 
   ( # Install JHBuild.
@@ -198,12 +171,6 @@ function jhbuild_configure
     if [ -x "$USR_DIR/bin/g++" ]; then
       echo "os.environ[\"CXX\"] = \"$USR_DIR/bin/g++\""
     fi
-
-    # certificates for https
-    echo "os.environ[\"SSL_CERT_FILE\"] = \
-\"$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
-    echo "os.environ[\"REQUESTS_CA_BUNDLE\"] = \
-\"$LIB_DIR/python$JHBUILD_PYTHON_VER/site-packages/certifi/cacert.pem\""
 
     # user home directory
     echo "os.environ[\"HOME\"] = \"$HOME\""
