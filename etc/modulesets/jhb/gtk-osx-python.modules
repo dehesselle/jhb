@@ -23,15 +23,12 @@
   <autotools id="python3"
              autogen-sh="configure"
              autogenargs="--enable-shared">
-    <branch module="3.10.13/Python-3.10.13.tar.xz"
-            version="3.10.13"
-            hash="sha256:5c88848668640d3e152b35b4536ef1c23b2ca4bd2c957ef1ecbb053f571dd3f6"
+    <branch module="3.10.14/Python-3.10.14.tar.xz"
+            version="3.10.14"
+            hash="sha256:9c50481faa8c2832329ba0fc8868d0a606a680fc4f60ec48d26ce8e076751fda"
             repo="python" />
     <dependencies>
       <dep package='readline' />
-      <!--
-        for hashlib
-      -->
       <dep package="openssl" />
     </dependencies>
   </autotools>
