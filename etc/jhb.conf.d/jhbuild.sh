@@ -21,7 +21,7 @@ export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS="\
   meson==1.2.3\
-  ninja==1.11.1\
+  ninja==1.11.1.1\
 "
 
 # JHBuild build system (current master as of 25.03.2024)
