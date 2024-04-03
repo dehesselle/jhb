@@ -47,7 +47,7 @@ JHBUILD_PYTHON_VER_FULL=$(
 JHBUILD_PYTHON_VER=${JHBUILD_PYTHON_VER_FULL%.*} # reduce to major.minor
 
 JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
-generic/python_macos/v19/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
+generic/python_macos/v21/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
 
 JHBUILD_PYTHON_DIR=$TMP_DIR/Python.framework
 JHBUILD_PYTHON_VER_DIR=$JHBUILD_PYTHON_DIR/Versions/$JHBUILD_PYTHON_VER
