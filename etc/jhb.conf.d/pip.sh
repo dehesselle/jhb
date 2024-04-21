@@ -13,9 +13,9 @@
 
 ### variables ##################################################################
 
-export PIP_CACHE_DIR=$VAR_DIR/cache/pip       # instead ~/Library/Caches/pip
-export PIPENV_CACHE_DIR=$VAR_DIR/cache/pipenv # instead ~/Library/Caches/pipenv
-export PYTHONPYCACHEPREFIX=$VAR_DIR/cache/pycache
+export PIP_CACHE_DIR=$CAC_DIR/pip       # instead ~/Library/Caches/pip
+export PIPENV_CACHE_DIR=$CAC_DIR/pipenv # instead ~/Library/Caches/pipenv
+export PYTHONPYCACHEPREFIX=$CAC_DIR/pycache
 
 ### functions ##################################################################
 

@@ -175,9 +175,9 @@ function remove_nonessential_files
 {
   find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d \
     ! -name bash_d ! -name "jhb*" -exec rm -rf {} \;
-  rm -rf "$VAR_DIR"/build/*
-  rm -rf "$VAR_DIR"/cache/pip/*
-  rm -rf "$VAR_DIR"/cache/pycache/*
+  rm -rf "${BLD_DIR:?}"/*
+  rm -rf "${PIP_CACHE_DIR:?}"/*
+  rm -rf "${PYTHONPYCACHEPREFIX:?}"/*
   rm -rf "${TMP_DIR:?}"/*
 }
 

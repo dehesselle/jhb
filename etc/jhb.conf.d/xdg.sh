@@ -13,8 +13,8 @@
 
 ### variables ##################################################################
 
-export XDG_CACHE_HOME=$VAR_DIR/cache # instead ~/.cache
-export XDG_CONFIG_HOME=$ETC_DIR      # instead ~/.config
+export XDG_CACHE_HOME=$CAC_DIR    # instead ~/.cache
+export XDG_CONFIG_HOME=$ETC_DIR   # instead ~/.config
 
 ### functions ##################################################################
 

@@ -35,7 +35,8 @@
 #         ┗━━ VAR_DIR (var)
 #              ┣━━ BLD_DIR (build)
 #              ┣━━ LOG_DIR (log)
-#              ┗━━ PKG_DIR (cache/pkg)
+#              ┗━━ CAC_DIR (cache)
+#                   ┗━━ PKG_DIR (pkg)
 #
 # You can either override a variable directly or use a corresponding
 # "*_TEMPLATE" variable if you want to reference other variables, e.g.
@@ -63,7 +64,9 @@ TMP_DIR=$(eval echo "${TMP_DIR:-${TMP_DIR_TEMPLATE:-$VER_DIR/tmp}}")
 VAR_DIR=$(eval echo "${VAR_DIR:-${VAR_DIR_TEMPLATE:-$VER_DIR/var}}")
 BLD_DIR=$(eval echo "${BLD_DIR:-${BLD_DIR_TEMPLATE:-$VAR_DIR/build}}")
 LOG_DIR=$(eval echo "${LOG_DIR:-${LOG_DIR_TEMPLATE:-$VAR_DIR/log}}")
-PKG_DIR=$(eval echo "${PKG_DIR:-${PKG_DIR_TEMPLATE:-$VAR_DIR/cache/pkg}}")
+
+CAC_DIR=$(eval echo "${CAC_DIR:-${CAC_DIR_TEMPLATE:-$VAR_DIR/cache}}")
+PKG_DIR=$(eval echo "${PKG_DIR:-${PKG_DIR_TEMPLATE:-$CAC_DIR/pkg}}")
 
 #------------------------------------------------------------ artifact directory
 
