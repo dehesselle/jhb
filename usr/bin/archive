@@ -39,7 +39,7 @@ function create_tar
   local suffix=$1 # optional
 
   local file
-  file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.tar.xz
+  file=$ART_DIR/$(release_archive_get_name)$suffix.tar.xz
 
   echo_i "creating $file"
 
@@ -60,7 +60,7 @@ function create_dmg
   local suffix=$1 # optional
 
   local file
-  file=$ARTIFACT_DIR/$(release_archive_get_name)$suffix.dmg
+  file=$ART_DIR/$(release_archive_get_name)$suffix.dmg
 
   ( # create dmg
     local vol_name

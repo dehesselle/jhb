@@ -43,11 +43,15 @@
 #
 #     VER_DIR_TEMPLATE="\$WRK_DIR/myFoo-\$VERSION"
 
+#--------------------------------------------------------- top level directories
+
 WRK_DIR=$(eval echo "${WRK_DIR:-${WRK_DIR_TEMPLATE:-/Users/Shared/work}}")
 
 REP_DIR=$(eval echo "${REP_DIR:-${REP_DIR_TEMPLATE:-$WRK_DIR/repo}}")
 
 VER_DIR=$(eval echo "${VER_DIR:-${VER_DIR_TEMPLATE:-$WRK_DIR/jhb-$VERSION}}")
+
+#----------------------------------------------------------------- below VER_DIR
 
 BIN_DIR=$(eval echo "${BIN_DIR:-${BIN_DIR_TEMPLATE:-$VER_DIR/bin}}")
 ETC_DIR=$(eval echo "${ETC_DIR:-${ETC_DIR_TEMPLATE:-$VER_DIR/etc}}")
@@ -68,15 +72,13 @@ LOG_DIR=$(eval echo "${LOG_DIR:-${LOG_DIR_TEMPLATE:-$VAR_DIR/log}}")
 CAC_DIR=$(eval echo "${CAC_DIR:-${CAC_DIR_TEMPLATE:-$VAR_DIR/cache}}")
 PKG_DIR=$(eval echo "${PKG_DIR:-${PKG_DIR_TEMPLATE:-$CAC_DIR/pkg}}")
 
-#------------------------------------------------------------ artifact directory
-
-if [ -z "$ARTIFACT_DIR" ]; then
+if [ -z "$ART_DIR" ]; then
   if $CI_GITHUB; then
-    ARTIFACT_DIR=$GITHUB_WORKSPACE
+    ART_DIR=$GITHUB_WORKSPACE
   elif $CI_GITLAB; then
-    ARTIFACT_DIR=$CI_PROJECT_DIR
+    ART_DIR=$CI_PROJECT_DIR
   else
-    ARTIFACT_DIR=$VER_DIR
+    ART_DIR=$VER_DIR
   fi
 fi
 

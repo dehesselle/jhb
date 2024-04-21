@@ -46,7 +46,7 @@ function dmgbuild_run
   local dmg=$3 # optional; default is <name>_<version>_<build>_<arch>.dmg
 
   local app_dir
-  app_dir=$(echo "$ARTIFACT_DIR"/*.app)
+  app_dir=$(echo "$ART_DIR"/*.app)
 
   if [ -z "$dmg" ]; then
     local version
