@@ -114,6 +114,9 @@ function jhbuild_install
     make
     make install
   )
+
+  # protect against removal during cleanup
+  echo "jhbuild-$JHBUILD_VER" >> "$SRC_DIR"/.keep
 }
 
 function jhbuild_configure

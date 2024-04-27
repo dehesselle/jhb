@@ -173,12 +173,24 @@ function uninstall_dmg
 
 function remove_nonessential_files
 {
-  find "$SRC_DIR" -mindepth 1 -maxdepth 1 -type d \
-    ! -name bash_d ! -name "jhb*" -exec rm -rf {} \;
-  rm -rf "${BLD_DIR:?}"/*
-  rm -rf "${PIP_CACHE_DIR:?}"/*
-  rm -rf "${PYTHONPYCACHEPREFIX:?}"/*
-  rm -rf "${TMP_DIR:?}"/*
+  for dir in $BLD_DIR $PIP_CACHE_DIR $PKG_DIR $PYTHONPYCACHEPREFIX \
+             $SRC_DIR $TMP_DIR; do
+    if [ -f "$dir/.skip" ]; then
+      echo_i "skipping $object"  # skip over marked directories
+    else
+      while IFS= read -r -d "" object; do
+        if [ "$(basename "$object")" = ".keep" ]; then
+          continue  # do not remove the "keep"-list itself
+        fi
+        if ! grep "$(basename "$object")" "$(dirname "$object")/.keep" \
+            -q 2>/dev/null; then
+          rm -rf "${object:?}"
+        else
+          echo_i "keeping $object"
+        fi
+      done < <(find "$dir" -maxdepth 1 -mindepth 1 -print0)
+    fi
+  done
 }
 
 function main
