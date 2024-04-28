@@ -173,23 +173,34 @@ function uninstall_dmg
 
 function remove_nonessential_files
 {
+  local additional_dirs=$1  # optional
+
   for dir in $BLD_DIR $PIP_CACHE_DIR $PKG_DIR $PYTHONPYCACHEPREFIX \
-             $SRC_DIR $TMP_DIR; do
-    if [ -f "$dir/.skip" ]; then
-      echo_i "skipping $object"  # skip over marked directories
-    else
-      while IFS= read -r -d "" object; do
-        if [ "$(basename "$object")" = ".keep" ]; then
-          continue  # do not remove the "keep"-list itself
-        fi
-        if ! grep "$(basename "$object")" "$(dirname "$object")/.keep" \
-            -q 2>/dev/null; then
-          rm -rf "${object:?}"
-        else
-          echo_i "keeping $object"
-        fi
-      done < <(find "$dir" -maxdepth 1 -mindepth 1 -print0)
+             $SRC_DIR $TMP_DIR $additional_dirs; do
+    dir=$(eval echo "$dir") # allow variable resolution for additional_dirs
+
+    if [[ $dir != $VER_DIR/* ]]; then
+      # this is a precaution: do not touch things outside our tree
+      echo_i "skipping $dir: not below VER_DIR"
+      continue
     fi
+
+    if [ -f "$dir/.skip" ]; then
+      echo_i "skipping $dir: .skip was found"  # skip over marked directories
+      continue
+    fi
+
+    while IFS= read -r -d "" object; do
+      if [ "$(basename "$object")" = ".keep" ]; then
+        continue  # do not remove the "keep"-list itself
+      fi
+      if ! grep "$(basename "$object")" "$(dirname "$object")/.keep" \
+          -q 2>/dev/null; then
+        rm -rf "${object:?}"
+      else
+        echo_i "keeping $object"
+      fi
+    done < <(find "$dir" -maxdepth 1 -mindepth 1 -print0)
   done
 }
 
@@ -212,7 +223,7 @@ function main
       uninstall_dmg
       ;;
     remove_nonessentials)
-      remove_nonessential_files
+      remove_nonessential_files "$option" # option: additional dirs to clean up
       ;;
     *)
       echo_e "usage: $0 {create_dmg|create_tar|install_dmg|uninstall_dmg|\
