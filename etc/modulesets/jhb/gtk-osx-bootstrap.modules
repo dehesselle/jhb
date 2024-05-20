@@ -20,6 +20,9 @@
   <repository name="libtiff"
               href="http://download.osgeo.org/"
               type="tarball" />
+  <repository name="github"
+              href="https://github.com/"
+              type="tarball" />
   <!---->
   <autotools id="libpng"
              autogen-sh="configure"
@@ -37,10 +40,10 @@
     <cmake id="libjpeg"
            cmakeargs="-DWITH_JPEG8=ON -DCMAKE_INSTALL_LIBDIR=$JHBUILD_PREFIX/lib">
 
-      <branch module="libjpeg-turbo/3.0.1/libjpeg-turbo-3.0.1.tar.gz"
-              version="3.0.1"
-              hash="sha256:22429507714ae147b3acacd299e82099fce5d9f456882fc28e252e4579ba2a75"
-              repo="sourceforge">
+      <branch module="libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz"
+              version="3.0.3"
+              hash="sha256:343e789069fc7afbcdfe44dbba7dbbf45afa98a15150e079a38e60e44578865d"
+              repo="github">
         <patch file="turbojpeg-remove_rpath.patch"
                strip="1" />
       </branch>
