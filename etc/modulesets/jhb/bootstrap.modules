@@ -26,9 +26,9 @@
   <autotools id="xz"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="tukaani-project/xz/releases/download/v5.4.6/xz-5.4.6.tar.bz2"
-            version="5.4.6"
-            hash="sha256:913851b274e8e1d31781ec949f1c23e8dbcf0ecf6e73a2436dc21769dd3e6f49"
+    <branch module="tukaani-project/xz/releases/download/v5.6.2/xz-5.6.2.tar.bz2"
+            version="5.6.2"
+            hash="sha256:e12aa03cbd200597bd4ce11d97be2d09a6e6d39a9311ce72c91ac7deacde3171"
             repo="github" />
   </autotools>
   <!--
@@ -44,14 +44,35 @@
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
+  <autotools id="libiconv"
+             autogen-sh="configure"
+             autogenargs="--disable-debug --disable-dependency-tracking --enable-extra-encodings">
+
+    <branch module="libiconv/libiconv-1.17.tar.gz"
+            version="1.17"
+            hash="sha256:8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313"
+            repo="ftp.gnu.org" />
+  </autotools>
+  <!---->
+  <autotools id="libunistring"
+             autogen-sh="configure">
+    <branch module="libunistring/libunistring-1.2.tar.gz"
+            version="1.2"
+            repo="ftp.gnu.org" />
+  </autotools>
+  <!---->
   <autotools id="gettext"
              autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib --with-included-libcroco">
 
-    <branch module="gettext/gettext-0.21.1.tar.xz"
-            version="0.21.1"
-            hash="sha256:50dbc8f39797950aa2c98e939947c527e5ac9ebd2c1b99dd7b06ba33a6767ae6"
+    <branch module="gettext/gettext-0.22.5.tar.xz"
+            version="0.22.5"
+            hash="sha256:fe10c37353213d78a5b83d48af231e005c4da84db5ce88037d88355938259640"
             repo="ftp.gnu.org" />
+    <dependencies>
+      <dep package="libiconv" />
+      <dep package="libunistring" />
+    </dependencies>
   </autotools>
   <!--
     cmakes ./configure is picky about invalid flags so we manually set it
@@ -59,11 +80,11 @@
   <autotools id="cmake"
              autogen-sh="bootstrap"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s %(autogenargs)s"
-             autogenargs="--docdir=share/doc/cmake-3.26"
+             autogenargs="--docdir=share/doc/cmake-3.29"
              bootstrap="true">
-    <branch module="v3.26/cmake-3.26.4.tar.gz"
-            version="3.26.4"
-            hash="sha256:313b6880c291bd4fe31c0aa51d6e62659282a521e695f30d5cc0d25abbd5c208"
+    <branch module="v3.29/cmake-3.29.3.tar.gz"
+            version="3.29.3"
+            hash="sha256:252aee1448d49caa04954fd5e27d189dd51570557313e7b281636716a238bccb"
             repo="cmake" />
   </autotools>
   <!--
@@ -84,7 +105,7 @@
              bootstrap="true">
     <branch module="autoconf/autoconf-2.72.tar.xz"
             version="2.72"
-            hash="shas56:ba885c1319578d6c94d46e9b0dceb4014caafe2490e437a0dbca3f270a223f5a"
+            hash="sha256:ba885c1319578d6c94d46e9b0dceb4014caafe2490e437a0dbca3f270a223f5a"
             repo="ftp.gnu.org" />
     <dependencies>
       <dep package="m4" />
@@ -173,6 +194,7 @@
   <metamodule id="meta-bootstrap">
     <dependencies>
       <dep package="xz" />
+      <dep package="libiconv" />
       <dep package="gettext" />
       <dep package="cmake" />
       <dep package="autoconf-archive" />
