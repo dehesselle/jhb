@@ -147,7 +147,7 @@
             hash="sha256:9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2"
             repo="ftp.gnu.org" />
     <dependencies>
-      <dep package='flex' />
+      <dep package="flex" />
     </dependencies>
   </autotools>
   <!--
