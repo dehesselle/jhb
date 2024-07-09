@@ -23,9 +23,9 @@ DMGBUILD_PIP="\
   dmgbuild==1.6.1\
   ds-store==1.3.1\
   mac-alias==2.2.2\
-  pyobjc-core==9.2\
-  pyobjc-framework-Cocoa==9.2\
-  pyobjc-framework-Quartz==9.2\
+  pyobjc-core==10.3.1\
+  pyobjc-framework-Cocoa==10.3.1\
+  pyobjc-framework-Quartz==10.3.1\
 "
 
 ### functions ##################################################################
