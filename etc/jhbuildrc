@@ -75,8 +75,7 @@ class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
     def run(self, config, options, args, help=None):
         global use_local_modulesets
         moduleset="bootstrap"
-        modulesets_dir = os.path.join(os.path.dirname(os.path.dirname(config.moduleset)), 'modulesets-stable')
-        print(f"Modulests Dir: ${modulesets_dir}")
+        modulesets_dir = os.path.dirname(config.moduleset)
         if (use_local_modulesets and
             os.path.exists(os.path.join(modulesets_dir,
                                         moduleset + '.modules'))):
