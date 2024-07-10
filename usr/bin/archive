@@ -26,10 +26,7 @@ bash_d_include error
 
 ### variables ##################################################################
 
-SELF_DIR=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-  pwd
-)
+SHADOW_FILE=${CI_PROJECT_DIR:-$WRK_DIR}/$RELEASE_ARCHIVE.shadow
 
 ### functions ##################################################################
 
@@ -67,7 +64,10 @@ function create_dmg
     vol_name=$(basename "$VER_DIR")
 
     cd "$WRK_DIR" || exit 1
-    hdiutil create -fs HFS+ -ov -format UDBZ \
+    hdiutil create -ov \
+      -fs HFS+ \
+      -format ULMO \
+      -size 16g \
       -srcfolder "$vol_name" \
       -volname "$vol_name" \
       "$file" \
@@ -86,45 +86,50 @@ function create_dmg
 function mount_dmg
 {
   local file=$REP_DIR/$RELEASE_ARCHIVE
-  local mountpoint=$VER_DIR
 
-  if [ ! -d "$mountpoint" ]; then
-    mkdir -p "$mountpoint"
+  if [ ! -d "$VER_DIR" ]; then
+    mkdir -p "$VER_DIR"
   fi
 
-  echo_i "mounting $(basename "$file") may take some time"
-  local device
-  device=$(hdiutil attach -nomount "$file" | grep "^/dev/disk" |
-    grep "Apple_HFS" | awk '{ print $1 }')
-  echo_i "$file attached to $device"
-  diskutil mount \
-    -mountOptions nobrowse,noquarantine,ro \
-    -mountPoint "$mountpoint" \
-    "$device"
-  echo_i "$device mounted to $mountpoint"
+  if [ -f "$SHADOW_FILE".bz2 ]; then
+    echo_i "decompressiong $SHADOW_FILE.bz2 ..."
+    bzip2 -d "$SHADOW_FILE".bz2
+  fi
+
+  echo_i "mounting $(basename "$file") ..."
+  hdiutil mount "$file" \
+    -mountPoint "$VER_DIR" \
+    -shadow "$SHADOW_FILE"
 }
 
 function unmount_dmg
 {
-  local mountpoint=$VER_DIR
+  local keep_shadow_file=$1
 
-  while :; do # unmount everything (in reverse order)
-    local disk
-    disk=$(mount | grep "$mountpoint" | tail -n1 | awk '{ print $1 }')
-    disk=${disk%s[0-9]} # cut off slice specification
+  if hdiutil info | grep "$RELEASE_ARCHIVE"; then
+    echo_i "unmounting $VER_DIR"
+    # We loop over the 'eject' since it occasionally timeouts.
+    while ! hdiutil detach "$VER_DIR" >/dev/null; do
+      echo_w "retrying to detach $VER_DIR in 10 seconds"
+      sleep 10
+    done
 
-    if [ ${#disk} -eq 0 ]; then
-      break # nothing to do here
-    else
-      # We loop over the 'eject' since it occasionally timeouts.
-      while ! diskutil eject "$disk" >/dev/null; do
-        echo_w "retrying to eject $disk in 5 seconds"
-        sleep 5
-      done
-
-      echo_i "ejected $disk"
-    fi
-  done
+    case "$keep_shadow_file" in
+      keep)
+        echo_i "keeping $SHADOW_FILE"
+        ;;
+      archive)
+        echo_i "archiving $SHADOW_FILE ..."
+        bzip2 "$SHADOW_FILE"
+        ;;
+      *)
+        echo_i "removing $SHADOW_FILE"
+        rm "$SHADOW_FILE"
+        ;;
+    esac
+  else
+    echo_i "nothing to unmount"
+  fi
 }
 
 function download_dmg
@@ -150,8 +155,6 @@ function download_dmg
 
 function install_dmg
 {
-  local overlay_size=${1:-1} # unit GiB, default 1
-
   local file=$REP_DIR/$RELEASE_ARCHIVE
 
   # download and mount read-only disk image
@@ -161,14 +164,13 @@ function install_dmg
     download_dmg
   fi
   mount_dmg
-
-  "$SELF_DIR"/overlay create "$overlay_size"
 }
 
 function uninstall_dmg
 {
-  "$SELF_DIR"/overlay destroy
-  unmount_dmg
+  local keep_shadow_file=$1   # optional
+
+  unmount_dmg "$keep_shadow_file"
 }
 
 function remove_nonessential_files
@@ -217,10 +219,10 @@ function main
       create_tar "$option" # option: add suffix to archive, default is none
       ;;
     install_dmg)
-      install_dmg "$option" # option: overlay size in GiB, default is 1
+      install_dmg
       ;;
     uninstall_dmg)
-      uninstall_dmg
+      uninstall_dmg "$option"
       ;;
     remove_nonessentials)
       remove_nonessential_files "$option" # option: additional dirs to clean up

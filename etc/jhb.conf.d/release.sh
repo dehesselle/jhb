@@ -15,9 +15,6 @@
 
 RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$VER_DIR")_$(uname -m).tar.xz}
 
-# ramdisk volume name
-RELEASE_OVERLAY=${RELEASE_OVERLAY:-overlay_$(basename "$VER_DIR")}
-
 # GitHub and GitLab
 # shellcheck disable=2206 # we need expansion for the array to work
 RELEASE_URLS=(${RELEASE_URLS[@]:-

@@ -72,10 +72,9 @@ LOG_DIR=$(eval echo "${LOG_DIR:-${LOG_DIR_TEMPLATE:-$VAR_DIR/log}}")
 CAC_DIR=$(eval echo "${CAC_DIR:-${CAC_DIR_TEMPLATE:-$VAR_DIR/cache}}")
 PKG_DIR=$(eval echo "${PKG_DIR:-${PKG_DIR_TEMPLATE:-$CAC_DIR/pkg}}")
 
+# artifact directory
 if [ -z "$ART_DIR" ]; then
-  if $CI_GITHUB; then
-    ART_DIR=$GITHUB_WORKSPACE
-  elif $CI_GITLAB; then
+  if $CI; then
     ART_DIR=$CI_PROJECT_DIR
   else
     ART_DIR=$VER_DIR

@@ -15,18 +15,13 @@
 
 if [ -z "$CI" ]; then # both GitHub and GitLab set this
   CI=false
-  CI_GITHUB=false
-  CI_GITLAB=false
 else
   CI=true
 
-  if [ -z "$CI_PROJECT_NAME" ]; then # this is a GitLab-only variable
-    CI_GITHUB=true
-    CI_GITLAB=false
+  if [ -z "$CI_PROJECT_DIR" ]; then # Is this GitHub?
+    # It is, so we need to set this (GitLab-only) variable ourselves.
+    CI_PROJECT_DIR=$GITHUB_WORKSPACE
   else
-    CI_GITHUB=false
-    CI_GITLAB=true
-
     # Since GitLab uses colors in their CI there's no need to disable ours.
     # shellcheck disable=SC2034 # this is a bash_d setting
     ANSI_TERM_ONLY=false # use ANSI control characters even if not in terminal
