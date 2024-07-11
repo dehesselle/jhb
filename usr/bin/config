@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2024 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+### description ################################################################
+
+# This is a helper to retrieve variables from JHB's environment.
+
+### shellcheck #################################################################
+
+# Nothing here.
+
+### dependencies ###############################################################
+
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
+
+### variables ##################################################################
+
+# Nothing here.
+
+### functions ##################################################################
+
+function main
+{
+  local command=$1
+  local option=$2
+
+  case "$command" in
+    get)
+      eval echo \$"$option"
+      ;;
+    *)
+      echo "usage: $0 get {name}"
+      exit 1
+      ;;
+  esac
+}
+
+### main #######################################################################
+
+main "$@"
