@@ -17,8 +17,8 @@
 
 ### variables ##################################################################
 
-if [ "$SYS_USRLOCAL_IGNORE" != "true" ]; then
-  SYS_USRLOCAL_IGNORE=false
+if [ "$SYS_USRLOCAL_IGNORE" != "false" ]; then
+  SYS_USRLOCAL_IGNORE=true
 fi
 
 SYS_MACOS_VER=$(sw_vers -productVersion)

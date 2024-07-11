@@ -8,29 +8,22 @@ on:
     branches:
       - '*'
   workflow_call:
-    inputs:
-      SDK_DOWNLOAD_URL_REQUIRED:
-        description: "If set to true, break the build on missing SDK_DOWNLOAD_URL."
-        default: false
-        required: false
-        type: boolean
-    secrets:
-      SDK_DOWNLOAD_URL:
-        required: false
 
 # This workflow is about running 'usr/bin/bootstrap' and creating an archive of
 # built software. All other steps are basically preparations.
 
 jobs:
 
+################################################################################
+
   build:
-    runs-on: macos-12
+    runs-on: macos-14
     env:
       WRK_DIR: /Users/Shared/work
       CCACHE_DIR: /Users/Shared/work/ccache
     steps:
 
-      #------------------------------------------------- prepare the environemnt
+      #----------------------------------------------------------------- prepare
 
       - name: Checkout jhb repository
         uses: actions/checkout@v4
@@ -52,56 +45,6 @@ jobs:
           key: ccache-jhb-${{ steps.timestamp.outputs.formattedTime }}
           restore-keys: ccache-jhb-
 
-      # Install a macOS SDK to target a minimum OS version if SDK_DOWNLOAD_URL
-      # has been provided, otherwise whatever SDK is the runner's default one
-      # is being used.
-      #
-      # Official downloads from Apple are not accessible without a developer
-      # account and I don't trust 3rd party sources (e.g. "phracker"). So I'm
-      # using my own (non-public) source, but I'm providing the means to verify
-      # its genuinity, see here:
-      # https://github.com/dehesselle/sdkchecksum
-      #
-      # In order to use your own SDK_DOWNLOAD_URL, create a repository secret
-      # of said name and provide a link to a .tar.xz file.
-
-      # Using SDK is mandatory if building for a release.
-      - name: Fail on missing secret SDK_DOWNLOAD_URL
-        if: |
-          env.SDK_DOWNLOAD_URL == null &&
-          inputs.SDK_DOWNLOAD_URL_REQUIRED
-        env:
-          SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-        uses: actions/github-script@v7
-        with:
-          script: core.setFailed("SDK_DOWNLOAD_URL secret not found")
-
-      - name: Install macOS SDK
-        if: env.SDK_DOWNLOAD_URL != null
-        env:
-          SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-        run: |
-          mkdir -p $WRK_DIR
-          curl --http1.1 -L ${{ secrets.SDK_DOWNLOAD_URL }} | tar -C $WRK_DIR -xJp
-          echo "SDKROOT=$WRK_DIR/$(basename ${SDK_DOWNLOAD_URL%%.tar.xz*})" >> $GITHUB_ENV
-
-      - name: Verify macOS SDK
-        if: env.SDK_DOWNLOAD_URL != null
-        env:
-          SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
-        uses: dehesselle/sdkchecksum@master
-        with:
-          SDKROOT: ${{ env.SDKROOT }}
-          SHA256_FILE: MacOSX10.13.4.sdk.sha256
-
-      # GitHub does not provide a clean macOS installation. We need to move the
-      # pre-installed components out of the way so we don't pick them up by
-      # accident.
-      - name: Disable /usr/local
-        run: |
-          cd /usr/local
-          for dir in include lib share; do sudo mv $dir $dir.disabled; done
-
       #------------------------------------------------------------------- build
 
       - name: Bootstrap JHBuild
@@ -115,10 +58,6 @@ jobs:
           usr/bin/archive create_tar
 
       #-------------------------------------------------------- upload artifacts
-
-      # Restore /usr/local, GitHub actions depend on these.
-      - name: Restore /usr/local
-        run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
 
       - name: upload archive
         uses: actions/upload-artifact@v4
