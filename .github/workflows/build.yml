@@ -2,21 +2,17 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-name: build
+name: Build
 on:
-  push:   # do not run when pushing tags
+  push:   # do not run for tags
     branches:
       - '*'
   workflow_call:
-
-# This workflow is about running 'usr/bin/bootstrap' and creating an archive of
-# built software. All other steps are basically preparations.
-
 jobs:
 
 ################################################################################
 
-  build:
+  jhb:
     runs-on: macos-14
     env:
       WRK_DIR: /Users/Shared/work
@@ -57,7 +53,7 @@ jobs:
           usr/bin/archive remove_nonessentials
           usr/bin/archive create_tar
 
-      #-------------------------------------------------------- upload artifacts
+      #---------------------------------------------------------- upload archive
 
       - name: upload archive
         uses: actions/upload-artifact@v4
