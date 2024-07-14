@@ -42,8 +42,8 @@ build:
   after_script:
     # For persistent runners: cleanup afterwards.
     - |
-      source etc/jhb.conf.sh
-      rm -rf $VER_DIR
+      VER_DIR=$(usr/bin/config get VER_DIR)
+      rm -rf ${VER_DIR:?}
   artifacts:
     paths:
       - jhb-*.tar.xz
