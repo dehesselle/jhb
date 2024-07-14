@@ -21,18 +21,19 @@ build:
   stage: build
   parallel:
     matrix:
-      - RUNNER: [ "macosintel", "macosarm" ]
+      - ARCHITECTURE: [ "arm64", "x86_64" ]
   rules:
-    - if: $RUNNER == "macosintel"
+    - if: $ARCHITECTURE == "x86_64"
       variables:
         SDKROOT: /opt/sdks/MacOSX10.13.4.sdk
-    - if: $RUNNER == "macosarm"
+    - if: $ARCHITECTURE == "arm64"
       variables:
         SDKROOT: /opt/sdks/MacOSX11.3.sdk
   variables:
     FORCE_BUILD_FROM_SOURCE: "true"
   tags:
-    - ${RUNNER}
+    - macos
+    - ${ARCHITECTURE}
   script:
     - !reference [ .verify_sdk, script ]
     - usr/bin/bootstrap
