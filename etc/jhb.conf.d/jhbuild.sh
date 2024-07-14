@@ -75,15 +75,9 @@ function jhbuild_install_python
 
 function jhbuild_set_python_interpreter
 {
-  # If GNU's ln is available (gln), use that. Necessary when working
-  # with union-mounts.
-  if command -v gln 1>/dev/null; then
-    local gnu=g
-  fi
-
   # Symlink binaries to USR_DIR/bin.
-  "$gnu"ln -sf "$JHBUILD_PYTHON_BIN_DIR/python$JHBUILD_PYTHON_VER" "$BIN_DIR"
-  "$gnu"ln -sf "$JHBUILD_PYTHON_BIN_DIR/pip$JHBUILD_PYTHON_VER" "$BIN_DIR"
+  ln -sf "$JHBUILD_PYTHON_BIN_DIR/python$JHBUILD_PYTHON_VER" "$BIN_DIR"
+  ln -sf "$JHBUILD_PYTHON_BIN_DIR/pip$JHBUILD_PYTHON_VER" "$BIN_DIR"
 
   # Set interpreter to the one in BIN_DIR.
   while IFS= read -r -d '' file; do
@@ -190,13 +184,7 @@ function jhbuild_configure
 
   } >"$JHBUILDRC-$name"
 
-  # If GNU's ln is available (gln), use that. Necessary when working
-  # with union-mounts.
-  if command -v gln 1>/dev/null; then
-    local gnu=g
-  fi
-
-  "$gnu"ln -sf "$(basename "$JHBUILDRC-$name")" "$JHBUILDRC_CUSTOM"
+  ln -sf "$(basename "$JHBUILDRC-$name")" "$JHBUILDRC_CUSTOM"
 }
 
 ### main #######################################################################
