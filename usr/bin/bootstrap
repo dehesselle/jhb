@@ -149,7 +149,7 @@ jhb build meta-gtk-osx-bootstrap
 
 # GNU versions of various utilites make life significantly easier on macOS.
 
-jhbuild build coreutils findutils sed tar
+jhb build coreutils sed
 
 #-------------------------------------------------------------- install dmgbuild
 

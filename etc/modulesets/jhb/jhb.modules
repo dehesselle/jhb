@@ -30,18 +30,6 @@
             repo="gnu" />
   </autotools>
   <!--
-    GNU Find Utilities https://www.gnu.org/software/findutils/
-  -->
-  <autotools id="findutils"
-             autogen-sh="configure"
-             autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
-             
-    <branch module="findutils/findutils-4.9.0.tar.xz"
-            version="4.9.0"
-            hash="sha256:a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe"
-            repo="gnu" />
-  </autotools>
-  <!--
     Dummy meson module to silence a JHBuild warning.
   -->
   <systemmodule id="meson">
@@ -57,18 +45,6 @@
     <branch module="sed/sed-4.9.tar.xz"
             version="4.9"
             hash="sha256:6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181"
-            repo="gnu" />
-  </autotools>
-  <!--
-    GNU Tar https://www.gnu.org/software/tar/
-  -->
-  <autotools id="tar"
-             autogen-sh="configure"
-             autogenargs="--prefix=$JHBUILD_PREFIX/usr --program-prefix=g">
-             
-    <branch module="tar/tar-1.34.tar.xz"
-            version="1.34"
-            hash="sha256:63bebd26879c5e1eea4352f0d03c991f966aeb3ddeb3c7445c902568d5411d28"
             repo="gnu" />
   </autotools>
   <!---->
