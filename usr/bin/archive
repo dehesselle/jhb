@@ -54,10 +54,8 @@ function create_tar
 # shellcheck disable=SC2120 # optional arguments
 function create_dmg
 {
-  local suffix=$1 # optional
-
   local file
-  file=$ART_DIR/$(release_archive_get_name)$suffix.dmg
+  file=$ART_DIR/$(release_archive_get_name).dmg
 
   ( # create dmg
     local vol_name
