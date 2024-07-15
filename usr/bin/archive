@@ -26,7 +26,8 @@ bash_d_include error
 
 ### variables ##################################################################
 
-SHADOW_FILE=${CI_PROJECT_DIR:-$WRK_DIR}/$RELEASE_ARCHIVE.shadow
+SHADOW_FILE_DIR=${SHADOW_FILE_DIR:-${CI_PROJECT_DIR:-$WRK_DIR}}
+SHADOW_FILE=${SHADOW_FILE_DIR}/$RELEASE_ARCHIVE.shadow
 
 ### functions ##################################################################
 
@@ -83,7 +84,8 @@ function create_dmg
 
 function mount_dmg
 {
-  local file=$REP_DIR/$RELEASE_ARCHIVE
+  local dmg
+  dmg=$REP_DIR/$(release_archive_get_name).dmg
 
   if [ ! -d "$VER_DIR" ]; then
     mkdir -p "$VER_DIR"
@@ -94,8 +96,8 @@ function mount_dmg
     bzip2 -d "$SHADOW_FILE".bz2
   fi
 
-  echo_i "mounting $(basename "$file") ..."
-  hdiutil mount "$file" \
+  echo_i "mounting $(basename "$dmg")"
+  hdiutil mount "$dmg" \
     -mountPoint "$VER_DIR" \
     -shadow "$SHADOW_FILE"
 }
@@ -104,29 +106,41 @@ function unmount_dmg
 {
   local keep_shadow_file=$1
 
-  if hdiutil info | grep "$RELEASE_ARCHIVE"; then
-    echo_i "unmounting $VER_DIR"
-    # We loop over the 'eject' since it occasionally timeouts.
-    while ! hdiutil detach "$VER_DIR" >/dev/null; do
-      echo_w "retrying to detach $VER_DIR in 10 seconds"
-      sleep 10
-    done
+  local dmg
+  dmg=$REP_DIR/$(release_archive_get_name).dmg
+  if [ -f "$dmg" ]; then
+    local partition_uuid
+    partition_uuid=$(hdiutil imageinfo "$dmg" |
+        grep -A1 "partition-name: disk image" |
+        grep UUID |
+        awk '{ print $2 }')
 
-    case "$keep_shadow_file" in
-      keep)
-        echo_i "keeping $SHADOW_FILE"
-        ;;
-      archive)
-        echo_i "archiving $SHADOW_FILE ..."
-        bzip2 "$SHADOW_FILE"
-        ;;
-      *)
-        echo_i "removing $SHADOW_FILE"
-        rm "$SHADOW_FILE"
-        ;;
-    esac
+    if [ -n "$partition_uuid" ] && hdiutil info | grep "$partition_uuid"; then
+      echo_i "unmounting $VER_DIR"
+      # We loop over the 'eject' since it occasionally timeouts.
+      while ! hdiutil detach "$VER_DIR" >/dev/null; do
+        echo_w "retrying to detach $VER_DIR in 10 seconds"
+        sleep 10
+      done
+
+      case "$keep_shadow_file" in
+        keep)
+          echo_i "keeping $SHADOW_FILE"
+          ;;
+        archive)
+          echo_i "archiving $SHADOW_FILE ..."
+          bzip2 "$SHADOW_FILE"
+          ;;
+        *)
+          echo_i "removing $SHADOW_FILE"
+          rm "$SHADOW_FILE"
+          ;;
+      esac
+    else
+      echo_i "nothing to unmount"
+    fi
   else
-    echo_i "nothing to unmount"
+    echo_e "cannot unmount without dmg file"
   fi
 }
 
@@ -153,11 +167,12 @@ function download_dmg
 
 function install_dmg
 {
-  local file=$REP_DIR/$RELEASE_ARCHIVE
+  local dmg
+  dmg=$REP_DIR/$(release_archive_get_name).dmg
 
   # download and mount read-only disk image
-  if [ -f "$file" ]; then
-    echo_i "using $file"
+  if [ -f "$dmg" ]; then
+    echo_i "using $dmg"
   else
     download_dmg
   fi
