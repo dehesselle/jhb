@@ -91,7 +91,7 @@ else
   rsync -a "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
   find "$VER_DIR" -type f -name ".gitignore" -delete
   rm -rf "$VER_DIR"/.git
-  rm "$VER_DIR"/.gitmodules
+  rm -f "$VER_DIR"/.gitmodules
 
   # copy custom configuration directories into target structure
   find "$CALLER_DIR" -type d -name "*.conf.d" -exec rsync -a {} "$ETC_DIR" \;
