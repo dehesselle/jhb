@@ -27,7 +27,6 @@ bash_d_include error
 ### variables ##################################################################
 
 SHADOW_FILE_DIR=${SHADOW_FILE_DIR:-${CI_PROJECT_DIR:-$WRK_DIR}}
-SHADOW_FILE=${SHADOW_FILE_DIR}/$RELEASE_ARCHIVE.shadow
 
 ### functions ##################################################################
 
@@ -86,20 +85,22 @@ function mount_dmg
 {
   local dmg
   dmg=$REP_DIR/$(release_archive_get_name).dmg
+  local shadow_file
+  shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
 
   if [ ! -d "$VER_DIR" ]; then
     mkdir -p "$VER_DIR"
   fi
 
-  if [ -f "$SHADOW_FILE".bz2 ]; then
-    echo_i "decompressiong $SHADOW_FILE.bz2 ..."
-    bzip2 -d "$SHADOW_FILE".bz2
+  if [ -f "$shadow_file".bz2 ]; then
+    echo_i "decompressiong $shadow_file.bz2 ..."
+    bzip2 -d "$shadow_file".bz2
   fi
 
   echo_i "mounting $(basename "$dmg")"
   hdiutil mount "$dmg" \
     -mountPoint "$VER_DIR" \
-    -shadow "$SHADOW_FILE"
+    -shadow "$shadow_file"
 }
 
 function unmount_dmg
@@ -108,6 +109,9 @@ function unmount_dmg
 
   local dmg
   dmg=$REP_DIR/$(release_archive_get_name).dmg
+  local shadow_file
+  shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
+
   if [ -f "$dmg" ]; then
     local partition_uuid
     partition_uuid=$(hdiutil imageinfo "$dmg" |
@@ -125,15 +129,15 @@ function unmount_dmg
 
       case "$keep_shadow_file" in
         keep)
-          echo_i "keeping $SHADOW_FILE"
+          echo_i "keeping $shadow_file"
           ;;
         archive)
-          echo_i "archiving $SHADOW_FILE ..."
-          bzip2 "$SHADOW_FILE"
+          echo_i "archiving $shadow_file ..."
+          bzip2 "$shadow_file"
           ;;
         *)
-          echo_i "removing $SHADOW_FILE"
-          rm "$SHADOW_FILE"
+          echo_i "removing $shadow_file"
+          rm "$shadow_file"
           ;;
       esac
     else
