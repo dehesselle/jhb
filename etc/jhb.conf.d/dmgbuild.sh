@@ -20,12 +20,12 @@
 # https://dmgbuild.readthedocs.io/en/latest/
 # https://github.com/dmgbuild/dmgbuild
 DMGBUILD_PIP="\
-  dmgbuild==1.6.1\
+  dmgbuild==1.6.2\
   ds-store==1.3.1\
   mac-alias==2.2.2\
-  pyobjc-core==10.3.1\
-  pyobjc-framework-Cocoa==10.3.1\
-  pyobjc-framework-Quartz==10.3.1\
+  pyobjc-core==10.3.2\
+  pyobjc-framework-Cocoa==10.3.2\
+  pyobjc-framework-Quartz==10.3.2\
 "
 
 ### functions ##################################################################
