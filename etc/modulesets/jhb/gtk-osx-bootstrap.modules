@@ -67,9 +67,10 @@
   <if condition-set="noturbojpeg">
     <autotools id="libjpeg"
                autogen-sh="configure">
-      <branch module="jpegsrc.v9e.tar.gz"
-              version="9e"
-              checkoutdir="jpeg-9e"
+      <branch module="jpegsrc.v9f.tar.gz"
+              version="9f"
+              hash="sha256:04705c110cb2469caa79fb71fba3d7bf834914706e9641a4589485c1f832565b"
+              checkoutdir="jpeg-9f"
               repo="jpeg" />
     </autotools>
   </if>
