@@ -21,10 +21,6 @@ else
   if [ -z "$CI_PROJECT_DIR" ]; then # Is this GitHub?
     # It is, so we need to set this (GitLab-only) variable ourselves.
     CI_PROJECT_DIR=$GITHUB_WORKSPACE
-  else
-    # Since GitLab uses colors in their CI there's no need to disable ours.
-    # shellcheck disable=SC2034 # this is a bash_d setting
-    ANSI_TERM_ONLY=false # use ANSI control characters even if not in terminal
   fi
 fi
 

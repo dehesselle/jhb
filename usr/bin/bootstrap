@@ -14,15 +14,7 @@
 
 ### dependencies ###############################################################
 
-#------------------------------------------------------ source jhb configuration
-
 source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
-
-#------------------------------------------- source common functions from bash_d
-
-# bash_d is already available (it's part of jhb configuration)
-
-bash_d_include error
 
 ### variables ##################################################################
 
