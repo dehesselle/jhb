@@ -24,13 +24,10 @@ JHBUILD_REQUIREMENTS="\
   ninja==1.11.1.3\
 "
 
-# JHBuild build system (current master as of 25.03.2024)
-# The last stable release (3.38.0) is missing at least one critical fix
-# (a896cbf404461cab979fa3cd1c83ddf158efe83b) and other enhancements
-# (e.g. acb52b03594989cfb45173841b318fccf557fefb).
+# JHBuild build system (current master as of 19.01.2025)
 # https://gitlab.gnome.org/GNOME/jhbuild
-# https://wiki.gnome.org/Projects/Jhbuild/Introduction
-JHBUILD_VER=4c78b56a
+# https://gnome.pages.gitlab.gnome.org/jhbuild/
+JHBUILD_VER=c0d3555d
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
