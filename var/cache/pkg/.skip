@@ -1,0 +1,6 @@
+# Do not perform cleanup in this directory.
+#
+# While it would be nice to save some space, it turns out that JHBuild wants
+# to redownload everything when it goes through a modules's dependencies to see
+# if everything is still in order. And that can break a build if an old version
+# is no longer available. So we need to keep the source archives.
