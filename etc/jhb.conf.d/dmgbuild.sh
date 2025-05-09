@@ -20,7 +20,7 @@
 # https://dmgbuild.readthedocs.io/en/latest/
 # https://github.com/dmgbuild/dmgbuild
 DMGBUILD_PIP="\
-  dmgbuild==1.6.2\
+  dmgbuild==1.6.5\
   ds-store==1.3.1\
   mac-alias==2.2.2\
   pyobjc-core==10.3.2\
