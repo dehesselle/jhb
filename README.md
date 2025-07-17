@@ -10,7 +10,7 @@ This project (on [GitLab](https://gitlab.com/dehesselle/jhb), [GitHub](https://g
 
 - It is fully self-contained to its directories, allowing for co-existence of multiple installations in locations of your choosing.
 
-- It brings its own [Python.framework](https://gitlab.com/dehesselle/python_macos) to run JHBuild.
+- It uses a relocatable [Python.framework](https://gitlab.com/dehesselle/python_macos) to bootstrap itself until it can build its own Python to become self-sufficient.
 
 ## prerequisites
 
@@ -74,8 +74,9 @@ Make sure the following prerequisites are met:
 
 This is not theoretical work but the result of refactoring and outsourcing parts of Inkscape's build pipeline so it can be reused to build other GTK-based apps on macOS. Here you can see this being used in production:
 
-- [Inkscape](https://gitlab.com/inkscape/inkscape): see [deps.macos](https://gitlab.com/inkscape/deps/macos)
+- [Inkscape](https://gitlab.com/inkscape/inkscape): see [inkscape-ci-macos](https://gitlab.com/inkscape/infra/inkscape-ci-macos)
 - [Siril](https://siril.org): see [siril_macos](https://gitlab.com/free-astro/siril_macos)
+- [Meld](https://meldmerge.org): see [meld_macos](https://gitlab.com/dehesselle/meld_macos)
 - [Rnote](https://rnote.flxzt.net): see [rnote_macos](https://gitlab.com/dehesselle/rnote_macos)
 
 ## credits
