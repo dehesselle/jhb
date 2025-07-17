@@ -24,10 +24,10 @@ JHBUILD_REQUIREMENTS="\
   ninja==1.11.1.4\
 "
 
-# JHBuild build system (current master as of 19.01.2025)
+# JHBuild build system (current master as of 18.07.2025)
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://gnome.pages.gitlab.gnome.org/jhbuild/
-JHBUILD_VER=c0d3555d
+JHBUILD_VER=c2cc9918
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
