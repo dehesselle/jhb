@@ -26,10 +26,9 @@ Make sure the following prerequisites are met:
     - If in doubt, use a dedicated user account instead.
 
 - There are __version recommendations__ based on known working setups.
-  - macOS >= 11.x (latest version)
-  - Xcode >= 13.x
-  - macOS High Sierra 10.13.4 SDK (from Xcode 9.4.1) for `x86_64` architecture
-  - macOS Big Sur 11.3 SDK (from Xcode 13.0) for `arm64` architecture
+  - macOS >= 11
+  - Xcode >= 13
+  - macOS SDK 11.3 (from Xcode 13.0)
 
 - An __internet connection__ is required to download all the packages.
 

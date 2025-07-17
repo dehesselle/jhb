@@ -22,15 +22,9 @@ build:
   parallel:
     matrix:
       - ARCHITECTURE: [ "arm64", "x86_64" ]
-  rules:
-    - if: $ARCHITECTURE == "x86_64"
-      variables:
-        SDKROOT: /opt/sdks/MacOSX10.13.4.sdk
-    - if: $ARCHITECTURE == "arm64"
-      variables:
-        SDKROOT: /opt/sdks/MacOSX11.3.sdk
   variables:
     FORCE_BUILD_FROM_SOURCE: "true"
+    SDKROOT: /opt/sdks/MacOSX11.3.sdk
   tags:
     - macos
     - ${ARCHITECTURE}

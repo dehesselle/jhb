@@ -22,6 +22,7 @@ export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 JHBUILD_REQUIREMENTS="\
   meson==1.8.2\
   ninja==1.11.1.4\
+  setuptools==80.9.0\
 "
 
 # JHBuild build system (current master as of 18.07.2025)
@@ -44,7 +45,7 @@ JHBUILD_PYTHON_VER_FULL=$(
 JHBUILD_PYTHON_VER=${JHBUILD_PYTHON_VER_FULL%.*} # reduce to major.minor
 
 JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
-generic/python_macos/v21.1/python_${JHBUILD_PYTHON_VER/./}_$(uname -m).tar.xz"
+generic/python_macos/v24/pythonframework_$(uname -m).tar.xz"
 
 JHBUILD_PYTHON_DIR=$TMP_DIR/Python.framework
 JHBUILD_PYTHON_VER_DIR=$JHBUILD_PYTHON_DIR/Versions/$JHBUILD_PYTHON_VER
@@ -99,6 +100,7 @@ function jhbuild_install
 
   ( # Install JHBuild.
     cd "$SRC_DIR"/jhbuild-$JHBUILD_VER || exit 1
+    patch -p1 < "$ETC_DIR"/modulesets/jhb/patches/jhbuild-distutils.patch
     ./autogen.sh \
       --prefix="$VER_DIR" \
       --with-python="$BIN_DIR/python$JHBUILD_PYTHON_VER"

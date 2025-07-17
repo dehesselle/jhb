@@ -13,20 +13,13 @@
   <repository name="pymodules"
               href="https://pypi.python.org/packages/"
               type="tarball" />
-  <!--
-    Python 3.10
-
-    Not using Python 3.11 because of https://github.com/python/cpython/issues/95400
-    A Python framework build is used during intial setup and then replaced with
-    this Python.
-    Not using Python Python >= 3.12 because of loss of distutils.
-  -->
+  <!---->
   <autotools id="python3"
              autogen-sh="configure"
              autogenargs="--enable-shared">
-    <branch module="3.10.18/Python-3.10.18.tar.xz"
-            version="3.10.18"
-            hash="sha256:ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f"
+    <branch module="3.12.11/Python-3.12.11.tar.xz"
+            version="3.12.11"
+            hash="sha256:c30bb24b7f1e9a19b11b55a546434f74e739bb4c271a3e3a80ff4380d49f7adb"
             repo="python" />
     <dependencies>
       <dep package="readline" />
