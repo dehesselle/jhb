@@ -28,9 +28,9 @@
   </autotools>
   <!---->
   <pip id="pip">
-    <branch module="ba/19/e63fb4e0d20e48bd2167bb7e857abc0e21679e24805ba921a224df8977c0/pip-23.2.1.tar.gz"
-            version="23.2.1"
-            hash="sha256:fb0bd5435b3200c602b5bf61d2d43c2f13c02e29c1707567ae7fbc514eb9faf2"
+    <branch module="59/de/241caa0ca606f2ec5fe0c1f4261b0465df78d786a38da693864a116c37f4/pip-25.1.1.tar.gz"
+            version="25.1.1"
+            hash="sha256:3de45d411d308d5054c2168185d8da7f9a2cd753dbac8acbfa88a8909ecd9077"
             repo="pymodules" />
     <dependencies>
       <dep package="python3" />
