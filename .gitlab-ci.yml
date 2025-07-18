@@ -75,6 +75,4 @@ release:publish:
         for ARTIFACT in jhb-*.tar.xz; do
           echo -n "--assets-link '{\"name\":\"${ARTIFACT}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${ARTIFACT}\"}' "
         done
-      } > create_release.sh
-      chmod 755 create_release.sh
-      ./create_release.sh
+      } | bash
