@@ -85,7 +85,7 @@ else
   rm -rf "$VER_DIR"/.git
 
   # copy custom configuration directories into target structure
-  find "$CALLER_DIR" -type d -name "*.conf.d" -exec rsync -a {} "$ETC_DIR" \;
+  find "$CALLER_DIR" -maxdepth 1 -type d -name "*.conf.d" -exec rsync -a {} "$ETC_DIR" \;
 fi
 
 #------------------------------------------- check if binary release can be used
