@@ -19,21 +19,20 @@
 
 # https://dmgbuild.readthedocs.io/en/latest/
 # https://github.com/dmgbuild/dmgbuild
-DMGBUILD_PIP="\
-  dmgbuild==1.6.5\
-  ds-store==1.3.1\
-  mac-alias==2.2.2\
-  pyobjc-core==10.3.2\
-  pyobjc-framework-Cocoa==10.3.2\
-  pyobjc-framework-Quartz==10.3.2\
-"
+DMGBUILD_PIP=(
+  "dmgbuild==1.6.5"
+  "ds-store==1.3.1"
+  "mac-alias==2.2.2"
+  "pyobjc-core==10.3.2"
+  "pyobjc-framework-Cocoa==10.3.2"
+  "pyobjc-framework-Quartz==10.3.2"
+)
 
 ### functions ##################################################################
 
 function dmgbuild_install
 {
-  # shellcheck disable=SC2086 # we need word splitting here
-  jhb run pip3 install --prefix=$VER_DIR $DMGBUILD_PIP
+  jhb run pip3 install --prefix="$VER_DIR" "${DMGBUILD_PIP[@]}"
 
   # dmgbuild has issues with detaching, workaround is to increase max retries
   gsed -i '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$BIN_DIR"/dmgbuild

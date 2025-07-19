@@ -19,11 +19,11 @@
 export JHBUILDRC=${JHBUILDRC:-$ETC_DIR/jhbuildrc}
 export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
-JHBUILD_REQUIREMENTS="\
-  meson==1.8.2\
-  ninja==1.11.1.4\
-  setuptools==80.9.0\
-"
+JHBUILD_REQUIREMENTS_PIP=(
+  "meson==1.8.2"
+  "ninja==1.11.1.4"
+  "setuptools==80.9.0"
+)
 
 # JHBuild build system (current master as of 18.07.2025)
 # https://gitlab.gnome.org/GNOME/jhbuild
@@ -90,8 +90,8 @@ function jhbuild_set_python_interpreter
 function jhbuild_install
 {
   # Install dependencies.
-  # shellcheck disable=SC2086 # we need word splitting for requirements
-  pip$JHBUILD_PYTHON_VER install --prefix=$VER_DIR $JHBUILD_REQUIREMENTS
+  "pip$JHBUILD_PYTHON_VER" install \
+    --prefix="$VER_DIR" "${JHBUILD_REQUIREMENTS_PIP[@]}"
 
   local archive
   archive=$PKG_DIR/$(basename $JHBUILD_URL)
