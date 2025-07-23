@@ -45,3 +45,8 @@ alias error_trace_disable='trap - ERR'
 ### main #######################################################################
 
 shopt -s expand_aliases
+
+if $CI; then
+  # enable this for CI only as it breaks JHBuild's interactive prompts
+  error_trace_enable
+fi
