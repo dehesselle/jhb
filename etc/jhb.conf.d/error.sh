@@ -22,12 +22,12 @@ function error_catch
 
   local index=0
   local output
+  local fg_yellow_bright="\033[0;93m"
+  local fg_reset="\033[0;0m"
 
   while output=$(caller $index); do
     if [ $index -eq 0 ]; then
-      echo_e "rc=$rc $ANSI_FG_YELLOW_BRIGHT$BASH_COMMAND$ANSI_FG_RESET"
-      # non-color version
-      # echo "rc=$rc $BASH_COMMAND"
+      echo_e "rc=$rc $fg_yellow_bright$BASH_COMMAND$fg_reset"
     fi
 
     echo_e "$output"
