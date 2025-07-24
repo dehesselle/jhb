@@ -23,38 +23,44 @@
 
 ### functions ##################################################################
 
-# Nothing here.
+function _get_self_dir
+{
+  echo "$(
+    cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+    pwd
+  )"
+}
+
+function _get_jhb_conf_dirs
+{
+  local conf_dirs
+  conf_dirs=$(_get_self_dir)/jhb.conf.d
+
+  # iterate through all conf.d directories
+  for dir in "$(_get_self_dir)"{/,/../../}*{pre,post}.conf.d; do
+    # Check if dir is actually a valid/existing directory. Otherwise we
+    # end up adding an unresolved wildcard expression to conf_dirs.
+    if [ -d "$dir" ]; then
+      # Decide if the directory needs to prepended or appended to the list.
+      if [[ $dir = *pre* ]]; then
+        conf_dirs="$dir $conf_dirs"  # prepend
+      else
+        conf_dirs="$conf_dirs $dir"  # append
+      fi
+    fi
+  done
+
+  echo "$conf_dirs"
+}
 
 ### main #######################################################################
 
-_SELF_DIR=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-  pwd
-)
-
-_DIRS=$_SELF_DIR/jhb.conf.d
-# shellcheck disable=SC1073 # this is more readable
-# iterate through all conf.d directories
-for _DIR in "$_SELF_DIR"{/,/../../}*{pre,post}.conf.d; do
-  # Check if _DIR is actually a valid/existing directory. Otherwise we
-  # end up adding an unresolved wildcard expression to _DIRS.
-  if [ -d "$_DIR" ]; then
-    # Decide if the directory needs to prepended or appended to the list.
-    if [[ $_DIR = *pre* ]]; then
-      _DIRS="$_DIR $_DIRS"  # prepend
-    else
-      _DIRS="$_DIRS $_DIR"  # append
-    fi
-  fi
-done
-
 # source items from configuration directories
-for _DIR in $_DIRS; do
-  for _FILE in $("$_SELF_DIR"/../usr/bin/run-parts list "$_DIR"/'*.sh'); do
+for DIR in $(_get_jhb_conf_dirs); do
+  for FILE in $("$(_get_self_dir)"/../usr/bin/run-parts list "$DIR"/'*.sh'); do
     # shellcheck disable=SC1090 # can't point to a single source here
-    source "$_FILE"
+    source "$FILE"
   done
 done
 
-unset _FILE _DIR _DIRS
-unset _SELF_DIR
+unset FILE DIR
