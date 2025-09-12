@@ -24,6 +24,7 @@ build:
       - ARCHITECTURE: [ "arm64", "x86_64" ]
   variables:
     FORCE_BUILD_FROM_SOURCE: "true"
+    ORKA_RUNNER: sequoia-3
     SDKROOT: /opt/sdks/MacOSX11.3.sdk
   tags:
     - macos
