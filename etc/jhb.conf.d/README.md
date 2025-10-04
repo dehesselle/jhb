@@ -1,6 +1,6 @@
 # JHB configuration
 
-Files in here are being sourced by `../../usr/bin/run-parts`
+Files in here are being sourced by `../jhb.conf.sh` using  `../../usr/bin/run-parts`
 
 - in their lexical order _and_
 - only once in case a symlink exists.
