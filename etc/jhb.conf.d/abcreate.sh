@@ -19,7 +19,7 @@
 
 # https://github.com/dehesselle/abcreate
 ABCREATE_PIP=(
-  "abcreate==0.6"
+  "abcreate==0.6.1"
   "annotated-types==0.7.0"
   "lxml==6.0.0"
   "pydantic==2.11.7"
