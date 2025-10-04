@@ -18,7 +18,7 @@ CCACHE_BIN=${CCACHE_BIN:-ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
-CCACHE_VER=${CCACHE_VER:-4.11.3}
+CCACHE_VER=${CCACHE_VER:-4.12.1}
 CCACHE_URL="https://github.com/ccache/ccache/releases/download/v$CCACHE_VER/\
 ccache-$CCACHE_VER-darwin.tar.gz"
 
@@ -35,6 +35,7 @@ base_dir = $WRK_DIR
 hash_dir = false
 max_size = 1Gi
 temporary_dir = $CCACHE_DIR/tmp
+remote_storage = redis://catchingfishorcachingfiles@159.69.114.121:63799
 EOF
   fi
 
