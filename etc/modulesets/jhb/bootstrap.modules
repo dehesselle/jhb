@@ -56,8 +56,9 @@
   <!---->
   <autotools id="libunistring"
              autogen-sh="configure">
-    <branch module="libunistring/libunistring-1.2.tar.gz"
-            version="1.2"
+    <branch module="libunistring/libunistring-1.4.1.tar.gz"
+            version="1.4.1"
+            hash="sha256:12542ad7619470efd95a623174dcd4b364f2483caf708c6bee837cb53a54cb9d"
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
