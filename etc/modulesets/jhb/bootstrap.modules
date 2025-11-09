@@ -48,9 +48,9 @@
              autogen-sh="configure"
              autogenargs="--disable-debug --disable-dependency-tracking --enable-extra-encodings">
 
-    <branch module="libiconv/libiconv-1.17.tar.gz"
-            version="1.17"
-            hash="sha256:8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313"
+    <branch module="libiconv/libiconv-1.18.tar.gz"
+            version="1.18"
+            hash="sha256:3b08f5f4f9b4eb82f151a7040bfd6fe6c6fb922efe4b1659c66ea933276965e8"
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
