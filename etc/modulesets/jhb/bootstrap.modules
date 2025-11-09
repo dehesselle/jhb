@@ -81,11 +81,11 @@
   <autotools id="cmake"
              autogen-sh="bootstrap"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s %(autogenargs)s"
-             autogenargs="--docdir=share/doc/cmake-3.31"
+             autogenargs="--docdir=share/doc/cmake-4.1"
              bootstrap="true">
-    <branch module="v3.31/cmake-3.31.8.tar.gz"
-            version="3.31.8"
-            hash="sha256:e3cde3ca83dc2d3212105326b8f1b565116be808394384007e7ef1c253af6caa"
+    <branch module="v4.1/cmake-4.1.2.tar.gz"
+            version="4.1.2"
+            hash="sha256:643f04182b7ba323ab31f526f785134fb79cba3188a852206ef0473fee282a15"
             repo="cmake" />
   </autotools>
   <!--
