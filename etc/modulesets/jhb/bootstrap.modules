@@ -66,9 +66,9 @@
              autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib --with-included-libcroco">
 
-    <branch module="gettext/gettext-0.22.5.tar.xz"
-            version="0.22.5"
-            hash="sha256:fe10c37353213d78a5b83d48af231e005c4da84db5ce88037d88355938259640"
+    <branch module="gettext/gettext-0.26.tar.xz"
+            version="0.26"
+            hash="sha256:d1fb86e260cfe7da6031f94d2e44c0da55903dbae0a2fa0fae78c91ae1b56f00"
             repo="ftp.gnu.org" />
     <dependencies>
       <dep package="libiconv" />
