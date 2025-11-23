@@ -26,9 +26,9 @@
   <autotools id="xz"
              autogen-sh="configure"
              bootstrap="true">
-    <branch module="tukaani-project/xz/releases/download/v5.6.3/xz-5.6.3.tar.bz2"
-            version="5.6.3"
-            hash="sha256:a95a49147b2dbb5487517acc0adcd77f9c2032cf00664eeae352405357d14a6c"
+    <branch module="tukaani-project/xz/releases/download/v5.8.1/xz-5.8.1.tar.bz2"
+            version="5.8.1"
+            hash="sha256:5965c692c4c8800cd4b33ce6d0f6ac9ac9d6ab227b17c512b6561bce4f08d47e"
             repo="github" />
   </autotools>
   <!--
@@ -48,16 +48,17 @@
              autogen-sh="configure"
              autogenargs="--disable-debug --disable-dependency-tracking --enable-extra-encodings">
 
-    <branch module="libiconv/libiconv-1.17.tar.gz"
-            version="1.17"
-            hash="sha256:8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313"
+    <branch module="libiconv/libiconv-1.18.tar.gz"
+            version="1.18"
+            hash="sha256:3b08f5f4f9b4eb82f151a7040bfd6fe6c6fb922efe4b1659c66ea933276965e8"
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
   <autotools id="libunistring"
              autogen-sh="configure">
-    <branch module="libunistring/libunistring-1.2.tar.gz"
-            version="1.2"
+    <branch module="libunistring/libunistring-1.4.1.tar.gz"
+            version="1.4.1"
+            hash="sha256:12542ad7619470efd95a623174dcd4b364f2483caf708c6bee837cb53a54cb9d"
             repo="ftp.gnu.org" />
   </autotools>
   <!---->
@@ -65,9 +66,9 @@
              autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib --with-included-libcroco">
 
-    <branch module="gettext/gettext-0.22.5.tar.xz"
-            version="0.22.5"
-            hash="sha256:fe10c37353213d78a5b83d48af231e005c4da84db5ce88037d88355938259640"
+    <branch module="gettext/gettext-0.26.tar.xz"
+            version="0.26"
+            hash="sha256:d1fb86e260cfe7da6031f94d2e44c0da55903dbae0a2fa0fae78c91ae1b56f00"
             repo="ftp.gnu.org" />
     <dependencies>
       <dep package="libiconv" />
