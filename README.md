@@ -12,7 +12,7 @@ This project (on [GitLab](https://gitlab.com/dehesselle/jhb), [GitHub](https://g
 
 - It uses a relocatable [Python.framework](https://gitlab.com/dehesselle/python_macos) to bootstrap itself until it can build its own Python to become self-sufficient.
 
-## prerequisites
+## Prerequisites
 
 Make sure the following prerequisites are met:
 
@@ -26,13 +26,13 @@ Make sure the following prerequisites are met:
     - If in doubt, use a dedicated user account instead.
 
 - There are __version recommendations__ based on known working setups.
-  - macOS >= 11
-  - Xcode >= 13
-  - macOS SDK 11.3 (from Xcode 13.0)
+  - macOS Sequoia (15)
+  - Xcode 16.4
+  - macOS SDK 11.3 (from Xcode 13.0-13.2.1)
 
 - An __internet connection__ is required to download all the packages.
 
-## usage
+## Usage
 
 1. Clone the latest version of this repository.
 
@@ -78,13 +78,14 @@ This is not theoretical work but the result of refactoring and outsourcing parts
 - [Meld](https://meldmerge.org): see [meld_macos](https://gitlab.com/dehesselle/meld_macos)
 - [Rnote](https://rnote.flxzt.net): see [rnote_macos](https://gitlab.com/dehesselle/rnote_macos)
 
-## credits
+## Attributions
 
 The jhb logo uses modified versions of
 
 - a [construction sign](https://openclipart.org/detail/89593/construction-sign-simple), licensed under [CC0-1.0](https://spdx.org/licenses/CC0-1.0.html)
 - the [GTK logo](https://commons.wikimedia.org/wiki/File:GTK_logo.svg) from Andreas Nilsen, licensed under [CC-BY-SA-3.0](https://spdx.org/licenses/CC-BY-SA-3.0.html)
 
-## license
+## License
 
-[GPL-2.0-or-later](LICENSE)
+This work is licensed under [GPL-2.0-or-later](LICENSE).
+Modulesets and JHBuild configuration based on [gtk-osx](https://gitlab.gnome.org/GNOME/gtk-osx) licensed under GPL-2.0-or-later.
