@@ -18,7 +18,7 @@ CCACHE_BIN=${CCACHE_BIN:-ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
-CCACHE_VER=${CCACHE_VER:-4.12.1}
+CCACHE_VER=${CCACHE_VER:-4.13.6}
 CCACHE_URL="https://github.com/ccache/ccache/releases/download/v$CCACHE_VER/\
 ccache-$CCACHE_VER-darwin.tar.gz"
 
