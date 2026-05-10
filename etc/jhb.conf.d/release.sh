@@ -16,11 +16,8 @@
 RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$VER_DIR")_$(uname -m).tar.xz}
 
 # The canonical source for releases is GitLab.
-# shellcheck disable=2206 # we need expansion for the array to work
-RELEASE_URLS=(${RELEASE_URLS[@]:-
-  "https://gitlab.com/api/v4/projects/35965804/packages/generic/jhb/\
+RELEASE_URL="https://gitlab.com/api/v4/projects/35965804/packages/generic/jhb/\
 v$VERSION/$RELEASE_ARCHIVE"
-})
 
 ### functions ##################################################################
 
