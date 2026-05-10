@@ -10,8 +10,6 @@ This project (on [GitLab](https://gitlab.com/dehesselle/jhb), [GitHub](https://g
 
 - It is fully self-contained to its directories, allowing for co-existence of multiple installations in locations of your choosing.
 
-- It uses a relocatable [Python.framework](https://gitlab.com/dehesselle/python_macos) to bootstrap itself until it can build its own Python to become self-sufficient.
-
 ## Prerequisites
 
 Make sure the following prerequisites are met:
