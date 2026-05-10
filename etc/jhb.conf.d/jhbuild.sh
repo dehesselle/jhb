@@ -25,10 +25,10 @@ JHBUILD_REQUIREMENTS_PIP=(
   "setuptools==80.9.0"
 )
 
-# JHBuild build system (current master as of 18.07.2025)
+# JHBuild build system (current master as of 10.05.2026)
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://gnome.pages.gitlab.gnome.org/jhbuild/
-JHBUILD_VER=c2cc9918
+JHBUILD_VER=643b97b2
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
