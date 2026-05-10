@@ -32,7 +32,7 @@ function ci_gitlab_add_metadata
 
   # add some metadata to make CI identifiable
   for var in PROJECT_NAME PROJECT_URL COMMIT_BRANCH COMMIT_SHA \
-    COMMIT_SHORT_SHA JOB_ID JOB_URL JOB_NAME PIPELINE_ID PIPELINE_URL; do
+    JOB_URL PIPELINE_URL; do
     # use awk to create camel case strings (e.g. PROJECT_NAME to ProjectName)
     /usr/libexec/PlistBuddy -c "Add CI$(
       echo $var | awk -F _ '{
