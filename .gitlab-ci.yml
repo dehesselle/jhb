@@ -35,10 +35,11 @@ build:
     - usr/bin/archive remove_nonessentials
     - usr/bin/archive create_tar
   after_script:
-    # For persistent runners: cleanup afterwards.
-    - |
-      VER_DIR=$(usr/bin/config get VER_DIR)
-      rm -rf ${VER_DIR:?}
+    - | # cleanup for persistent Intel runner
+      if [ "$ARCHITECTURE" = "x86_64" ]; then
+        VER_DIR=$(usr/bin/config get VER_DIR)
+        rm -rf ${VER_DIR:?}
+      fi
   artifacts:
     paths:
       - jhb-*.tar.xz
