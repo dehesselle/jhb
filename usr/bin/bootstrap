@@ -142,7 +142,10 @@ jhb build meta-gtk-osx-bootstrap
 
 jhb build coreutils sed
 
-#---------------------------------------------------- install packaging utilties
+#------------------------------------------------------ install venv-based tools
 
-abcreate_install
-dmgbuild_install
+# It is too complicated to try to handle these with pip modules in
+# gtk-osx-python.modules due to different version, architectures and build
+# requirements.
+
+venvtools_install

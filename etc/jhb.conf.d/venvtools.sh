@@ -1,11 +1,10 @@
-# SPDX-FileCopyrightText: 2022 René de Hesselle <dehesselle@web.de>
+# SPDX-FileCopyrightText: 2026 René de Hesselle <dehesselle@web.de>
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 ### description ################################################################
 
-# dmgbuild is a Python package that simplifies the process of creating a
-# disk image (dmg) for distribution.
+# Install Python tools in dedicated virtual environments.
 
 ### shellcheck #################################################################
 
@@ -17,28 +16,26 @@
 
 ### variables ##################################################################
 
-# https://dmgbuild.readthedocs.io/en/latest/
-# https://github.com/dmgbuild/dmgbuild
-DMGBUILD_PIP=(
-  "dmgbuild==1.6.5"
-  "ds-store==1.3.1"
-  "mac-alias==2.2.2"
-  "pyobjc-core==10.3.2"
-  "pyobjc-framework-Cocoa==10.3.2"
-  "pyobjc-framework-Quartz==10.3.2"
-)
+# Nothing here.
 
 ### functions ##################################################################
 
-function dmgbuild_install
+function venvtools_install
 {
-  jhb run pip3 install --prefix="$VER_DIR" "${DMGBUILD_PIP[@]}"
-
-  # dmgbuild has issues with detaching, workaround is to increase max retries
-  gsed -i '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$BIN_DIR"/dmgbuild
+  for requirements in "$SHR_DIR"/venv/*.txt; do
+    local tool_name
+    tool_name=$(basename -s .txt "$requirements")
+    local venv_dir=$SHR_DIR/venv/$tool_name
+    # setup venv named after the tool
+    jhb run python3 -m venv "$venv_dir"
+    # install the tool into the venv
+    jhb run "$venv_dir"/bin/pip install -r "$requirements"
+    # link the tool to usr/bin
+    ln -s "../../share/venv/$tool_name/bin/$tool_name" "$USR_DIR"/bin
+  done
 }
 
-function dmgbuild_run
+function venvtools_dmgbuild
 {
   local config=$1
   local plist=$2
