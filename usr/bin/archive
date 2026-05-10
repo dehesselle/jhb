@@ -196,8 +196,8 @@ function remove_nonessential_files
       continue
     fi
 
-    if [ -f "$dir/.skip" ]; then
-      echo_i "skipping $dir: .skip was found"  # skip over marked directories
+    if [ -f "$dir/.skip_remove_nonessential_files" ]; then
+      echo_i "skipping $dir: .skip_remove_nonessential_files was found"
       continue
     fi
 
