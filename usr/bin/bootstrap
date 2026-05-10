@@ -79,13 +79,14 @@ fi
 if [ "$SELF_DIR" = "$USR_DIR"/bin ]; then
   : # we are already running inside target directory layout
 else
-  # sync repository into target structure, remove everything git-related
+  # sync repository into target structure
   rsync -a "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
-  find "$VER_DIR" -type f -name ".gitignore" -delete
+  # remove everything git-related
+  find "$VER_DIR" -type f -name ".gitkeep" -delete
   rm -rf "$VER_DIR"/.git
-
   # copy custom configuration directories into target structure
-  find "$CALLER_DIR" -maxdepth 1 -type d -name "*.conf.d" -exec rsync -a {} "$ETC_DIR" \;
+  find "$CALLER_DIR" -maxdepth 1 -type d -name "*.conf.d" \
+    -exec rsync -a {} "$ETC_DIR" \;
 fi
 
 #------------------------------------------- check if binary release can be used
@@ -119,12 +120,6 @@ fi
 
 #------------------------------------------------- install and configure JHBuild
 
-# We need to solve the "chicken or the egg" problem: we are going to build
-# Python using JHBuild, but JHBuild itself requires Python to run. So we
-# temporarily install and use an externally built Python until we're
-# self-sufficient.
-jhbuild_install_python
-
 jhbuild_install
 jhbuild_configure
 
@@ -132,7 +127,14 @@ jhbuild_configure
 
 jhbuild bootstrap-gtk-osx
 
-jhb build python3 pip
+jhb build python3
+
+# We are now using the freshly built Python and are in a deadlock if we try
+# to install setuptools with jhb. We have to do it manually.
+"$BIN_DIR"/pip3 install setuptools=="$(xmllint \
+  --xpath "string(//moduleset/pip[@id='setuptools']/branch/@version)" \
+  "$ETC_DIR"/modulesets/jhb/gtk-osx-python.modules
+)"
 
 jhb build meta-gtk-osx-bootstrap
 

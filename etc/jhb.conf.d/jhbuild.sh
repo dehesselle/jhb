@@ -32,84 +32,35 @@ JHBUILD_VER=643b97b2
 JHBUILD_URL="https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2"
 
-#---------------------------------------------- Python runtime for bootstrapping
-
-# This is a dedicated Python runtime to bootstrap JHBuild. It will be removed
-# after bootstrapping has been completed.
-
-JHBUILD_PYTHON_VER_FULL=$(
-  xmllint \
-    --xpath "string(//moduleset/autotools[@id='python3']/branch/@version)" \
-    "$(dirname "${BASH_SOURCE[0]}")"/../modulesets/jhb/gtk-osx-python.modules
-)
-JHBUILD_PYTHON_VER=${JHBUILD_PYTHON_VER_FULL%.*} # reduce to major.minor
-
-JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
-generic/python_macos/v24/pythonframework_$(uname -m).tar.xz"
-
-JHBUILD_PYTHON_DIR=$TMP_DIR/Python.framework
-JHBUILD_PYTHON_VER_DIR=$JHBUILD_PYTHON_DIR/Versions/$JHBUILD_PYTHON_VER
-JHBUILD_PYTHON_BIN_DIR=$JHBUILD_PYTHON_VER_DIR/bin
-
 ### functions ##################################################################
-
-function jhbuild_install_python
-{
-  # Download and extract Python.framework to JHBUILD_PYTHON_DIR.
-  curl -L "$JHBUILD_PYTHON_URL" | tar -C "$(dirname "$JHBUILD_PYTHON_DIR")" -x
-
-  # Create a pkg-config configuration to match our installation location.
-  # Note: sed changes the prefix and exec_prefix lines!
-  find "$JHBUILD_PYTHON_VER_DIR"/lib/pkgconfig/*.pc \
-    -type f \
-    -exec sed -i "" "s|prefix=.*|prefix=$JHBUILD_PYTHON_VER_DIR|" {} \;
-
-  jhbuild_set_python_interpreter
-
-  # add to PYTHONPATH
-  echo "../../../../../../../lib/python$JHBUILD_PYTHON_VER/site-packages" \
-    >"$JHBUILD_PYTHON_VER_DIR/lib/python$JHBUILD_PYTHON_VER/site-packages/jhb.pth"
-}
-
-function jhbuild_set_python_interpreter
-{
-  # Symlink binaries to USR_DIR/bin.
-  ln -sf "$JHBUILD_PYTHON_BIN_DIR/python$JHBUILD_PYTHON_VER" "$BIN_DIR"
-  ln -sf "$JHBUILD_PYTHON_BIN_DIR/pip$JHBUILD_PYTHON_VER" "$BIN_DIR"
-
-  # Set interpreter to the one in BIN_DIR.
-  while IFS= read -r -d '' file; do
-    local file_type
-    file_type=$(file "$file")
-    if [[ $file_type = *"Python script"* ]]; then
-      sed -i "" "1 s|.*|#!$BIN_DIR/python$JHBUILD_PYTHON_VER|" "$file"
-    fi
-  done < <(find "$BIN_DIR"/ -maxdepth 1 -type f -print0)
-}
 
 function jhbuild_install
 {
+  python3 -m venv "$SHR_DIR"/venv/jhbuild
+
+  local venv_dir=$SHR_DIR/venv/jhbuild
+  local pip=$venv_dir/bin/pip3
+
   # Install dependencies.
-  "pip$JHBUILD_PYTHON_VER" install \
-    --prefix="$VER_DIR" "${JHBUILD_REQUIREMENTS_PIP[@]}"
+  $pip install "${JHBUILD_REQUIREMENTS_PIP[@]}"
 
   local archive
   archive=$PKG_DIR/$(basename $JHBUILD_URL)
   curl -o "$archive" -L "$JHBUILD_URL"
-  tar -C "$SRC_DIR" -xf "$archive"
+  tar -C "$venv_dir" -xf "$archive"
 
   ( # Install JHBuild.
-    cd "$SRC_DIR"/jhbuild-$JHBUILD_VER || exit 1
+    cd "$venv_dir"/jhbuild-$JHBUILD_VER || exit 1
     patch -p1 < "$ETC_DIR"/modulesets/jhb/patches/jhbuild-distutils.patch
     ./autogen.sh \
-      --prefix="$VER_DIR" \
-      --with-python="$BIN_DIR/python$JHBUILD_PYTHON_VER"
-    make
+      --prefix="$venv_dir" \
+      --with-python="$venv_dir"/bin/python3
     make install
   )
 
-  # protect against removal during cleanup
-  echo "jhbuild-$JHBUILD_VER" >> "$SRC_DIR"/.keep
+  for file in jhbuild meson ninja; do
+    ln -s ../../share/venv/jhbuild/bin/$file "$USR_DIR"/bin
+  done
 }
 
 function jhbuild_configure
