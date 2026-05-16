@@ -2,55 +2,44 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <!--
-    Please format this file using https://github.com/htacg/tidy-html5
+  <!-- Please format this file using the following command:
+       tidy -config ../tidy.conf -m gtk-osx-network.modules; sed -i "" '/^ *$/d' gtk-osx-network.modules
+       You can get 'tidy' here: https://github.com/htacg/tidy-html5 -->
 
-        tidy -config tidy.conf -m gtk-osx-network.modules
-  -->
-  <repository name="openssl"
-              href="https://www.openssl.org/source/"
-              type="tarball" />
   <repository name="webm"
               href="http://downloads.webmproject.org/releases/"
+              type="tarball" />
+  <repository name="github-tarball"
+              href="https://github.com/"
               type="tarball" />
   <repository name="zlib"
               href="https://www.zlib.net/"
               type="tarball" />
-  <!--
-    of the many arguments such as prefix and libdir that jhbuild might pass
-    to configure, openssl only understands prefix, and only with =.
-  -->
+  <!-- of the many arguments such as prefix and libdir that jhbuild might pass
+       to configure, openssl only understands prefix, and only with =. -->
   <autotools id="openssl"
              autogen-sh="Configure"
-             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s">
-
-    <branch module="openssl-3.6.2.tar.gz"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s %(autogenargs)s"
+             autogenargs="shared"
+             makeinstallargs="install_sw">
+    <branch module="openssl/openssl/releases/download/openssl-3.6.2/openssl-3.6.2.tar.gz"
             version="3.6.2"
             hash="sha256:aaf51a1fe064384f811daeaeb4ec4dce7340ec8bd893027eee676af31e83a04f"
-            repo="openssl" />
+            repo="github-tarball" />
   </autotools>
-  <!---->
-  <cmake id="zlib">
+  <cmake id="zlib"
+         cmakeargs='-DCMAKE_INSTALL_NAME_DIR="${JHBUILD_PREFIX}/lib"'>
     <branch module="zlib-1.3.2.tar.xz"
             version="1.3.2"
             hash="sha256:d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3"
-            repo="zlib">
-      <patch file="zlib-remove_rpath.patch"
-             strip="1" />
-    </branch>
+            repo="zlib" />
   </cmake>
-  <!--
-    libwebp
-    https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html
-  -->
   <autotools id="libwebp"
              autogen-sh="configure"
              autogenargs="--enable-libwebpmux --enable-libwebpdecoder">
-             
     <branch module="webp/libwebp-1.6.0.tar.gz"
             version="1.6.0"
             hash="sha256:e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564"
             repo="webm" />
   </autotools>
-  <!---->
 </moduleset>

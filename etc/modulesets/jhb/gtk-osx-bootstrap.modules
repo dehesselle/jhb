@@ -2,11 +2,9 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <!--
-    Please format this file using https://github.com/htacg/tidy-html5
-
-        tidy -config tidy.conf -m gtk-osx-bootstrap.modules
-  -->
+  <!-- Please format this file using the following command:
+       tidy -config ../tidy.conf -m gtk-osx-bootstrap.modules; sed -i "" '/^ *$/d' gtk-osx-bootstrap.modules
+       You can get 'tidy' here: https://github.com/htacg/tidy-html5 -->
   <repository name="download.gnome.org"
               default="yes"
               href="https://download.gnome.org/sources/"
@@ -20,41 +18,42 @@
   <repository name="libtiff"
               href="http://download.osgeo.org/"
               type="tarball" />
-  <repository name="github"
+  <repository name="github-tarball"
               href="https://github.com/"
               type="tarball" />
-  <repository name="nasm"
-              href="https://www.nasm.us/pub/nasm/releasebuilds/"
-              type="tarball" />
-  <!---->
   <autotools id="libpng"
              autogen-sh="configure"
              autogenargs="--enable-shared">
-    <branch module="libpng/libpng-1.6.50.tar.xz"
-            version="1.6.50"
-            hash="sha256:4df396518620a7aa3651443e87d1b2862e4e88cad135a8b93423e01706232307"
-            repo="sourceforge" />
+    <branch module="pnggroup/libpng/archive/refs/tags/v1.6.58.tar.gz"
+	    checkoutdir="libpng-1.6.58"
+            version="1.6.58"
+            hash="sha256:a9d4df463d36a6e5f9c29bd6f4967312d17e996c1854f3511f833924eb1993cf"
+            repo="github-tarball" />
     <dependencies>
       <dep package="zlib" />
     </dependencies>
   </autotools>
-  <!---->
   <autotools id="nasm"
-             autogen-sh="configure">
-    <branch module="2.16.03/nasm-2.16.03.tar.xz"
-            version="2.16.03"
-            hash="sha256:1412a1c760bbd05db026b6c0d1657affd6631cd0a63cddb6f73cc6d4aa616148"
-            repo="nasm" />
+             autogen-sh="autogen.sh"
+             autogen-template="./%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s %(autogenargs)s"
+             supports-non-srcdir-builds="no" >
+    <branch module="netwide-assembler/nasm/archive/refs/tags/nasm-3.01.tar.gz"
+            checkoutdir="nasm-nasm-3.01"
+            version="3.01"
+            hash="sha256:af2f241ecc061205d73ba4f781f075d025dabaeab020b676b7db144bf7015d6d"
+            repo="github-tarball" >
+      <patch file="nasm-dont-install-docs.patch" strip="1" />
+    </branch>
   </autotools>
-  <!---->
+
   <if condition-unset="noturbojpeg">
+
     <cmake id="libjpeg"
            cmakeargs="-DWITH_JPEG8=ON -DCMAKE_INSTALL_LIBDIR=$JHBUILD_PREFIX/lib">
-
-      <branch module="libjpeg-turbo/libjpeg-turbo/releases/download/3.1.2/libjpeg-turbo-3.1.2.tar.gz"
-              version="3.1.2"
-              hash="sha256:8f0012234b464ce50890c490f18194f913a7b1f4e6a03d6644179fa0f867d0cf"
-              repo="github">
+      <branch module="libjpeg-turbo/libjpeg-turbo/releases/download/3.1.4.1/libjpeg-turbo-3.1.4.1.tar.gz"
+              version="3.1.4.1"
+              hash="sha256:ecae8008e2cc9ade2f2c1bb9d5e6d4fb73e7c433866a056bd82980741571a022"
+              repo="github-tarball">
         <patch file="turbojpeg-remove_rpath.patch"
                strip="1" />
       </branch>
@@ -63,7 +62,6 @@
       </dependencies>
     </cmake>
   </if>
-  <!---->
   <if condition-set="noturbojpeg">
     <autotools id="libjpeg"
                autogen-sh="configure">
@@ -74,10 +72,8 @@
               repo="jpeg" />
     </autotools>
   </if>
-  <!---->
-  <autotools id="libtiff"
-             autogen-sh="configure"
-             autogenargs="--without-x">
+  <cmake id="libtiff"
+         cmakeargs='-Dtiff-tests=off -Dtiff-docs=off -DCMAKE_MACOSX_RPATH=OFF -DCMAKE_INSTALL_NAME_DIR="${JHBUILD_PREFIX}/lib"'>
     <branch module="libtiff/tiff-4.7.1.tar.xz"
             version="4.7.1"
             hash="sha256:b92017489bdc1db3a4c97191aa4b75366673cb746de0dce5d7a749d5954681ba"
@@ -86,8 +82,8 @@
       <dep package="libjpeg" />
       <dep package="libwebp" />
     </dependencies>
-  </autotools>
-  <!---->
+  </cmake>
+
   <metamodule id="meta-gtk-osx-bootstrap">
     <dependencies>
       <dep package="libpng" />
@@ -95,5 +91,4 @@
       <dep package="libtiff" />
     </dependencies>
   </metamodule>
-  <!---->
 </moduleset>

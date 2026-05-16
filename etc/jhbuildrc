@@ -1,5 +1,3 @@
-# fmt: off
-#
 # -*- mode: python -*-
 #
 # Copyright (C) 2006, 2007, 2008 Imendio AB
@@ -29,7 +27,7 @@ import re
 #some variables we'll need defined later
 _default_arch = ""
 _osx_version = 0.0
-_target = '10.11'
+_target = 'native'
 
 def _popen(cmd_arg):
     from subprocess import Popen, PIPE
@@ -78,7 +76,7 @@ class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
         global use_local_modulesets
         moduleset="bootstrap"
         modulesets_dir = os.path.dirname(config.moduleset)
-        print(f"Modulests Dir: ${modulesets_dir}")
+        print(f"Modulests Dir:  {modulesets_dir}")
         if (use_local_modulesets and
             os.path.exists(os.path.join(modulesets_dir,
                                         moduleset + '.modules'))):
@@ -89,7 +87,7 @@ class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
                                           moduleset + '.modules'))):
             config.moduleset = moduleset
         else:
-            config.moduleset = 'https://raw.githubusercontent.com/dehesselle/jhb/master/etc/modulesets/jhb/bootstrap.modules'
+            config.moduleset = 'https://gitlab.com/dehesselle/jhb/-/raw/bc1be46a/etc/modulesets/jhb/bootstrap.modules'
 
         args = ['meta-bootstrap']
 
@@ -121,21 +119,29 @@ class _getenv(jhbuild.commands.Command):
 
 jhbuild.commands.register_command(_getenv)
 
-# Determine the native system:
+# Determine the native system. uname -r returns a serial number. 10.0
+# started with serial 4 and 10.15 was 19. macOS 11 (Big Sur), the
+# first Apple Silicon release, was renumbered 11 and had serial
+# 20. Apple switched to using the last two digits of the year with
+# serial 25, but even though it was serial 25 and released in
+# September 2025 they named it macOS 26.
 def osx_ver():
+    from decimal import Decimal
     global _default_arch, _osx_version, _target
     vstring = _popen("uname -r")
     mstring = _popen("machine")
     exp = re.compile(r'(\d+\.\d+)\.\d+')
     vernum = exp.match(vstring)
-    _osx_version = float(vernum.group(1)) - 4.0
+    _osx_version = Decimal(vernum.group(1)) - 4
     if _osx_version < 14.0:
         print("Error: Mac OS X 10.14 or newer is required, exiting.")
         raise SystemExit
     if _osx_version < 16:
-        _target = '10.%d' % int(_osx_version)
+        _target = f'10.{int(_osx_version)}'
+    elif _osx_version < 21:
+        _target = f'{_osx_version - 5}'
     else:
-        _target = '%d' % (_osx_version - 5)
+        _target = f'{_osx_version + 5}'
 
     _default_arch = _popen("uname -m")
 
@@ -243,6 +249,9 @@ osx_ver()
 def setup_sdk(target=_target, sdk_version=None, architectures=[_default_arch]):
 
     global use_local_modulesets, conditions
+    if target == 'native' or target is None:
+        osx_ver()
+        target = _target
     os.environ["MACOSX_DEPLOYMENT_TARGET"] = target
     sdkdir = None
     xcodepath = None
@@ -567,5 +576,3 @@ os.unsetenv("JHB")
 
 if "shell" in sys.argv:
     print("Entered jhbuild shell, type 'exit' to return.")
-
-# fmt: on

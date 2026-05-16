@@ -2,18 +2,22 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <!--
-    Please format this file using https://github.com/htacg/tidy-html5
-
-        tidy -config tidy.conf -m gtk-osx-python.modules
-  -->
+  <!-- Please format this file using the following command:
+       tidy -config ../tidy.conf -m gtk-osx-python.modules; sed -i "" '/^ *$/d' gtk-osx-python.modules
+       You can get 'tidy' here: https://github.com/htacg/tidy-html5 -->
+  <repository name="download.gnome.org"
+              default="yes"
+              href="https://download.gnome.org/sources/"
+              type="tarball" />
   <repository name="python"
               href="https://www.python.org/ftp/python/"
               type="tarball" />
   <repository name="pymodules"
-              href="https://pypi.python.org/packages/"
+              href="https://files.pythonhosted.org/packages/"
               type="tarball" />
-  <!---->
+  <repository name="github-tarball"
+              href="https://github.com"
+              type="tarball" />
   <autotools id="python3"
              autogen-sh="configure"
              autogenargs="--enable-shared">
@@ -23,20 +27,25 @@
             repo="python" />
     <dependencies>
       <dep package="readline" />
+      <!-- for hashlib -->
       <dep package="openssl" />
+      <dep package="zlib" />
     </dependencies>
+    <after>
+      <dep package="sqlite" />
+    </after>
   </autotools>
-  <!---->
-  <pip id="pip">
-    <branch module="59/de/241caa0ca606f2ec5fe0c1f4261b0465df78d786a38da693864a116c37f4/pip-25.1.1.tar.gz"
-            version="25.1.1"
-            hash="sha256:3de45d411d308d5054c2168185d8da7f9a2cd753dbac8acbfa88a8909ecd9077"
-            repo="pymodules" />
-    <dependencies>
-      <dep package="python3" />
-    </dependencies>
-  </pip>
-  <!---->
+  <autotools id="gtk-mac-integration-python"
+             autogen-sh="configure"
+             autogenargs="--enable-python">
+    <branch module="gtk-mac-integration/3.0/gtk-mac-integration-3.0.2.tar.xz"
+            version="3.0.2"
+            hash="sha256:42f29e002365467eac10f4ba78435d4be785a947424d9890112c8c8d5e21be25">
+    </branch>
+    <after>
+      <dep package="pygobject3" />
+    </after>
+  </autotools>
   <pip id="setuptools">
     <branch module="4f/db/cfac1baf10650ab4d1c111714410d2fbb77ac5a616db26775db562c8fab2/setuptools-82.0.1.tar.gz"
             version="82.0.1"
@@ -46,5 +55,4 @@
       <dep package="python3" />
     </dependencies>
   </pip>
-  <!---->
 </moduleset>

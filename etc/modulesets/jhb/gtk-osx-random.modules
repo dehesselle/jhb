@@ -2,15 +2,12 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <!--
-    Please format this file using https://github.com/htacg/tidy-html5
-
-        tidy -config tidy.conf -m gtk-osx-random.modules
-  -->
+  <!-- Please format this file using the following command:
+       tidy -config ../tidy.conf -m gtk-osx-random.modules; sed -i "" '/^ *$/d' gtk-osx-random.modules
+       You can get 'tidy' here: https://github.com/htacg/tidy-html5 -->
   <repository name="ftp.gnu.org"
               href="https://ftp.gnu.org/gnu/"
               type="tarball" />
-  <!---->
   <autotools id="readline"
              autogen-sh="configure">
     <branch module="readline/readline-8.3.tar.gz"
@@ -18,5 +15,4 @@
             hash="sha256:fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc"
             repo="ftp.gnu.org" />
   </autotools>
-  <!---->
 </moduleset>
