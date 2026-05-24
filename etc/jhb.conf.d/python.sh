@@ -13,7 +13,7 @@
 
 ### variables ##################################################################
 
-export PYTHONPYCACHEPREFIX=$CAC_DIR/pycache
+export PYTHONPYCACHEPREFIX=$DIR_CACHE/pycache
 
 ### functions ##################################################################
 

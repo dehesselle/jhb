@@ -13,7 +13,7 @@
 
 ### variables ##################################################################
 
-RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$VER_DIR")_$(uname -m).tar.xz}
+RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$DIR_VERSION")_$(uname -m).tar.xz}
 
 # The canonical source for releases is GitLab.
 RELEASE_URL="https://gitlab.com/api/v4/projects/35965804/packages/generic/jhb/\

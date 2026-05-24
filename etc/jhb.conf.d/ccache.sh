@@ -12,7 +12,7 @@
 
 ### variables ##################################################################
 
-export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
+export CCACHE_DIR=${CCACHE_DIR:-$DIR_WORK/ccache}
 
 CCACHE_BIN=${CCACHE_BIN:-ccache}
 
@@ -31,7 +31,7 @@ function ccache_configure
     mkdir -p "$CCACHE_DIR"
 
     cat <<EOF >"$CCACHE_DIR/ccache.conf"
-base_dir = $WRK_DIR
+base_dir = $DIR_WORK
 hash_dir = false
 max_size = 1Gi
 temporary_dir = $CCACHE_DIR/tmp
@@ -40,14 +40,14 @@ EOF
   fi
 
   for compiler in clang clang++ gcc g++; do
-    ln -sf "$CCACHE_BIN" "$USR_DIR"/bin/$compiler
+    ln -sf "$CCACHE_BIN" "$DIR_USR"/bin/$compiler
   done
 }
 
 function ccache_install
 {
   curl -L "$CCACHE_URL" |
-    tar -C "$USR_DIR"/bin -xz --strip-components 1 \
+    tar -C "$DIR_USR"/bin -xz --strip-components 1 \
     ccache-"$CCACHE_VER"-darwin/ccache
 }
 

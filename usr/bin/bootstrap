@@ -36,18 +36,18 @@ function is_release_usable
 {
   local url=$1
 
-  local partial_download="$TMP_DIR/${FUNCNAME[0]}".tar.xz
+  local partial_download="$DIR_TMP/${FUNCNAME[0]}".tar.xz
   local rc=1
 
   # download at least 100 kb of data
   curl -L "$url" 2>/dev/null | head -c 100000 >"$partial_download"
   # if we got 100 kb, it's not a "404 file not found"
   if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
-    # look inside: dir needs to match our VER_DIR to be usable
+    # look inside: dir needs to match our DIR_VERSION to be usable
     local dir
     dir=$(basename "$(tar -tvJf "$partial_download" 2>/dev/null |
       head -n 1 | awk '{ print $NF }')")
-    if [ "$dir" = "$(basename "$VER_DIR")" ]; then
+    if [ "$dir" = "$(basename "$DIR_VERSION")" ]; then
       rc=0
     fi
   fi
@@ -63,8 +63,8 @@ error_trace_enable
 
 #-------------------------------------------------------- print main directories
 
-echo_i "WRK_DIR = $WRK_DIR"
-echo_i "VER_DIR = $VER_DIR"
+echo_i "DIR_WORK = $DIR_WORK"
+echo_i "DIR_VERSION = $DIR_VERSION"
 
 #--------------------------------------------------------- perform system checks
 
@@ -76,24 +76,24 @@ fi
 
 #--------------------------------------------------- initialize directory layout
 
-if [ "$SELF_DIR" = "$USR_DIR"/bin ]; then
+if [ "$SELF_DIR" = "$DIR_USR"/bin ]; then
   : # we are already running inside target directory layout
 else
   # sync repository into target structure
-  rsync -a "$SELF_DIR"/../../../jhb/ "$VER_DIR"/
+  rsync -a "$SELF_DIR"/../../../jhb/ "$DIR_VERSION"/
   # remove everything git-related
-  find "$VER_DIR" -type f -name ".gitkeep" -delete
-  rm -rf "$VER_DIR"/.git
+  find "$DIR_VERSION" -type f -name ".gitkeep" -delete
+  rm -rf "$DIR_VERSION"/.git
   # copy custom configuration directories into target structure
   find "$CALLER_DIR" -maxdepth 1 -type d -name "*.conf.d" \
-    -exec rsync -a {} "$ETC_DIR" \;
+    -exec rsync -a {} "$DIR_ETC" \;
 fi
 
 #------------------------------------------- check if binary release can be used
 
 if is_release_usable "$RELEASE_URL" && ! $FORCE_BUILD_FROM_SOURCE; then
   echo_i "using $RELEASE_URL"
-  curl -L "$RELEASE_URL" | tar -C "$WRK_DIR" -xJ
+  curl -L "$RELEASE_URL" | tar -C "$DIR_WORK" -xJ
   exit $? # we can quit here and now, nothing further to do
 fi
 
@@ -113,7 +113,7 @@ ccache_configure
 sys_create_log
 
 if $CI_GITLAB; then
-  ci_gitlab_add_metadata "$LOG_DIR"/ci.plist
+  ci_gitlab_add_metadata "$DIR_LOG"/ci.plist
 fi
 
 #------------------------------------------------- install and configure JHBuild
@@ -129,9 +129,9 @@ jhb build python3
 
 # We are now using the freshly built Python and are in a deadlock if we try
 # to install setuptools with jhb. We have to do it manually.
-"$BIN_DIR"/pip3 install setuptools=="$(xmllint \
+"$DIR_BIN"/pip3 install setuptools=="$(xmllint \
   --xpath "string(//moduleset/pip[@id='setuptools']/branch/@version)" \
-  "$ETC_DIR"/modulesets/jhb/gtk-osx-python.modules
+  "$DIR_ETC"/modulesets/jhb/gtk-osx-python.modules
 )"
 
 jhb build meta-gtk-osx-bootstrap

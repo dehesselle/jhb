@@ -15,7 +15,7 @@ jobs:
   jhb:
     runs-on: macos-15
     env:
-      WRK_DIR: /Users/Shared/work
+      DIR_WORK: /Users/Shared/work
       CCACHE_DIR: /Users/Shared/work/ccache
     steps:
 

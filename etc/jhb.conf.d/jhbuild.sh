@@ -16,7 +16,7 @@
 
 ### variables ##################################################################
 
-export JHBUILDRC=${JHBUILDRC:-$ETC_DIR/jhbuildrc}
+export JHBUILDRC=${JHBUILDRC:-$DIR_ETC/jhbuildrc}
 export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS_PIP=(
@@ -36,22 +36,22 @@ jhbuild-$JHBUILD_VER.tar.bz2"
 
 function jhbuild_install
 {
-  python3 -m venv "$SHR_DIR"/venv/jhbuild
+  python3 -m venv "$DIR_SHARE"/venv/jhbuild
 
-  local venv_dir=$SHR_DIR/venv/jhbuild
+  local venv_dir=$DIR_SHARE/venv/jhbuild
   local pip=$venv_dir/bin/pip3
 
   # Install dependencies.
   $pip install "${JHBUILD_REQUIREMENTS_PIP[@]}"
 
   local archive
-  archive=$PKG_DIR/$(basename $JHBUILD_URL)
+  archive=$DIR_PKG/$(basename $JHBUILD_URL)
   curl -o "$archive" -L "$JHBUILD_URL"
   tar -C "$venv_dir" -xf "$archive"
 
   ( # Install JHBuild.
     cd "$venv_dir"/jhbuild-$JHBUILD_VER || exit 1
-    patch -p1 < "$ETC_DIR"/modulesets/jhb/patches/jhbuild-distutils.patch
+    patch -p1 < "$DIR_ETC"/modulesets/jhb/patches/jhbuild-distutils.patch
     ./autogen.sh \
       --prefix="$venv_dir" \
       --with-python="$venv_dir"/bin/python3
@@ -59,7 +59,7 @@ function jhbuild_install
   )
 
   for file in jhbuild meson ninja; do
-    ln -s ../../share/venv/jhbuild/bin/$file "$USR_DIR"/bin
+    ln -s ../../share/venv/jhbuild/bin/$file "$DIR_USR"/bin
   done
 }
 
@@ -75,7 +75,7 @@ function jhbuild_configure
   if [ "$name" != "jhb" ]; then
     local moduleset_dir
     moduleset_dir=$(dirname "$(greadlink -f "$moduleset")")
-    rsync -a --delete "$moduleset_dir"/ "$ETC_DIR/modulesets/$name/"
+    rsync -a --delete "$moduleset_dir"/ "$DIR_ETC/modulesets/$name/"
   fi
 
   if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
@@ -89,16 +89,16 @@ function jhbuild_configure
     echo "# -*- mode: python -*-"
 
     # moduleset
-    echo "modulesets_dir = '$ETC_DIR/modulesets/$name'"
+    echo "modulesets_dir = '$DIR_ETC/modulesets/$name'"
     echo "moduleset = '$(basename "$moduleset")'"
     echo "use_local_modulesets = True"
 
     # basic directory layout
-    echo "buildroot = '$BLD_DIR'"
-    echo "checkoutroot = '$SRC_DIR'"
-    echo "prefix = '$VER_DIR'"
-    echo "tarballdir = '$PKG_DIR'"
-    echo "top_builddir = '$VAR_DIR/jhbuild'"
+    echo "buildroot = '$DIR_BUILD'"
+    echo "checkoutroot = '$DIR_SRC'"
+    echo "prefix = '$DIR_VERSION'"
+    echo "tarballdir = '$DIR_PKG'"
+    echo "top_builddir = '$DIR_VAR/jhbuild'"
 
     # setup macOS SDK
     echo "setup_sdk(target=\"$target\")"
@@ -106,15 +106,15 @@ function jhbuild_configure
     # set release build
     echo "setup_release()"
 
-    # Use compiler binaries from our own USR_DIR/bin if present, the intention
+    # Use compiler binaries from our own DIR_USR/bin if present, the intention
     # being that these are symlinks pointing to ccache if that has been
     # installed (see ccache.sh for details).
-    if [ -x "$USR_DIR/bin/gcc" ]; then
-      echo "os.environ[\"CC\"] = \"$USR_DIR/bin/gcc\""
-      echo "os.environ[\"OBJC\"] = \"$USR_DIR/bin/gcc\""
+    if [ -x "$DIR_USR/bin/gcc" ]; then
+      echo "os.environ[\"CC\"] = \"$DIR_USR/bin/gcc\""
+      echo "os.environ[\"OBJC\"] = \"$DIR_USR/bin/gcc\""
     fi
-    if [ -x "$USR_DIR/bin/g++" ]; then
-      echo "os.environ[\"CXX\"] = \"$USR_DIR/bin/g++\""
+    if [ -x "$DIR_USR/bin/g++" ]; then
+      echo "os.environ[\"CXX\"] = \"$DIR_USR/bin/g++\""
     fi
 
     # user home directory
@@ -127,7 +127,7 @@ function jhbuild_configure
     fi
 
     # add moduleset-specific settings if exist
-    local moduleset_rc=$ETC_DIR/modulesets/$name/jhbuildrc
+    local moduleset_rc=$DIR_ETC/modulesets/$name/jhbuildrc
     if [ -f "$moduleset_rc" ]; then
       cat "$moduleset_rc"
     fi

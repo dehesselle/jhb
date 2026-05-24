@@ -22,16 +22,16 @@
 
 function venvtools_install
 {
-  for requirements in "$SHR_DIR"/venv/*.txt; do
+  for requirements in "$DIR_SHARE"/venv/*.txt; do
     local tool_name
     tool_name=$(basename -s .txt "$requirements")
-    local venv_dir=$SHR_DIR/venv/$tool_name
+    local venv_dir=$DIR_SHARE/venv/$tool_name
     # setup venv named after the tool
     jhb run python3 -m venv "$venv_dir"
     # install the tool into the venv
     jhb run "$venv_dir"/bin/pip install -r "$requirements"
     # link the tool to usr/bin
-    ln -s "../../share/venv/$tool_name/bin/$tool_name" "$USR_DIR"/bin
+    ln -s "../../share/venv/$tool_name/bin/$tool_name" "$DIR_USR"/bin
   done
 }
 
@@ -42,7 +42,7 @@ function venvtools_dmgbuild
   local dmg=$3 # optional; default is <name>_<version>_<build>_<arch>.dmg
 
   local app_dir
-  app_dir=$(echo "$ART_DIR"/*.app)
+  app_dir=$(echo "$DIR_ARTIFACT"/*.app)
 
   if [ -z "$dmg" ]; then
     local version
@@ -56,22 +56,22 @@ function venvtools_dmgbuild
 
   # Copy templated version of the file (it contains placeholders) to source
   # directory. They copy will be modified to contain the actual values.
-  cp "$config" "$SRC_DIR"
-  config=$SRC_DIR/$(basename "$config")
+  cp "$config" "$DIR_SRC"
+  config=$DIR_SRC/$(basename "$config")
 
   # set application
   gsed -i "s|PLACEHOLDERAPPLICATION|$app_dir|" "$config"
 
   # set disk image icon (if it exists)
   local icon
-  icon=$SRC_DIR/$(basename -s .py "$config").icns
+  icon=$DIR_SRC/$(basename -s .py "$config").icns
   if [ -f "$icon" ]; then
     gsed -i "s|PLACEHOLDERICON|$icon|" "$config"
   fi
 
   # set background image (if it exists)
   local background
-  background=$SRC_DIR/$(basename -s .py "$config").png
+  background=$DIR_SRC/$(basename -s .py "$config").png
   if [ -f "$background" ]; then
     gsed -i "s|PLACEHOLDERBACKGROUND|$background|" "$config"
   fi
@@ -79,8 +79,8 @@ function venvtools_dmgbuild
   # Create disk image in temporary location and move to target location
   # afterwards. This way we can run multiple times without requiring cleanup.
   dmgbuild -s "$config" "$(basename -s .app "$app_dir")" \
-    "$TMP_DIR"/"$(basename "$dmg")"
-  mv "$TMP_DIR"/"$(basename "$dmg")" "$dmg"
+    "$DIR_TMP"/"$(basename "$dmg")"
+  mv "$DIR_TMP"/"$(basename "$dmg")" "$dmg"
 }
 
 ### main #######################################################################

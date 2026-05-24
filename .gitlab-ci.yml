@@ -5,7 +5,7 @@
 variables:
   GIT_DEPTH: 1
   GIT_SUBMODULE_STRATEGY: recursive
-  WRK_DIR: /Users/Shared/work
+  DIR_WORK: /Users/Shared/work
   CCACHE_DIR: /Users/Shared/work/ccache
 
 stages:
@@ -37,8 +37,8 @@ build:
   after_script:
     - | # cleanup for persistent Intel runner
       if [ "$ARCHITECTURE" = "x86_64" ]; then
-        VER_DIR=$(usr/bin/config get VER_DIR)
-        rm -rf ${VER_DIR:?}
+        DIR_VERSION=$(usr/bin/config get DIR_VERSION)
+        rm -rf ${DIR_VERSION:?}
       fi
   artifacts:
     paths:

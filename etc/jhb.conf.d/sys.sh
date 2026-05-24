@@ -33,8 +33,8 @@ function sys_create_log
 {
   # Create jhb.log file.
 
-  for var in SYS_MACOS_VER SYS_SDK_VER VERSION VER_DIR WRK_DIR; do
-    echo "$var = $(eval echo \$$var)" >>"$LOG_DIR"/jhb.log
+  for var in SYS_MACOS_VER SYS_SDK_VER VERSION DIR_VERSION DIR_WORK; do
+    echo "$var = $(eval echo \$$var)" >>"$DIR_LOG"/jhb.log
   done
 }
 
@@ -67,10 +67,10 @@ function sys_usrlocal_is_clean
 
 function sys_wrkdir_is_usable
 {
-  if mkdir -p "$WRK_DIR" 2>/dev/null && [ -w "$WRK_DIR" ]; then
-    return 0 # WRK_DIR has been created or was already there and is writable
+  if mkdir -p "$DIR_WORK" 2>/dev/null && [ -w "$DIR_WORK" ]; then
+    return 0 # DIR_WORK has been created or was already there and is writable
   else
-    echo_e "WRK_DIR not usable: $WRK_DIR"
+    echo_e "DIR_WORK not usable: $DIR_WORK"
     return 1
   fi
 }

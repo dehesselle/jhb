@@ -47,7 +47,7 @@ Make sure the following prerequisites are met:
    By default we're going to use `/Users/Shared/work` (see [`directories.sh`](etc/jhb.conf.d/directories.sh)) to build and install everything as that is a user-independent but user-writable location present on every macOS installation. If you're not comfortable with that, run e.g.
 
     ```bash
-    export WRK_DIR=$HOME/my_custom_location
+    export DIR_WORK=$HOME/my_custom_location
     ```
 
 3. Bootstrap JHBuild by running the following command.

@@ -45,6 +45,6 @@ case "$1" in
     else
       exit 1 # cannot continue
     fi
-    "$SHR_DIR"/venv/jhbuild/bin/jhbuild "$@"
+    "$DIR_SHARE"/venv/jhbuild/bin/jhbuild "$@"
     ;;
 esac

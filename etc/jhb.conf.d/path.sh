@@ -12,7 +12,7 @@
 
 ### variables ##################################################################
 
-export PATH=$BIN_DIR:$USR_DIR/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=$DIR_BIN:$DIR_USR/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 ### functions ##################################################################
 

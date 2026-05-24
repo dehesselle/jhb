@@ -4,17 +4,15 @@
 
 ### description ################################################################
 
-# Redirect pip cache directories.
+# Redirect temporary locations.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
-# shellcheck disable=SC2034 # we only use exports if we really need them
 
 ### variables ##################################################################
 
-export PIP_CACHE_DIR=$DIR_CACHE/pip       # instead ~/Library/Caches/pip
-export PIPENV_CACHE_DIR=$DIR_CACHE/pipenv # instead ~/Library/Caches/pipenv
+export TMPDIR=$DIR_TMP # TMPDIR is the common macOS default
 
 ### functions ##################################################################
 

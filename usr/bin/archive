@@ -18,7 +18,7 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 ### variables ##################################################################
 
-SHADOW_FILE_DIR=${SHADOW_FILE_DIR:-${CI_PROJECT_DIR:-$WRK_DIR}}
+SHADOW_FILE_DIR=${SHADOW_FILE_DIR:-${CI_PROJECT_DIR:-$DIR_WORK}}
 
 ### functions ##################################################################
 
@@ -28,14 +28,14 @@ function create_tar
   local suffix=$1 # optional
 
   local file
-  file=$ART_DIR/$(release_archive_get_name)$suffix.tar.xz
+  file=$DIR_ARTIFACT/$(release_archive_get_name)$suffix.tar.xz
 
   echo_i "creating $file"
 
-  tar -C "$WRK_DIR" \
-      --exclude="$(basename "$TMP_DIR")"/?* \
-      -cp "$(basename "$VER_DIR")" |
-    XZ_OPT=-T0 "$BIN_DIR"/xz >"$file"
+  tar -C "$DIR_WORK" \
+      --exclude="$(basename "$DIR_TMP")"/?* \
+      -cp "$(basename "$DIR_VERSION")" |
+    XZ_OPT=-T0 "$DIR_BIN"/xz >"$file"
 
   shasum -a 256 "$file" >"$file".sha256
   echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
@@ -47,13 +47,13 @@ function create_tar
 function create_dmg
 {
   local file
-  file=$ART_DIR/$(release_archive_get_name).dmg
+  file=$DIR_ARTIFACT/$(release_archive_get_name).dmg
 
   ( # create dmg
     local vol_name
-    vol_name=$(basename "$VER_DIR")
+    vol_name=$(basename "$DIR_VERSION")
 
-    cd "$WRK_DIR" || exit 1
+    cd "$DIR_WORK" || exit 1
     hdiutil create -ov \
       -fs HFS+ \
       -format ULMO \
@@ -76,12 +76,12 @@ function create_dmg
 function mount_dmg
 {
   local dmg
-  dmg=$REP_DIR/$(release_archive_get_name).dmg
+  dmg=$DIR_WORK/$(release_archive_get_name).dmg
   local shadow_file
   shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
 
-  if [ ! -d "$VER_DIR" ]; then
-    mkdir -p "$VER_DIR"
+  if [ ! -d "$DIR_VERSION" ]; then
+    mkdir -p "$DIR_VERSION"
   fi
 
   if [ -f "$shadow_file".bz2 ]; then
@@ -91,7 +91,7 @@ function mount_dmg
 
   echo_i "mounting $(basename "$dmg")"
   hdiutil mount "$dmg" \
-    -mountPoint "$VER_DIR" \
+    -mountPoint "$DIR_VERSION" \
     -shadow "$shadow_file"
 }
 
@@ -100,7 +100,7 @@ function unmount_dmg
   local keep_shadow_file=$1
 
   local dmg
-  dmg=$REP_DIR/$(release_archive_get_name).dmg
+  dmg=$DIR_WORK/$(release_archive_get_name).dmg
   local shadow_file
   shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
 
@@ -112,10 +112,10 @@ function unmount_dmg
         awk '{ print $2 }')
 
     if [ -n "$partition_uuid" ] && hdiutil info | grep "$partition_uuid"; then
-      echo_i "unmounting $VER_DIR"
+      echo_i "unmounting $DIR_VERSION"
       # We loop over the 'eject' since it occasionally timeouts.
-      while ! hdiutil detach "$VER_DIR" >/dev/null; do
-        echo_w "retrying to detach $VER_DIR in 10 seconds"
+      while ! hdiutil detach "$DIR_VERSION" >/dev/null; do
+        echo_w "retrying to detach $DIR_VERSION in 10 seconds"
         sleep 10
       done
 
@@ -142,17 +142,13 @@ function unmount_dmg
 
 function download_dmg
 {
-  if [ ! -d "$REP_DIR" ]; then
-    mkdir -p "$REP_DIR"
-  fi
-
-  local partial_download=$REP_DIR/${FUNCNAME[0]} # TMP_DIR not available yet
+  local partial_download=$DIR_WORK/${FUNCNAME[0]} # DIR_TMP not available yet
   # download (at least) 100 kb of data
   curl -L "$RELEASE_URL" 2>/dev/null | head -c 100000 >"$partial_download"
   # if we got 100 kb, it's not a "404 file not found"
   if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
     echo_i "downloading $RELEASE_URL"
-    curl -o "$REP_DIR/$RELEASE_ARCHIVE" -L -C - "$RELEASE_URL"
+    curl -o "$DIR_WORK/$RELEASE_ARCHIVE" -L -C - "$RELEASE_URL"
   fi
 
   rm "$partial_download"
@@ -161,7 +157,7 @@ function download_dmg
 function install_dmg
 {
   local dmg
-  dmg=$REP_DIR/$(release_archive_get_name).dmg
+  dmg=$DIR_WORK/$(release_archive_get_name).dmg
 
   # download and mount read-only disk image
   if [ -f "$dmg" ]; then
@@ -183,13 +179,13 @@ function remove_nonessential_files
 {
   local additional_dirs=$1  # optional
 
-  for dir in $BLD_DIR $PIP_CACHE_DIR $PKG_DIR $PYTHONPYCACHEPREFIX \
-             $SRC_DIR $TMP_DIR $additional_dirs; do
+  for dir in $DIR_BUILD $PIP_CACHE_DIR $DIR_PKG $PYTHONPYCACHEPREFIX \
+             $DIR_SRC $DIR_TMP $additional_dirs; do
     dir=$(eval echo "$dir") # allow variable resolution for additional_dirs
 
-    if [[ $dir != $VER_DIR/* ]]; then
+    if [[ $dir != $DIR_VERSION/* ]]; then
       # this is a precaution: do not touch things outside our tree
-      echo_i "skipping $dir: not below VER_DIR"
+      echo_i "skipping $dir: not below DIR_VERSION"
       continue
     fi
 
