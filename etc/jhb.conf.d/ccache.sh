@@ -31,11 +31,9 @@ function ccache_configure
     mkdir -p "$CCACHE_DIR"
 
     cat <<EOF >"$CCACHE_DIR/ccache.conf"
-base_dir = $DIR_WORK
-hash_dir = false
+base_dir = $DIR_VERSION
 max_size = 1Gi
 temporary_dir = $CCACHE_DIR/tmp
-remote_storage = redis://catchingfishorcachingfiles@159.69.114.121:63799
 EOF
   fi
 
