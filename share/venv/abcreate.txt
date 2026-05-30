@@ -1,6 +1,6 @@
-abcreate==0.7.0
+abcreate==0.8.0
 annotated-types==0.7.0
-lxml==6.1.0
+lxml==6.1.1
 pydantic==2.13.4
 pydantic-xml==2.20.0
 pydantic_core==2.46.4
