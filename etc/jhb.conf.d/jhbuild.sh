@@ -20,9 +20,9 @@ export JHBUILDRC=${JHBUILDRC:-$DIR_ETC/jhbuildrc}
 export JHBUILDRC_CUSTOM=${JHBUILDRC_CUSTOM:-$JHBUILDRC-custom}
 
 JHBUILD_REQUIREMENTS_PIP=(
-  "meson==1.8.2"
-  "ninja==1.11.1.4"
-  "setuptools==80.9.0"
+  "meson==1.11.1"
+  "ninja==1.13.0"
+  "setuptools==82.0.1"
 )
 
 # JHBuild build system (current master as of 10.05.2026)
