@@ -13,7 +13,8 @@
 
 ### variables ##################################################################
 
-RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(basename "$DIR_VERSION")_$(uname -m).tar.xz}
+RELEASE_ARCHIVE=${RELEASE_ARCHIVE:-$(\
+  basename "$DIR_VERSION")_$(uname -m).tar.xz}
 
 # The canonical source for releases is GitLab.
 RELEASE_URL="https://gitlab.com/api/v4/projects/35965804/packages/generic/jhb/\
@@ -21,21 +22,7 @@ v$VERSION/$RELEASE_ARCHIVE"
 
 ### functions ##################################################################
 
-function release_archive_get_name
-{
-  case "$RELEASE_ARCHIVE" in
-    *.tar.xz)
-      basename -s .tar.xz "$RELEASE_ARCHIVE"
-      ;;
-    *.dmg)
-      basename -s .dmg "$RELEASE_ARCHIVE"
-      ;;
-    *)
-      echo_e "unsupported RELEASE_ARCHIVE file type"
-      echo "$RELEASE_ARCHIVE"
-      ;;
-  esac
-}
+# Nothing here.
 
 ### main #######################################################################
 

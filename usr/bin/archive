@@ -18,17 +18,15 @@ source "$(dirname "${BASH_SOURCE[0]}")"/../../etc/jhb.conf.sh
 
 ### variables ##################################################################
 
-SHADOW_FILE_DIR=${SHADOW_FILE_DIR:-${CI_PROJECT_DIR:-$DIR_WORK}}
+ARCHIVE_DMG=${ARCHIVE_DMG:-$DIR_ARTIFACT/$(\
+  basename -s .tar.xz "$RELEASE_ARCHIVE").dmg}
 
 ### functions ##################################################################
 
-# shellcheck disable=SC2120 # optional arguments
 function create_tar
 {
-  local suffix=$1 # optional
-
   local file
-  file=$DIR_ARTIFACT/$(release_archive_get_name)$suffix.tar.xz
+  file=$DIR_ARTIFACT/$RELEASE_ARCHIVE
 
   echo_i "creating $file"
 
@@ -43,12 +41,8 @@ function create_tar
   echo "$file"
 }
 
-# shellcheck disable=SC2120 # optional arguments
 function create_dmg
 {
-  local file
-  file=$DIR_ARTIFACT/$(release_archive_get_name).dmg
-
   ( # create dmg
     local vol_name
     vol_name=$(basename "$DIR_VERSION")
@@ -60,25 +54,22 @@ function create_dmg
       -size 16g \
       -srcfolder "$vol_name" \
       -volname "$vol_name" \
-      "$file" \
+      "$ARCHIVE_DMG" \
       >/dev/null
   )
 
   ( # create and print checksum
-    cd "$(dirname "$file")" || exit 1
-    shasum -a 256 "$(basename "$file")" >"$file".sha256
-    echo_i "sha256 = $(awk '{ print $1 }' "$file".sha256)"
+    cd "$(dirname "$ARCHIVE_DMG")" || exit 1
+    shasum -a 256 "$(basename "$ARCHIVE_DMG")" >"$ARCHIVE_DMG".sha256
+    echo_i "sha256 = $(awk '{ print $1 }' "$ARCHIVE_DMG".sha256)"
   )
 
-  echo "$file"
+  echo "$ARCHIVE_DMG"
 }
 
 function mount_dmg
 {
-  local dmg
-  dmg=$DIR_WORK/$(release_archive_get_name).dmg
-  local shadow_file
-  shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
+  local shadow_file=$ARCHIVE_DMG.shadow
 
   if [ ! -d "$DIR_VERSION" ]; then
     mkdir -p "$DIR_VERSION"
@@ -89,8 +80,8 @@ function mount_dmg
     bzip2 -d "$shadow_file".bz2
   fi
 
-  echo_i "mounting $(basename "$dmg")"
-  hdiutil mount "$dmg" \
+  echo_i "mounting $(basename "$ARCHIVE_DMG")"
+  hdiutil mount "$ARCHIVE_DMG" \
     -mountPoint "$DIR_VERSION" \
     -shadow "$shadow_file"
 }
@@ -99,14 +90,11 @@ function unmount_dmg
 {
   local keep_shadow_file=$1
 
-  local dmg
-  dmg=$DIR_WORK/$(release_archive_get_name).dmg
-  local shadow_file
-  shadow_file=$SHADOW_FILE_DIR/$(basename "$dmg").shadow
+  local shadow_file=$ARCHIVE_DMG.shadow
 
-  if [ -f "$dmg" ]; then
+  if [ -f "$ARCHIVE_DMG" ]; then
     local partition_uuid
-    partition_uuid=$(hdiutil imageinfo "$dmg" |
+    partition_uuid=$(hdiutil imageinfo "$ARCHIVE_DMG" |
         grep -A1 "partition-name: disk image" |
         grep UUID |
         awk '{ print $2 }')
@@ -138,41 +126,6 @@ function unmount_dmg
   else
     echo_e "cannot unmount without dmg file"
   fi
-}
-
-function download_dmg
-{
-  local partial_download=$DIR_WORK/${FUNCNAME[0]} # DIR_TMP not available yet
-  # download (at least) 100 kb of data
-  curl -L "$RELEASE_URL" 2>/dev/null | head -c 100000 >"$partial_download"
-  # if we got 100 kb, it's not a "404 file not found"
-  if [ "$(stat -f%z "$partial_download")" -eq 100000 ]; then
-    echo_i "downloading $RELEASE_URL"
-    curl -o "$DIR_WORK/$RELEASE_ARCHIVE" -L -C - "$RELEASE_URL"
-  fi
-
-  rm "$partial_download"
-}
-
-function install_dmg
-{
-  local dmg
-  dmg=$DIR_WORK/$(release_archive_get_name).dmg
-
-  # download and mount read-only disk image
-  if [ -f "$dmg" ]; then
-    echo_i "using $dmg"
-  else
-    download_dmg
-  fi
-  mount_dmg
-}
-
-function uninstall_dmg
-{
-  local keep_shadow_file=$1   # optional
-
-  unmount_dmg "$keep_shadow_file"
 }
 
 function remove_nonessential_files
@@ -218,19 +171,19 @@ function main
       create_dmg
       ;;
     create_tar)
-      create_tar "$option" # option: add suffix to archive, default is none
+      create_tar
       ;;
-    install_dmg)
-      install_dmg
+    mount_dmg)
+      mount_dmg
       ;;
-    uninstall_dmg)
-      uninstall_dmg "$option"
+    unmount_dmg)
+      unmount_dmg "$option" # option: keep shadow file or not
       ;;
     remove_nonessentials)
       remove_nonessential_files "$option" # option: additional dirs to clean up
       ;;
     *)
-      echo_e "usage: $0 {create_dmg|create_tar|install_dmg|uninstall_dmg|\
+      echo_e "usage: $0 {create_dmg|create_tar|mount_dmg|unmount_dmg|\
 remove_nonessentials}"
       ;;
   esac
